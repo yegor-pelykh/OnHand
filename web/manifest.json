@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "OnHand",
     "short_name": "OnHand",
     "version": "1.0.0",
@@ -20,14 +20,16 @@
     },
     "applications": {
         "gecko": {
-            "id": "{486606f1-39f0-4662-b43f-1e629b18f89e}"
+            "id": "{1f4ee806-b18a-4c3d-824d-6a44d6911cee}"
         }
     },
     "chrome_url_overrides": {
         "newtab": "index.html"
     },
+    "host_permissions": [
+        "<all_urls>"
+    ],
     "permissions": [
-        "<all_urls>",
         "tabs",
         "unlimitedStorage"
     ]
