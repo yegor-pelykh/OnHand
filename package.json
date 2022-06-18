@@ -1,0 +1,21 @@
+{
+  "name": "on_hand_harmonization",
+  "version": "1.0.0",
+  "description": "Harmonization of the OnHand project after the build",
+  "private": true,
+  "main": "harmonization.js",
+  "scripts": {
+    "run": "node harmonization.js"
+  },
+  "author": {
+    "name": "Yegor Pelykh",
+    "email": "yegor.dev@gmail.com",
+    "url": "https://github.com/yegor-pelykh"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "jsdom": "^19.0.0",
+    "pretty": "^2.0.0",
+    "strip-comments": "^2.0.1"
+  }
+}

@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug OnHand",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "-d",
+                "chrome",
+                "--web-port",
+                "8000",
+            ],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Harmonization script",
+            "program": "${workspaceFolder}/harmonization.js"
+        }
+    ]
+}
