@@ -30,7 +30,6 @@
         "<all_urls>"
     ],
     "permissions": [
-        "tabs",
         "unlimitedStorage"
     ]
 }
