@@ -20,16 +20,23 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  TabController? _tabController;
+
   _HomePageState() {
-    GlobalData.groupData.loadGroups().then((_) => setState(() {}));
+    GlobalData.groupData.loadGroups().then((_) => update());
   }
 
   void update() {
-    setState(() {});
+    setState(() {
+      _tabController = TabController(
+        length: GlobalData.groupData.groups.length,
+        vsync: this,
+      );
+    });
   }
 
-  void _createBookmark() async {
+  void _createBookmark(BuildContext context) async {
     final groupIndex = GlobalData.groupData.activeGroupIndex;
     if (groupIndex < 0) {
       return;
@@ -92,7 +99,7 @@ class _HomePageState extends State<HomePage> {
     await FileSaver.instance.saveFile('data', bytes, 'json', mimeType: MimeType.JSON);
   }
 
-  void _saveToFile() {
+  void _saveToFile(BuildContext context) {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -119,7 +126,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _loadFromFile() {
+  void _loadFromFile(BuildContext context) {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -139,7 +146,48 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  SpeedDial _getSpeedDial() {
+  AppBar _getAppBar() {
+    List<Widget> appBarChildren = <Widget>[];
+    if (_tabController != null) {
+      appBarChildren.add(
+        TabBar(
+          controller: _tabController,
+          indicatorWeight: kTabIndicatorWeight,
+          isScrollable: true,
+          tabs: GlobalData.groupData.groups
+              .map(
+                (group) => Tab(
+                  height: kMinInteractiveDimension,
+                  child: Text(group.title),
+                ),
+              )
+              .toList(),
+          onTap: (index) {
+            GlobalData.groupData.activeGroupIndex = index;
+          },
+        ),
+      );
+    }
+    return AppBar(
+      toolbarHeight: kMinInteractiveDimension + kTabIndicatorWeight,
+      flexibleSpace: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: appBarChildren,
+      ),
+    );
+  }
+
+  Widget _getBody() {
+    if (_tabController == null) {
+      return Container();
+    }
+    return TabBarView(
+      controller: _tabController,
+      children: GlobalData.groupData.groups.map((group) => BookmarksView(group)).toList(),
+    );
+  }
+
+  SpeedDial _getSpeedDial(BuildContext context) {
     final backgroundColor = Theme.of(context).colorScheme.secondary;
     final labelBackgroundColor = Theme.of(context).colorScheme.secondary;
     final foregroundColor = Theme.of(context).colorScheme.onSecondary;
@@ -156,7 +204,7 @@ class _HomePageState extends State<HomePage> {
           labelBackgroundColor: labelBackgroundColor,
           foregroundColor: foregroundColor,
           labelStyle: labelStyle,
-          onTap: () => _createBookmark(),
+          onTap: () => _createBookmark(context),
         ),
       );
     }
@@ -180,7 +228,7 @@ class _HomePageState extends State<HomePage> {
           labelBackgroundColor: labelBackgroundColor,
           foregroundColor: foregroundColor,
           labelStyle: labelStyle,
-          onTap: () => _saveToFile(),
+          onTap: () => _saveToFile(context),
         ),
       );
     }
@@ -192,7 +240,7 @@ class _HomePageState extends State<HomePage> {
         labelBackgroundColor: labelBackgroundColor,
         foregroundColor: foregroundColor,
         labelStyle: labelStyle,
-        onTap: () => _loadFromFile(),
+        onTap: () => _loadFromFile(context),
       ),
     );
     return SpeedDial(
@@ -209,37 +257,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: GlobalData.groupData.groups.length,
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: kMinInteractiveDimension + kTabIndicatorWeight,
-          flexibleSpace: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TabBar(
-                indicatorWeight: kTabIndicatorWeight,
-                isScrollable: true,
-                tabs: GlobalData.groupData.groups
-                    .map(
-                      (group) => Tab(
-                        height: kMinInteractiveDimension,
-                        child: Text(group.title),
-                      ),
-                    )
-                    .toList(),
-                onTap: (index) {
-                  GlobalData.groupData.activeGroupIndex = index;
-                },
-              ),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: GlobalData.groupData.groups.map((group) => BookmarksView(group)).toList(),
-        ),
-        floatingActionButton: _getSpeedDial(),
-      ),
+    return Scaffold(
+      appBar: _getAppBar(),
+      body: _getBody(),
+      floatingActionButton: _getSpeedDial(context),
     );
   }
 
