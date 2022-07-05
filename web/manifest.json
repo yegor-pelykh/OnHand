@@ -1,5 +1,5 @@
 {
-    "manifest_version": 3,
+    "manifest_version": 2,
     "name": "OnHand",
     "short_name": "OnHand",
     "version": "1.0.1",
@@ -28,10 +28,11 @@
     "chrome_url_overrides": {
         "newtab": "index.html"
     },
-    "host_permissions": [
-        "<all_urls>"
-    ],
+    "chrome_settings_overrides": {
+        "homepage": "index.html"
+    },
     "permissions": [
+        "<all_urls>",
         "unlimitedStorage"
     ]
 }
