@@ -5,9 +5,11 @@ import 'package:on_hand/data/dummy_data.dart';
 import 'package:on_hand/helpers/metadata_provider.dart';
 import 'package:validators/validators.dart';
 
+const protocolHttp = 'http';
+const protocolHttps = 'https';
 const protocolsToTryIfNoScheme = [
-  'https',
-  'http',
+  protocolHttps,
+  protocolHttp,
 ];
 
 enum BookmarkEditorMode {
@@ -58,6 +60,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
   BookmarkEditorState _state = BookmarkEditorState.noMetadata;
   Metadata? _metadata;
   Timer? _debounce;
+  bool _allowUnavailableAddresses = false;
 
   String? _validateAddress(String? address) {
     if (address == null || address.isEmpty) {
@@ -84,7 +87,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
   }
 
   bool _isFormValid() {
-    if (_metadata == null) {
+    if (_metadata == null && _allowUnavailableAddresses == false) {
       return false;
     }
     return _formKey.currentState != null && _formKey.currentState!.validate();
@@ -187,9 +190,12 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
 
   void _submit() {
     if (_isFormValid()) {
-      final url = Uri.parse(_addressEditingController.text);
+      Uri url = Uri.parse(_addressEditingController.text);
+      if (!url.hasScheme) {
+        url = Uri.parse('$protocolHttp://${_addressEditingController.text}');
+      }
       final title = _titleEditingController.text;
-      final icon = _metadata!.icon?.bytes;
+      final icon = _metadata?.icon?.bytes;
       Navigator.pop(
         context,
         BookmarkEditorResult(_selectedGroup, url, title, icon),
@@ -233,6 +239,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
                 Expanded(
                   child: TextFormField(
                     autofocus: true,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _titleEditingController,
                     decoration: const InputDecoration(
                       labelText: 'Title *',
@@ -243,6 +250,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
                       }
                       return null;
                     },
+                    onChanged: (address) => setState(() {}),
                     onFieldSubmitted: (value) => _submit(),
                   ),
                 ),
@@ -266,6 +274,18 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
                 if (newValue != null) {
                   _selectedGroup = newValue;
                   setState(() {});
+                }
+              },
+            ),
+            const SizedBox(height: 16),
+            CheckboxListTile(
+              title: const Text('Allow unavailable addresses'),
+              value: _allowUnavailableAddresses,
+              onChanged: (bool? value) {
+                if (value != null) {
+                  setState(() {
+                    _allowUnavailableAddresses = value;
+                  });
                 }
               },
             ),
