@@ -17,7 +17,7 @@ class BookmarkInfo {
   BookmarkInfo.fromJson(this.group, Map<String, dynamic> json)
       : url = Uri.parse(json[keyUrl]),
         title = json[keyTitle],
-        icon = base64.decode(json[keyIcon]);
+        icon = json[keyIcon] != null ? base64.decode(json[keyIcon]) : null;
 
   BookmarkInfo clone() {
     return BookmarkInfo(group, url, title, icon);
