@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "OnHand",
     "short_name": "OnHand",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "An open source browser extension to save your favorite bookmarks on a \"new tab\" page.",
     "author": "Yegor Pelykh",
     "developer": {
@@ -16,7 +16,9 @@
         "24": "icons/icon-24.png",
         "32": "icons/icon-32.png",
         "48": "icons/icon-48.png",
-        "128": "icons/icon-128.png"
+        "128": "icons/icon-128.png",
+        "192": "icons/icon-192.png",
+        "512": "icons/icon-512.png"
     },
     "applications": {
         "gecko": {
