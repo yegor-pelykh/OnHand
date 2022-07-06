@@ -15,8 +15,14 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Debug Harmonization script",
-            "program": "${workspaceFolder}/harmonization.js"
+            "name": "Debug Post-Harmonization script",
+            "program": "${workspaceFolder}/post-harmonization.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Post-Packaging script",
+            "program": "${workspaceFolder}/post-packaging.js"
         }
     ]
 }

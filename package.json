@@ -1,11 +1,11 @@
 {
-  "name": "on_hand_harmonization",
+  "name": "on_hand_post_actions",
   "version": "1.0.0",
-  "description": "Harmonization of the OnHand project after the build",
+  "description": "Post actions for the OnHand project",
   "private": true,
-  "main": "harmonization.js",
   "scripts": {
-    "run": "node harmonization.js"
+    "harmonization": "node post-harmonization.js",
+    "packaging": "node post-packaging.js"
   },
   "author": {
     "name": "Yegor Pelykh",
@@ -14,6 +14,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "archiver": "^5.3.1",
     "jsdom": "^19.0.0",
     "pretty": "^2.0.0",
     "strip-comments": "^2.0.1"

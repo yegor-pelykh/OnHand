@@ -71,12 +71,14 @@ I would like to give a short diagram of the existing branches and the direction 
 
 You can easily build the release version of this browser extension.
 1. Please make sure you have Node.js installed on your computer. If it is not installed yet, download it from the [Node.js official site](https://nodejs.org) and install it.
-2. To build on **Windows**: just run the file `release_build.bat` at the root of the project.<br>
+1. To build on **Windows**: just run the file `release_build.bat` at the root of the project.<br>
 Otherwise, to build on **any desktop platform**, use this list of commands:
     ```properties
     flutter clean
     flutter pub get
     flutter build web --web-renderer html --csp
     npm install
-    node harmonization.js
+    node post-harmonization.js
+    node post-packaging.js
     ```
+1. The package with the necessary files should be on the `/build/package` folder.
