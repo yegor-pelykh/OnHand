@@ -109,7 +109,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<void> _downloadData() async {
     final jsonString = GlobalData.groupData.groupsToJsonString();
     Uint8List bytes = Uint8List.fromList(utf8.encode(jsonString));
-    await FileSaver.instance.saveFile('data', bytes, 'json', mimeType: MimeType.JSON);
+    await FileSaver.instance
+        .saveFile('data', bytes, 'json', mimeType: MimeType.JSON);
   }
 
   void _saveToFile(BuildContext context) {
@@ -193,7 +194,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
     return TabBarView(
       controller: _tabController,
-      children: GlobalData.groupData.groups.map((group) => BookmarksView(group)).toList(),
+      children: GlobalData.groupData.groups
+          .map((group) => BookmarksView(group))
+          .toList(),
     );
   }
 

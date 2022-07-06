@@ -112,7 +112,8 @@ class _FileUploaderState extends State<FileUploader> {
                       reader.onLoad.listen((event) {
                         final contents = reader.result as String?;
                         if (contents != null) {
-                          GlobalData.groupData.setGroupsFromJsonString(contents);
+                          GlobalData.groupData
+                              .setGroupsFromJsonString(contents);
                           GlobalData.groupData.saveGroups();
                           GlobalData.updateNotifier.notify();
                           Navigator.of(context).pop();

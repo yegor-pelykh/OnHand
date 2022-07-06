@@ -50,7 +50,10 @@ class _GroupsManagerState extends State<GroupsManager> {
           content: GroupEditor(
             GroupEditorMode.edit,
             initialTitle: group.title,
-            forbiddenNames: groupData.groups.where((g) => g != group).map((g) => g.title).toList(),
+            forbiddenNames: groupData.groups
+                .where((g) => g != group)
+                .map((g) => g.title)
+                .toList(),
           ),
         );
       },
@@ -121,7 +124,8 @@ class _GroupsManagerState extends State<GroupsManager> {
           child: Card(
             child: ListTile(
               title: Text(groupData.groups[index].title),
-              subtitle: Text('Bookmarks: ${groupData.groups[index].bookmarks.length}'),
+              subtitle: Text(
+                  'Bookmarks: ${groupData.groups[index].bookmarks.length}'),
               trailing: PopupMenuButton(
                 itemBuilder: (context) {
                   return [
@@ -182,7 +186,9 @@ class _GroupsManagerState extends State<GroupsManager> {
         SizedBox(
           width: 400,
           height: 365,
-          child: groupData.groups.isNotEmpty ? _getListView() : _getInformationBadge(),
+          child: groupData.groups.isNotEmpty
+              ? _getListView()
+              : _getInformationBadge(),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 16),

@@ -53,7 +53,8 @@ class _GroupEditorState extends State<GroupEditor> {
               if (value == null || value.isEmpty) {
                 return 'Please enter a group title.';
               }
-              if (widget.forbiddenNames.any((f) => f.toLowerCase() == value.toLowerCase())) {
+              if (widget.forbiddenNames
+                  .any((f) => f.toLowerCase() == value.toLowerCase())) {
                 return 'This title is already used by another group.';
               }
               return null;
@@ -72,7 +73,9 @@ class _GroupEditorState extends State<GroupEditor> {
                 ),
                 ElevatedButton(
                   onPressed: () => _submit(),
-                  child: Text(widget.mode == GroupEditorMode.create ? 'Create' : 'Apply'),
+                  child: Text(widget.mode == GroupEditorMode.create
+                      ? 'Create'
+                      : 'Apply'),
                 ),
               ],
             ),
