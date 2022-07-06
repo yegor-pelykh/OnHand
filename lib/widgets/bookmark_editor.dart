@@ -54,7 +54,8 @@ class BookmarkEditor extends StatefulWidget {
 
 class _BookmarkEditorState extends State<BookmarkEditor> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _addressEditingController = TextEditingController();
+  final TextEditingController _addressEditingController =
+      TextEditingController();
   final TextEditingController _titleEditingController = TextEditingController();
   late String _selectedGroup;
   BookmarkEditorState _state = BookmarkEditorState.noMetadata;
@@ -75,7 +76,8 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
   void _replaceAddress(Uri uri) {
     setState(() {
       final newText = uri.toString();
-      final lengthDifference = newText.length - _addressEditingController.text.length;
+      final lengthDifference =
+          newText.length - _addressEditingController.text.length;
       final preservedSelection = _addressEditingController.selection;
       _addressEditingController.text = uri.toString();
       _addressEditingController.selection = TextSelection(
@@ -301,7 +303,9 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
                   ),
                   ElevatedButton(
                     onPressed: _isFormValid() ? _submit : null,
-                    child: Text(widget.mode == BookmarkEditorMode.create ? 'Create' : 'Apply'),
+                    child: Text(widget.mode == BookmarkEditorMode.create
+                        ? 'Create'
+                        : 'Apply'),
                   ),
                 ],
               ),

@@ -1,1 +1,1 @@
-flutter clean && flutter pub get && flutter build web --web-renderer html --csp && npm install && node harmonization.js
+flutter clean && flutter pub get && flutter build web --web-renderer html --csp && npm install && node post-harmonization.js && node post-packaging.js

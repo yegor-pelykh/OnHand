@@ -20,8 +20,9 @@ class GroupInfo {
       : title = '',
         bookmarks = [] {
     title = json[keyTitle];
-    bookmarks =
-        List<dynamic>.from(json[keyBookmarks]).map((j) => BookmarkInfo.fromJson(this, j)).toList();
+    bookmarks = List<dynamic>.from(json[keyBookmarks])
+        .map((j) => BookmarkInfo.fromJson(this, j))
+        .toList();
   }
 
   BookmarkInfo addBookmark(
@@ -44,7 +45,8 @@ class GroupInfo {
   }
 
   GroupInfo clone() {
-    return GroupInfo(data, title, bookmarks: bookmarks.map((b) => b.clone()).toList());
+    return GroupInfo(data, title,
+        bookmarks: bookmarks.map((b) => b.clone()).toList());
   }
 
   Map<String, dynamic> toJson() => {

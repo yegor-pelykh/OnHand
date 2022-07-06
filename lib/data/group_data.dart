@@ -66,7 +66,9 @@ class GroupData {
   }
 
   List<GroupInfo> groupsFromJson(Map<String, dynamic> json) {
-    return List<dynamic>.from(json[keyGroups]).map((j) => GroupInfo.fromJson(this, j)).toList();
+    return List<dynamic>.from(json[keyGroups])
+        .map((j) => GroupInfo.fromJson(this, j))
+        .toList();
   }
 
   void setGroupsFromJsonString(String? jsonString) {

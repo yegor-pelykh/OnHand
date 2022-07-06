@@ -77,7 +77,9 @@ class MetadataProvider {
   }
 
   static String? _getTitle(Document document) {
-    final tags = document.head != null ? document.head!.getElementsByTagName('title') : <Element>[];
+    final tags = document.head != null
+        ? document.head!.getElementsByTagName('title')
+        : <Element>[];
     return tags.isNotEmpty ? tags.first.text : null;
   }
 

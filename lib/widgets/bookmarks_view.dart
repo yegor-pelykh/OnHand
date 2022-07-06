@@ -105,13 +105,15 @@ class _BookmarksViewState extends State<BookmarksView> {
             child: Ink(
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(width: 1, color: Theme.of(context).colorScheme.secondary),
+                  bottom: BorderSide(
+                      width: 1, color: Theme.of(context).colorScheme.secondary),
                 ),
                 color: Theme.of(context).colorScheme.tertiary,
               ),
               child: InkWell(
                 onTap: () {
-                  final isCtrlPressed = RawKeyboard.instance.keysPressed.contains(
+                  final isCtrlPressed =
+                      RawKeyboard.instance.keysPressed.contains(
                     LogicalKeyboardKey.controlLeft,
                   );
                   final windowName = isCtrlPressed ? '_blank' : '_self';

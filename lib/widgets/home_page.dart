@@ -24,16 +24,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   TabController? _tabController;
 
   _HomePageState() {
-    GlobalData.groupData.loadGroups().then((_) => update());
+    GlobalData.groupData.loadGroups().then((_) => _update());
   }
 
-  void update() {
+  void _onTabIndexChange() {
+    if (_tabController != null) {
+      GlobalData.groupData.activeGroupIndex = _tabController!.index;
+    }
+  }
+
+  void _updateTabController() {
     setState(() {
-      _tabController = TabController(
-        length: GlobalData.groupData.groups.length,
-        vsync: this,
-      );
+      _tabController?.removeListener(_onTabIndexChange);
+      _tabController = GlobalData.groupData.groups.isNotEmpty
+          ? TabController(
+              length: GlobalData.groupData.groups.length,
+              vsync: this,
+            )
+          : null;
+      GlobalData.groupData.activeGroupIndex = _tabController != null ? 0 : -1;
+      _tabController?.addListener(_onTabIndexChange);
     });
+  }
+
+  void _update() {
+    _updateTabController();
   }
 
   void _createBookmark(BuildContext context) async {
@@ -84,11 +99,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       },
     ).then((groupData) {
       if (groupData != null) {
-        setState(() {
-          GlobalData.groupData = groupData;
-          GlobalData.groupData.activeGroupIndex = GlobalData.groupData.groups.isNotEmpty ? 0 : -1;
-          GlobalData.groupData.saveGroups();
-        });
+        GlobalData.groupData = groupData;
+        GlobalData.groupData.saveGroups();
+        _update();
       }
     });
   }
@@ -96,7 +109,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<void> _downloadData() async {
     final jsonString = GlobalData.groupData.groupsToJsonString();
     Uint8List bytes = Uint8List.fromList(utf8.encode(jsonString));
-    await FileSaver.instance.saveFile('data', bytes, 'json', mimeType: MimeType.JSON);
+    await FileSaver.instance
+        .saveFile('data', bytes, 'json', mimeType: MimeType.JSON);
   }
 
   void _saveToFile(BuildContext context) {
@@ -162,9 +176,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               )
               .toList(),
-          onTap: (index) {
-            GlobalData.groupData.activeGroupIndex = index;
-          },
         ),
       );
     }
@@ -183,7 +194,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
     return TabBarView(
       controller: _tabController,
-      children: GlobalData.groupData.groups.map((group) => BookmarksView(group)).toList(),
+      children: GlobalData.groupData.groups
+          .map((group) => BookmarksView(group))
+          .toList(),
     );
   }
 
@@ -251,7 +264,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    GlobalData.updateNotifier.addListener(update);
+    GlobalData.updateNotifier.addListener(_update);
     super.initState();
   }
 
@@ -266,7 +279,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    GlobalData.updateNotifier.removeListener(update);
+    GlobalData.updateNotifier.removeListener(_update);
     super.dispose();
   }
 }

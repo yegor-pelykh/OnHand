@@ -10,12 +10,18 @@ function removeDuplicateWhitespaces(str) {
         .replace(/^\s+|\s+$/, '');
 };
 
-console.log('Harmonization:');
+function insertString(base, index, string) {
+    var ind = index < 0 ? base.length + index : index;
+    return base.substring(0, ind) + string + base.substring(ind);
+};
+
+console.info('Harmonization:');
 
 const buildDirectory = './build/web';
 
 if (!fs.existsSync(buildDirectory)) {
-    console.log(`Directory ${buildDirectory} not found.`);
+    console.error(`Error: Directory ${buildDirectory} not found.`);
+    console.error('Harmonization failed.');
     return;
 }
 
@@ -45,10 +51,33 @@ scriptNodes.forEach(scriptNode => {
 });
 inlineJsContents = pretty(inlineJsContents);
 
+// We are injecting code to switch the background color for different color modes
+// to reduce page flicker when the page is opened.
+const bgColorLight = '#FCFCFD';
+const bgColorDark = '#1F1B17';
+const entryPointCode = 'window.addEventListener(\'load\', function(ev) {';
+const entryPointCodeStartIndex = inlineJsContents.indexOf(entryPointCode);
+if (entryPointCodeStartIndex >= 0) {
+    const splashBgCodeStartIndex = entryPointCodeStartIndex + entryPointCode.length;
+    const splashBgCode = ` window.document.body.style.backgroundColor = window.matchMedia && window.matchMedia(\'(prefers-color-scheme: dark)\').matches ? \'${bgColorDark}\' : \'${bgColorLight}\';`
+    inlineJsContents = insertString(inlineJsContents, splashBgCodeStartIndex, splashBgCode);
+} else {
+    console.error('Error: Can\'t find entry point to inject code for switching splash background.');
+    console.error('Harmonization failed.');
+    return;
+}
+
 // We remove the part of the script responsible for using the Flutter ServiceWorker.
 // This will allow the extension to load faster.
-const unnecessaryCode = 'serviceWorker: { serviceWorkerVersion: serviceWorkerVersion, } ';
-inlineJsContents = inlineJsContents.replace(unnecessaryCode, '');
+const serviceWorkerCode = 'serviceWorker: { serviceWorkerVersion: serviceWorkerVersion, } ';
+const serviceWorkerCodeStartIndex = inlineJsContents.indexOf(serviceWorkerCode);
+if (serviceWorkerCodeStartIndex >= 0) {
+    inlineJsContents = inlineJsContents.replace(serviceWorkerCode, '');
+} else {
+    console.error('Error: Can\'t find ServiceWorker initialization code to remove it.');
+    console.error('Harmonization failed.');
+    return;
+}
 
 // Writing scripts into separate js file
 const jsFileName = 'index_scripts.js';
@@ -70,4 +99,4 @@ baseNode.href = '';
 const prettyString = pretty(indexDocument.serialize());
 fs.writeFileSync(indexFilePath, prettyString);
 
-console.log('Done.');
+console.info('Done.');
