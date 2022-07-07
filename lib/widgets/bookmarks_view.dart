@@ -4,9 +4,9 @@ import 'package:on_hand/data/bookmark_info.dart';
 import 'package:on_hand/data/dummy_data.dart';
 import 'package:on_hand/data/global_data.dart';
 import 'package:on_hand/data/group_info.dart';
+import 'package:on_hand/helpers/url_launcher.dart';
 import 'package:on_hand/widgets/bookmark_editor.dart';
 import 'package:reorderables/reorderables.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 enum _BookmarkMenuAction {
   edit,
@@ -23,6 +23,12 @@ class BookmarksView extends StatefulWidget {
 }
 
 class _BookmarksViewState extends State<BookmarksView> {
+  bool _isCtrlKeyPressed() {
+    final keys = RawKeyboard.instance.keysPressed;
+    return keys.contains(LogicalKeyboardKey.controlLeft) ||
+        keys.contains(LogicalKeyboardKey.controlRight);
+  }
+
   void _editBookmark(BookmarkInfo bookmark) {
     final groupTitle = bookmark.group.title;
     showDialog<BookmarkEditorResult?>(
@@ -110,89 +116,90 @@ class _BookmarksViewState extends State<BookmarksView> {
                 ),
                 color: Theme.of(context).colorScheme.tertiary,
               ),
-              child: InkWell(
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
-                  final isCtrlPressed =
-                      RawKeyboard.instance.keysPressed.contains(
-                    LogicalKeyboardKey.controlLeft,
-                  );
-                  final windowName = isCtrlPressed ? '_blank' : '_self';
-                  launchUrl(b.url, webOnlyWindowName: windowName);
+                  UrlLauncher.launch(b.url, _isCtrlKeyPressed());
                 },
-                child: SizedBox(
-                  width: 300,
-                  child: ListTile(
-                    dense: true,
-                    mouseCursor: SystemMouseCursors.click,
-                    leading: ClipRRect(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                      child: Container(
-                        width: 24,
-                        height: 24,
-                        color: Colors.white,
-                        child: Image.memory(
-                          b.icon ?? DummyData.dummyIcon,
+                onTertiaryTapUp: (details) {
+                  UrlLauncher.launch(b.url, true);
+                },
+                child: InkWell(
+                  child: SizedBox(
+                    width: 300,
+                    child: ListTile(
+                      dense: true,
+                      mouseCursor: SystemMouseCursors.click,
+                      leading: ClipRRect(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(12),
+                        ),
+                        child: Container(
                           width: 24,
                           height: 24,
-                          fit: BoxFit.cover,
-                          isAntiAlias: true,
-                          filterQuality: FilterQuality.medium,
+                          color: Colors.white,
+                          child: Image.memory(
+                            b.icon ?? DummyData.dummyIcon,
+                            width: 24,
+                            height: 24,
+                            fit: BoxFit.cover,
+                            isAntiAlias: true,
+                            filterQuality: FilterQuality.medium,
+                          ),
                         ),
                       ),
-                    ),
-                    minLeadingWidth: 28,
-                    title: Text(
-                      b.title,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    subtitle: Text(
-                      b.url.toString(),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    trailing: PopupMenuButton(
-                      tooltip: '',
-                      itemBuilder: (context) {
-                        return [
-                          PopupMenuItem(
-                            value: _BookmarkMenuAction.edit,
-                            child: Row(
-                              children: const <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(right: 8),
-                                  child: Icon(Icons.edit),
-                                ),
-                                Text('Edit'),
-                              ],
+                      minLeadingWidth: 28,
+                      title: Text(
+                        b.title,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      subtitle: Text(
+                        b.url.toString(),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      trailing: PopupMenuButton(
+                        tooltip: '',
+                        itemBuilder: (context) {
+                          return [
+                            PopupMenuItem(
+                              value: _BookmarkMenuAction.edit,
+                              child: Row(
+                                children: const <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 8),
+                                    child: Icon(Icons.edit),
+                                  ),
+                                  Text('Edit'),
+                                ],
+                              ),
                             ),
-                          ),
-                          PopupMenuItem(
-                            value: _BookmarkMenuAction.delete,
-                            child: Row(
-                              children: const <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(right: 8),
-                                  child: Icon(Icons.delete),
-                                ),
-                                Text('Delete'),
-                              ],
-                            ),
-                          )
-                        ];
-                      },
-                      onSelected: (_BookmarkMenuAction value) {
-                        switch (value) {
-                          case _BookmarkMenuAction.edit:
-                            _editBookmark(b);
-                            break;
-                          case _BookmarkMenuAction.delete:
-                            _deleteBookmark(b);
-                            break;
-                        }
-                      },
+                            PopupMenuItem(
+                              value: _BookmarkMenuAction.delete,
+                              child: Row(
+                                children: const <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 8),
+                                    child: Icon(Icons.delete),
+                                  ),
+                                  Text('Delete'),
+                                ],
+                              ),
+                            )
+                          ];
+                        },
+                        onSelected: (_BookmarkMenuAction value) {
+                          switch (value) {
+                            case _BookmarkMenuAction.edit:
+                              _editBookmark(b);
+                              break;
+                            case _BookmarkMenuAction.delete:
+                              _deleteBookmark(b);
+                              break;
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ),
