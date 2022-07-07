@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _tabController?.removeListener(_onTabIndexChange);
     _tabController = GlobalData.groupData.groups.isNotEmpty
         ? TabController(
+            animationDuration: Duration.zero,
             length: GlobalData.groupData.groups.length,
             vsync: this,
           )
