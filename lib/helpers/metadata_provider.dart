@@ -121,7 +121,7 @@ class MetadataProvider {
 
     // Look for icons in tags
     for (var rel in ['icon', 'shortcut icon']) {
-      for (var iconTag in document.querySelectorAll("link[rel='$rel']")) {
+      for (var iconTag in document.querySelectorAll('link[rel=\'$rel\']')) {
         if (iconTag.attributes['href'] != null) {
           var strUrl = iconTag.attributes['href']!.trim();
 

@@ -102,7 +102,7 @@ class _GroupsManagerState extends State<GroupsManager> {
 
   Widget _getInformationBadge() {
     return const Center(
-      child: Text("There are currently no groups."),
+      child: Text('There are currently no groups.'),
     );
   }
 
@@ -181,7 +181,7 @@ class _GroupsManagerState extends State<GroupsManager> {
         TextButton.icon(
           onPressed: () => _createGroup(),
           icon: const Icon(Icons.add_circle),
-          label: const Text("New group"),
+          label: const Text('New group'),
         ),
         SizedBox(
           width: 400,
