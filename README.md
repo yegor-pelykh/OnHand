@@ -70,6 +70,7 @@ I would like to give a short diagram of the existing branches and the direction 
 ## Build
 
 You can easily build the release version of this browser extension.
+1. Please make sure you have Flutter framework installed on your computer. If it is not installed yet, download it from the [Flutter official site](https://docs.flutter.dev/get-started/install), install and configure as directed in the manual.
 1. Please make sure you have Node.js installed on your computer. If it is not installed yet, download it from the [Node.js official site](https://nodejs.org) and install it.
 1. To build on **Windows**: just run the file `release_build.bat` at the root of the project.<br>
 Otherwise, to build on **any desktop platform**, use this list of commands:
