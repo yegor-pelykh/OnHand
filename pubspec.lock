@@ -127,6 +127,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0+2"
+  enough_convert:
+    dependency: "direct main"
+    description:
+      name: enough_convert
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.6.0"
   fake_async:
     dependency: transitive
     description:

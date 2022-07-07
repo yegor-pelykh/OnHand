@@ -17,6 +17,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   reorderables: ^0.5.0
   flutter_speed_dial: ^6.0.0
+  enough_convert: ^1.6.0
   file_saver: ^0.1.0
   flutter_dropzone: ^3.0.5
   dotted_border: ^2.0.0+2

@@ -3,10 +3,12 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart' as p_html;
 import 'package:image/image.dart' as p_image;
 import 'package:dio/dio.dart' as dio;
+import 'package:on_hand/helpers/charset_converter.dart';
 
 const signatureIco = [0, 0, 1, 0];
 const signaturePng = [137, 80, 78, 71, 13, 10, 26, 10];
 
+const charsetValueMark = 'charset=';
 const contentTypeIco = 'image/x-icon';
 const contentTypePng = 'image/png';
 const contentTypeSvg = 'image/svg+xml';
@@ -64,11 +66,42 @@ class MetadataProvider {
     return Metadata(title, icon: iconData);
   }
 
+  static String? _getCharsetFromResponseBody(dio.ResponseBody responseBody) {
+    final contentTypeValue = responseBody.headers['content-type']?.first;
+    if (contentTypeValue != null) {
+      final charsetMarkIndex = contentTypeValue.lastIndexOf(charsetValueMark);
+      if (charsetMarkIndex >= 0) {
+        final charsetStartIndex = charsetMarkIndex + charsetValueMark.length;
+        final charsetEndIndex =
+            contentTypeValue.indexOf(';', charsetStartIndex);
+        final charset = contentTypeValue.substring(
+          charsetStartIndex,
+          charsetEndIndex >= 0 ? charsetEndIndex : null,
+        );
+        return charset.toLowerCase();
+      }
+    }
+    return null;
+  }
+
+  static String _decodeHtmlBytes(
+    List<int> responseBytes,
+    dio.RequestOptions options,
+    dio.ResponseBody responseBody,
+  ) {
+    final charset = _getCharsetFromResponseBody(responseBody);
+    final codec = CharsetConverter.getCodecForCharset(charset);
+    return codec.decode(responseBytes);
+  }
+
   static Future<Document?> _getHtml(Uri uri) async {
     try {
       final response = await _dio.getUri(
         uri,
         cancelToken: _cancelToken,
+        options: dio.Options(
+          responseDecoder: _decodeHtmlBytes,
+        ),
       );
       return p_html.parse(response.data);
     } catch (ex) {
