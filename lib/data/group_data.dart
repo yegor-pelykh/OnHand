@@ -1,8 +1,7 @@
 import 'dart:convert';
-
 import 'package:on_hand/data/bookmark_info.dart';
 import 'package:on_hand/data/group_info.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:on_hand/helpers/local_storage_manager.dart';
 
 const prefKeyData = 'data';
 const keyGroups = 'g';
@@ -53,16 +52,14 @@ class GroupData {
     );
   }
 
-  Future<void> loadGroups() async {
-    final pref = await SharedPreferences.getInstance();
-    final jsonString = pref.getString(prefKeyData);
+  void loadGroups() {
+    final jsonString = LocalStorageManager.get(prefKeyData);
     setGroupsFromJsonString(jsonString);
   }
 
-  Future<void> saveGroups() async {
+  void saveGroups() {
     final jsonString = groupsToJsonString();
-    final pref = await SharedPreferences.getInstance();
-    await pref.setString(prefKeyData, jsonString);
+    LocalStorageManager.set(prefKeyData, jsonString);
   }
 
   List<GroupInfo> groupsFromJson(Map<String, dynamic> json) {
@@ -75,11 +72,10 @@ class GroupData {
     if (jsonString != null) {
       final json = jsonDecode(jsonString);
       groups = groupsFromJson(json);
-      activeGroupIndex = 0;
     } else {
       groups = [];
-      activeGroupIndex = -1;
     }
+    activeGroupIndex = -1;
   }
 
   Map<String, dynamic> groupsToJson(List<GroupInfo> groups) {

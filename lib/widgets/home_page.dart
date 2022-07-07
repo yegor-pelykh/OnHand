@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -23,10 +22,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   TabController? _tabController;
 
-  _HomePageState() {
-    GlobalData.groupData.loadGroups().then((_) => _update());
-  }
-
   void _onTabIndexChange() {
     if (_tabController != null) {
       GlobalData.groupData.activeGroupIndex = _tabController!.index;
@@ -34,21 +29,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _updateTabController() {
-    setState(() {
-      _tabController?.removeListener(_onTabIndexChange);
-      _tabController = GlobalData.groupData.groups.isNotEmpty
-          ? TabController(
-              length: GlobalData.groupData.groups.length,
-              vsync: this,
-            )
-          : null;
-      GlobalData.groupData.activeGroupIndex = _tabController != null ? 0 : -1;
-      _tabController?.addListener(_onTabIndexChange);
-    });
+    _tabController?.removeListener(_onTabIndexChange);
+    _tabController = GlobalData.groupData.groups.isNotEmpty
+        ? TabController(
+            length: GlobalData.groupData.groups.length,
+            vsync: this,
+          )
+        : null;
+    GlobalData.groupData.activeGroupIndex = _tabController != null ? 0 : -1;
+    _tabController?.addListener(_onTabIndexChange);
   }
 
   void _update() {
-    _updateTabController();
+    setState(() {
+      _updateTabController();
+    });
   }
 
   void _createBookmark(BuildContext context) async {
@@ -265,6 +260,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     GlobalData.updateNotifier.addListener(_update);
+    GlobalData.groupData.loadGroups();
+    _updateTabController();
     super.initState();
   }
 
