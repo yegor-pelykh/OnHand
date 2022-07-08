@@ -1,12 +1,13 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:on_hand/data/bookmark_info.dart';
 import 'package:on_hand/data/dummy_data.dart';
 import 'package:on_hand/data/global_data.dart';
 import 'package:on_hand/data/group_info.dart';
+import 'package:on_hand/helpers/url_launcher.dart';
 import 'package:on_hand/widgets/bookmark_editor.dart';
 import 'package:reorderables/reorderables.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 enum _BookmarkMenuAction {
   edit,
@@ -23,6 +24,12 @@ class BookmarksView extends StatefulWidget {
 }
 
 class _BookmarksViewState extends State<BookmarksView> {
+  bool _isCtrlKeyPressed() {
+    final keys = RawKeyboard.instance.keysPressed;
+    return keys.contains(LogicalKeyboardKey.controlLeft) ||
+        keys.contains(LogicalKeyboardKey.controlRight);
+  }
+
   void _editBookmark(BookmarkInfo bookmark) {
     final groupTitle = bookmark.group.title;
     showDialog<BookmarkEditorResult?>(
@@ -31,7 +38,7 @@ class _BookmarksViewState extends State<BookmarksView> {
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
-          title: const Text('Edit bookmark'),
+          title: Text(tr('bookmark_editing_dlg_title')),
           content: BookmarkEditor(
             BookmarkEditorMode.edit,
             initialAddress: bookmark.url.toString(),
@@ -62,17 +69,18 @@ class _BookmarksViewState extends State<BookmarksView> {
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
-          title: const Text('Delete bookmark'),
-          content: const Text('Are you sure you want to delete this bookmark?'),
+          title: Text(tr('bookmark_deleting_dlg_title')),
+          content: Text(tr('bookmark_deleting_dlg_content')),
+          actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
           actions: <Widget>[
-            ElevatedButton(
-              child: const Text('No'),
+            TextButton(
+              child: Text(tr('no')),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             ElevatedButton(
-              child: const Text('Yes'),
+              child: Text(tr('yes')),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -110,89 +118,90 @@ class _BookmarksViewState extends State<BookmarksView> {
                 ),
                 color: Theme.of(context).colorScheme.tertiary,
               ),
-              child: InkWell(
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
-                  final isCtrlPressed =
-                      RawKeyboard.instance.keysPressed.contains(
-                    LogicalKeyboardKey.controlLeft,
-                  );
-                  final windowName = isCtrlPressed ? '_blank' : '_self';
-                  launchUrl(b.url, webOnlyWindowName: windowName);
+                  UrlLauncher.launch(b.url, _isCtrlKeyPressed());
                 },
-                child: SizedBox(
-                  width: 300,
-                  child: ListTile(
-                    dense: true,
-                    mouseCursor: SystemMouseCursors.click,
-                    leading: ClipRRect(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                      child: Container(
-                        width: 24,
-                        height: 24,
-                        color: Colors.white,
-                        child: Image.memory(
-                          b.icon ?? DummyData.dummyIcon,
+                onTertiaryTapUp: (details) {
+                  UrlLauncher.launch(b.url, true);
+                },
+                child: InkWell(
+                  child: SizedBox(
+                    width: 300,
+                    child: ListTile(
+                      dense: true,
+                      mouseCursor: SystemMouseCursors.click,
+                      leading: ClipRRect(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(12),
+                        ),
+                        child: Container(
                           width: 24,
                           height: 24,
-                          fit: BoxFit.cover,
-                          isAntiAlias: true,
-                          filterQuality: FilterQuality.medium,
+                          color: Colors.white,
+                          child: Image.memory(
+                            b.icon ?? DummyData.dummyIcon,
+                            width: 24,
+                            height: 24,
+                            fit: BoxFit.cover,
+                            isAntiAlias: true,
+                            filterQuality: FilterQuality.medium,
+                          ),
                         ),
                       ),
-                    ),
-                    minLeadingWidth: 28,
-                    title: Text(
-                      b.title,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    subtitle: Text(
-                      b.url.toString(),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    trailing: PopupMenuButton(
-                      tooltip: '',
-                      itemBuilder: (context) {
-                        return [
-                          PopupMenuItem(
-                            value: _BookmarkMenuAction.edit,
-                            child: Row(
-                              children: const <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(right: 8),
-                                  child: Icon(Icons.edit),
-                                ),
-                                Text('Edit'),
-                              ],
+                      minLeadingWidth: 28,
+                      title: Text(
+                        b.title,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      subtitle: Text(
+                        b.url.toString(),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      trailing: PopupMenuButton(
+                        tooltip: '',
+                        itemBuilder: (context) {
+                          return [
+                            PopupMenuItem(
+                              value: _BookmarkMenuAction.edit,
+                              child: Row(
+                                children: <Widget>[
+                                  const Padding(
+                                    padding: EdgeInsets.only(right: 8),
+                                    child: Icon(Icons.edit),
+                                  ),
+                                  Text(tr('edit')),
+                                ],
+                              ),
                             ),
-                          ),
-                          PopupMenuItem(
-                            value: _BookmarkMenuAction.delete,
-                            child: Row(
-                              children: const <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(right: 8),
-                                  child: Icon(Icons.delete),
-                                ),
-                                Text('Delete'),
-                              ],
-                            ),
-                          )
-                        ];
-                      },
-                      onSelected: (_BookmarkMenuAction value) {
-                        switch (value) {
-                          case _BookmarkMenuAction.edit:
-                            _editBookmark(b);
-                            break;
-                          case _BookmarkMenuAction.delete:
-                            _deleteBookmark(b);
-                            break;
-                        }
-                      },
+                            PopupMenuItem(
+                              value: _BookmarkMenuAction.delete,
+                              child: Row(
+                                children: <Widget>[
+                                  const Padding(
+                                    padding: EdgeInsets.only(right: 8),
+                                    child: Icon(Icons.delete),
+                                  ),
+                                  Text(tr('delete')),
+                                ],
+                              ),
+                            )
+                          ];
+                        },
+                        onSelected: (_BookmarkMenuAction value) {
+                          switch (value) {
+                            case _BookmarkMenuAction.edit:
+                              _editBookmark(b);
+                              break;
+                            case _BookmarkMenuAction.delete:
+                              _deleteBookmark(b);
+                              break;
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -205,33 +214,45 @@ class _BookmarksViewState extends State<BookmarksView> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(80),
-        child: Center(
-          child: ReorderableWrap(
-            spacing: 16,
-            runSpacing: 16,
-            onReorder: (oldIndex, newIndex) {
-              widget.group.moveBookmark(oldIndex, newIndex);
-              GlobalData.groupData.saveGroups();
-              GlobalData.updateNotifier.notify();
-            },
-            children: _getBookmarks(),
+    if (widget.group.bookmarks.isNotEmpty) {
+      return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(80),
+          child: Center(
+            child: ReorderableWrap(
+              spacing: 16,
+              runSpacing: 16,
+              onReorder: (oldIndex, newIndex) {
+                widget.group.moveBookmark(oldIndex, newIndex);
+                GlobalData.groupData.saveGroups();
+                GlobalData.updateNotifier.notify();
+              },
+              children: _getBookmarks(),
+            ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              tr('group_no_bookmarks_hint'),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Opacity(
+              opacity: 0.5,
+              child: Text(
+                tr('group_no_bookmarks_hint_details'),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
