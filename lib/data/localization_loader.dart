@@ -5,8 +5,7 @@ import 'package:flutter/services.dart';
 
 class LocalizationLoader extends AssetLoader {
   String _getLocalePath(String basePath, Locale locale) {
-    final localeString = locale.toStringWithSeparator(separator: '_');
-    return '$basePath/$localeString.json';
+    return '$basePath/${locale.languageCode}.json';
   }
 
   @override
