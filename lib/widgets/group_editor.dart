@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 enum GroupEditorMode {
@@ -25,16 +26,27 @@ class _GroupEditorState extends State<GroupEditor> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleEditingController = TextEditingController();
 
-  @override
-  void initState() {
-    _titleEditingController.text = widget.initialTitle;
-    super.initState();
+  String? _validateTitle(String? title) {
+    if (title == null || title.isEmpty) {
+      return tr('group_title_empty_hint');
+    }
+    if (widget.forbiddenNames
+        .any((f) => f.toLowerCase() == title.toLowerCase())) {
+      return tr('group_title_already_used_hint');
+    }
+    return null;
   }
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
       Navigator.pop(context, _titleEditingController.text);
     }
+  }
+
+  @override
+  void initState() {
+    _titleEditingController.text = widget.initialTitle;
+    super.initState();
   }
 
   @override
@@ -46,19 +58,10 @@ class _GroupEditorState extends State<GroupEditor> {
           TextFormField(
             autofocus: true,
             controller: _titleEditingController,
-            decoration: const InputDecoration(
-              labelText: 'Title *',
+            decoration: InputDecoration(
+              labelText: tr('group_title_label'),
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter a group title.';
-              }
-              if (widget.forbiddenNames
-                  .any((f) => f.toLowerCase() == value.toLowerCase())) {
-                return 'This title is already used by another group.';
-              }
-              return null;
-            },
+            validator: (value) => _validateTitle(value),
             onFieldSubmitted: (value) => _submit(),
           ),
           Padding(
@@ -69,13 +72,15 @@ class _GroupEditorState extends State<GroupEditor> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                  child: Text(tr('cancel')),
                 ),
                 ElevatedButton(
                   onPressed: () => _submit(),
-                  child: Text(widget.mode == GroupEditorMode.create
-                      ? 'Create'
-                      : 'Apply'),
+                  child: Text(
+                    widget.mode == GroupEditorMode.create
+                        ? tr('create')
+                        : tr('apply'),
+                  ),
                 ),
               ],
             ),

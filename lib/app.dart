@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:on_hand/widgets/home_page.dart';
 import 'dart:html' as html;
@@ -19,6 +20,9 @@ class OnHandApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       title: 'OnHand',
       theme: lightTheme,
       darkTheme: darkTheme,

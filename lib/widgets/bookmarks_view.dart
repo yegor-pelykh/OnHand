@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:on_hand/data/bookmark_info.dart';
@@ -37,7 +38,7 @@ class _BookmarksViewState extends State<BookmarksView> {
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
-          title: const Text('Edit bookmark'),
+          title: Text(tr('bookmark_editing_dlg_title')),
           content: BookmarkEditor(
             BookmarkEditorMode.edit,
             initialAddress: bookmark.url.toString(),
@@ -68,17 +69,17 @@ class _BookmarksViewState extends State<BookmarksView> {
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
-          title: const Text('Delete bookmark'),
-          content: const Text('Are you sure you want to delete this bookmark?'),
+          title: Text(tr('bookmark_deleting_dlg_title')),
+          content: Text(tr('bookmark_deleting_dlg_content')),
           actions: <Widget>[
             ElevatedButton(
-              child: const Text('No'),
+              child: Text(tr('no')),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             ElevatedButton(
-              child: const Text('Yes'),
+              child: Text(tr('yes')),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -166,24 +167,24 @@ class _BookmarksViewState extends State<BookmarksView> {
                             PopupMenuItem(
                               value: _BookmarkMenuAction.edit,
                               child: Row(
-                                children: const <Widget>[
-                                  Padding(
+                                children: <Widget>[
+                                  const Padding(
                                     padding: EdgeInsets.only(right: 8),
                                     child: Icon(Icons.edit),
                                   ),
-                                  Text('Edit'),
+                                  Text(tr('edit')),
                                 ],
                               ),
                             ),
                             PopupMenuItem(
                               value: _BookmarkMenuAction.delete,
                               child: Row(
-                                children: const <Widget>[
-                                  Padding(
+                                children: <Widget>[
+                                  const Padding(
                                     padding: EdgeInsets.only(right: 8),
                                     child: Icon(Icons.delete),
                                   ),
-                                  Text('Delete'),
+                                  Text(tr('delete')),
                                 ],
                               ),
                             )

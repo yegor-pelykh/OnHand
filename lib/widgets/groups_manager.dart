@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:on_hand/data/global_data.dart';
 import 'package:on_hand/data/group_data.dart';
@@ -26,7 +27,7 @@ class _GroupsManagerState extends State<GroupsManager> {
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
-          title: const Text('New group'),
+          title: Text(tr('group_creating_dlg_title')),
           content: GroupEditor(GroupEditorMode.create),
         );
       },
@@ -46,7 +47,7 @@ class _GroupsManagerState extends State<GroupsManager> {
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
-          title: const Text('Edit group'),
+          title: Text(tr('group_editing_dlg_title')),
           content: GroupEditor(
             GroupEditorMode.edit,
             initialTitle: group.title,
@@ -73,17 +74,17 @@ class _GroupsManagerState extends State<GroupsManager> {
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
-          title: const Text('Delete group'),
-          content: const Text('Are you sure you want to delete this group?'),
+          title: Text(tr('group_deleting_dlg_title')),
+          content: Text(tr('group_deleting_dlg_content')),
           actions: <Widget>[
             ElevatedButton(
-              child: const Text('No'),
+              child: Text(tr('no')),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             ElevatedButton(
-              child: const Text('Yes'),
+              child: Text(tr('yes')),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -101,8 +102,8 @@ class _GroupsManagerState extends State<GroupsManager> {
   }
 
   Widget _getInformationBadge() {
-    return const Center(
-      child: Text('There are currently no groups.'),
+    return Center(
+      child: Text(tr('hint_no_groups')),
     );
   }
 
@@ -124,32 +125,32 @@ class _GroupsManagerState extends State<GroupsManager> {
           child: Card(
             child: ListTile(
               title: Text(groupData.groups[index].title),
-              subtitle: Text(
-                  'Bookmarks: ${groupData.groups[index].bookmarks.length}'),
+              subtitle: Text(plural('bookmarks_number',
+                  groupData.groups[index].bookmarks.length)),
               trailing: PopupMenuButton(
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem(
                       value: _GroupMenuAction.edit,
                       child: Row(
-                        children: const <Widget>[
-                          Padding(
+                        children: <Widget>[
+                          const Padding(
                             padding: EdgeInsets.only(right: 8),
                             child: Icon(Icons.edit),
                           ),
-                          Text('Edit'),
+                          Text(tr('edit')),
                         ],
                       ),
                     ),
                     PopupMenuItem(
                       value: _GroupMenuAction.delete,
                       child: Row(
-                        children: const <Widget>[
-                          Padding(
+                        children: <Widget>[
+                          const Padding(
                             padding: EdgeInsets.only(right: 8),
                             child: Icon(Icons.delete),
                           ),
-                          Text('Delete'),
+                          Text(tr('delete')),
                         ],
                       ),
                     )
@@ -181,7 +182,7 @@ class _GroupsManagerState extends State<GroupsManager> {
         TextButton.icon(
           onPressed: () => _createGroup(),
           icon: const Icon(Icons.add_circle),
-          label: const Text('New group'),
+          label: Text(tr('new_group_label')),
         ),
         SizedBox(
           width: 400,
@@ -198,11 +199,11 @@ class _GroupsManagerState extends State<GroupsManager> {
             children: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel changes'),
+                child: Text(tr('cancel_changes')),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context, groupData),
-                child: const Text('Save'),
+                child: Text(tr('save')),
               ),
             ],
           ),

@@ -1,5 +1,6 @@
 import 'dart:html';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:on_hand/data/global_data.dart';
@@ -37,10 +38,10 @@ class _FileUploaderState extends State<FileUploader> {
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Text('Drop the data file here'),
-                  SizedBox(height: 20),
-                  Icon(
+                children: [
+                  Text(tr('dropzone_welcome_message')),
+                  const SizedBox(height: 20),
+                  const Icon(
                     Icons.upload_file,
                     size: 72,
                   ),
@@ -62,7 +63,7 @@ class _FileUploaderState extends State<FileUploader> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Drop the data file here',
+                  tr('dropzone_welcome_message'),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -98,14 +99,14 @@ class _FileUploaderState extends State<FileUploader> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Do you want to apply the data?',
+                  tr('dropzone_data_apply_question'),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  child: const Text('Apply'),
+                  child: Text(tr('apply')),
                   onPressed: () {
                     if (file != null) {
                       FileReader reader = FileReader();

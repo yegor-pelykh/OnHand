@@ -9,8 +9,10 @@ class UrlLauncher {
     if (newTab) {
       a.target = '_blank';
       final browserName = await DeviceInfo.getBrowserName();
-      final evt =
-          MouseEvent('click', ctrlKey: browserName == BrowserName.firefox);
+      final evt = MouseEvent(
+        'click',
+        ctrlKey: browserName == BrowserName.firefox,
+      );
       a.dispatchEvent(evt);
     } else {
       a.target = '_self';

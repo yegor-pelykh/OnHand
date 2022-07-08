@@ -14,6 +14,7 @@ dependencies:
   image: ^3.2.0
   validators: ^3.0.0
   json_theme: ^4.0.0+5
+  easy_localization: ^3.0.1
   cupertino_icons: ^1.0.2
   reorderables: ^0.5.0
   flutter_speed_dial: ^6.0.0
@@ -33,3 +34,4 @@ flutter:
   assets:
     - assets/theme_light.json
     - assets/theme_dark.json
+    - assets/translations/

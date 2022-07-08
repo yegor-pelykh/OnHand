@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:on_hand/data/dummy_data.dart';
@@ -65,10 +66,17 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
 
   String? _validateAddress(String? address) {
     if (address == null || address.isEmpty) {
-      return 'Please enter a bookmark address.';
+      return tr('bookmark_address_empty_hint');
     }
     if (!isURL(address, requireTld: false)) {
-      return 'Please enter a valid URL.';
+      return tr('bookmark_address_invalid_hint');
+    }
+    return null;
+  }
+
+  String? _validateTitle(String? title) {
+    if (title == null || title.isEmpty) {
+      return tr('bookmark_title_empty_hint');
     }
     return null;
   }
@@ -227,8 +235,8 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
             TextFormField(
               autofocus: true,
               controller: _addressEditingController,
-              decoration: const InputDecoration(
-                labelText: 'Address *',
+              decoration: InputDecoration(
+                labelText: tr('bookmark_address_label'),
               ),
               validator: (value) => _validateAddress(value),
               onChanged: (address) => _updateMetadata(address),
@@ -243,15 +251,10 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
                     autofocus: true,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _titleEditingController,
-                    decoration: const InputDecoration(
-                      labelText: 'Title *',
+                    decoration: InputDecoration(
+                      labelText: tr('bookmark_title_label'),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a bookmark title.';
-                      }
-                      return null;
-                    },
+                    validator: (value) => _validateTitle(value),
                     onChanged: (address) => setState(() {}),
                     onFieldSubmitted: (value) => _submit(),
                   ),
@@ -261,8 +264,8 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField(
-              decoration: const InputDecoration(
-                labelText: 'Group',
+              decoration: InputDecoration(
+                labelText: tr('bookmark_group_label'),
               ),
               icon: const Icon(Icons.keyboard_arrow_down),
               value: _selectedGroup,
@@ -281,7 +284,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
             ),
             const SizedBox(height: 16),
             CheckboxListTile(
-              title: const Text('Allow unavailable addresses'),
+              title: Text(tr('bookmark_allow_unavailable')),
               value: _allowUnavailableAddresses,
               onChanged: (bool? value) {
                 if (value != null) {
@@ -299,13 +302,15 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel'),
+                    child: Text(tr('cancel')),
                   ),
                   ElevatedButton(
                     onPressed: _isFormValid() ? _submit : null,
-                    child: Text(widget.mode == BookmarkEditorMode.create
-                        ? 'Create'
-                        : 'Apply'),
+                    child: Text(
+                      widget.mode == BookmarkEditorMode.create
+                          ? tr('create')
+                          : tr('apply'),
+                    ),
                   ),
                 ],
               ),

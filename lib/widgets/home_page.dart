@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -58,7 +59,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
-          title: const Text('New bookmark'),
+          title: Text(tr('bookmark_creating_dlg_title')),
           content: BookmarkEditor(
             BookmarkEditorMode.create,
             groups: GlobalData.groupData.groups.map((g) => g.title).toList(),
@@ -82,15 +83,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  void _manageGroups() async {
+  void _openGroupManagement() async {
     showDialog<GroupData?>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return const AlertDialog(
+        return AlertDialog(
           scrollable: true,
-          title: Text('Manage groups'),
-          content: GroupsManager(),
+          title: Text(tr('group_management_dlg_title')),
+          content: const GroupsManager(),
         );
       },
     ).then((groupData) {
@@ -109,22 +110,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         .saveFile('data', bytes, 'json', mimeType: MimeType.JSON);
   }
 
-  void _saveToFile(BuildContext context) {
+  void _exportToFile(BuildContext context) {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
-          title: const Text('Save to file'),
-          content: const Text('Do you want to save all data to a file?'),
+          title: Text(tr('export_to_file_dlg_title')),
+          content: Text(tr('export_to_file_dlg_content')),
           actions: [
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(tr('cancel')),
               onPressed: () => Navigator.of(context).pop(),
             ),
             ElevatedButton(
-              child: const Text('Save'),
+              child: Text(tr('save')),
               onPressed: () {
                 _downloadData();
                 Navigator.of(context).pop();
@@ -136,18 +137,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  void _loadFromFile(BuildContext context) {
+  void _importFromFile(BuildContext context) {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
-          title: const Text('Load from file'),
+          title: Text(tr('import_from_file_dlg_title')),
           content: FileUploader(context),
           actions: [
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(tr('cancel')),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ],
@@ -208,7 +209,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       children.add(
         SpeedDialChild(
           child: const Icon(Icons.add),
-          label: 'New bookmark',
+          label: tr('create_bookmark'),
           backgroundColor: backgroundColor,
           labelBackgroundColor: labelBackgroundColor,
           foregroundColor: foregroundColor,
@@ -220,36 +221,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     children.add(
       SpeedDialChild(
         child: const Icon(Icons.apps),
-        label: 'Manage groups',
+        label: tr('group_management'),
         backgroundColor: backgroundColor,
         labelBackgroundColor: labelBackgroundColor,
         foregroundColor: foregroundColor,
         labelStyle: labelStyle,
-        onTap: () => _manageGroups(),
+        onTap: () => _openGroupManagement(),
       ),
     );
     if (GlobalData.groupData.groups.isNotEmpty) {
       children.add(
         SpeedDialChild(
           child: const Icon(Icons.download),
-          label: 'Save to file',
+          label: tr('export_to_file'),
           backgroundColor: backgroundColor,
           labelBackgroundColor: labelBackgroundColor,
           foregroundColor: foregroundColor,
           labelStyle: labelStyle,
-          onTap: () => _saveToFile(context),
+          onTap: () => _exportToFile(context),
         ),
       );
     }
     children.add(
       SpeedDialChild(
         child: const Icon(Icons.upload),
-        label: 'Load from file',
+        label: tr('import_from_file'),
         backgroundColor: backgroundColor,
         labelBackgroundColor: labelBackgroundColor,
         foregroundColor: foregroundColor,
         labelStyle: labelStyle,
-        onTap: () => _loadFromFile(context),
+        onTap: () => _importFromFile(context),
       ),
     );
     return SpeedDial(
