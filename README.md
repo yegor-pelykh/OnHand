@@ -22,24 +22,42 @@ Features:
   * Chromium
   * etc.
 
-Currently, there are such restrictions on the use of this add-on:
-- only English interface language is supported
-- this addon was made only for desktop browsers
+Currently, it is only supported on desktop browsers.
 
-## Publication in stores
+This extension is guaranteed to always be free and open source.
+
+## Localization and internationalization
+
+The extension is multilingual. At the moment, only three languages are implemented and supported: English, Russian and Ukrainian. Other languages can easily be added if you ask me to do so. I would be grateful for your cooperation.
+
+For now, there is no way to dynamically switch the language. The extension will automatically launch in the language of your browser. If the browser uses a language that is not currently supported, the extension will be in English.
+
+## Usage Notes
+
+### How to open bookmarks
+
+To open a bookmark in the **currently open tab**:
+* just click on bookmark
+
+To open a bookmark in a **new background tab**:
+* click on bookmark while holding down the Ctrl key
+* сlick on bookmark with the middle mouse button (wheel)
+
+### Moving bookmarks and groups
+
+It is possible to move bookmarks using only the mouse within the same group. To do this, simply hold down the left mouse button on the bookmark, and then drag the bookmark to the desired location inside the group.
+
+The same approach is used to move groups. To do this, you need to open the dialog box from the menu item "Group management", in which groups will be able to move in the same way.
+
+To move an existing bookmark to another group, enter the bookmark edit mode, select another group from the list of groups, and then apply the changes. The bookmark will be added to the end of the selected group.
+
+## Publication in web stores
 
 [Chrome Web Store](https://chrome.google.com/webstore/detail/onhand/ndghfaalceocliigojpcoohpaagomkcf)
 
 [Mozilla Add-ons](https://addons.mozilla.org/ru/firefox/addon/onhand)
 
 [Microsoft Edge Addons](https://microsoftedge.microsoft.com/addons/detail/onhand/kcicjmoijnmhooklndppjknpocdafoep)
-
-## Usage Notes
-
-> **How to open bookmarks**
-> 
-> By clicking on a bookmark, the website will be opened in the same tab by default.<br/>
-> But if you hold down the Ctrl key and then click on the bookmark, the browser will open the website in a new background tab.
 
 ## Screenshots
 
