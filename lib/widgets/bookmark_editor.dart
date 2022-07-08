@@ -55,31 +55,14 @@ class BookmarkEditor extends StatefulWidget {
 
 class _BookmarkEditorState extends State<BookmarkEditor> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _addressEditingController =
-      TextEditingController();
-  final TextEditingController _titleEditingController = TextEditingController();
+  late TextEditingController _addressEditingController;
+  late TextEditingController _titleEditingController;
   late String _selectedGroup;
+  bool _isAddressDirty = false;
+  bool _isTitleDirty = false;
   BookmarkEditorState _state = BookmarkEditorState.noMetadata;
   Metadata? _metadata;
   Timer? _debounce;
-  bool _allowUnavailableAddresses = false;
-
-  String? _validateAddress(String? address) {
-    if (address == null || address.isEmpty) {
-      return tr('bookmark_address_empty_hint');
-    }
-    if (!isURL(address, requireTld: false)) {
-      return tr('bookmark_address_invalid_hint');
-    }
-    return null;
-  }
-
-  String? _validateTitle(String? title) {
-    if (title == null || title.isEmpty) {
-      return tr('bookmark_title_empty_hint');
-    }
-    return null;
-  }
 
   void _replaceAddress(Uri uri) {
     setState(() {
@@ -97,9 +80,6 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
   }
 
   bool _isFormValid() {
-    if (_metadata == null && _allowUnavailableAddresses == false) {
-      return false;
-    }
     return _formKey.currentState != null && _formKey.currentState!.validate();
   }
 
@@ -113,7 +93,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
       setState(() {
         _metadata = metadata;
         _state = BookmarkEditorState.metadataReady;
-        if (_metadata != null && _metadata!.title != null) {
+        if (_metadata?.title != null) {
           _titleEditingController.text = _metadata!.title!;
         }
       });
@@ -136,7 +116,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
       if (_debounce != null && _debounce!.isActive) {
         _debounce!.cancel();
       }
-      _debounce = Timer(const Duration(milliseconds: 500), () async {
+      _debounce = Timer(const Duration(milliseconds: 100), () async {
         Uri uri = Uri.parse(address);
         if (uri.hasScheme) {
           await _requestMetadata(uri);
@@ -198,29 +178,111 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
     }
   }
 
-  void _submit() {
+  Future<bool?> _askForUsageWithoutMetadata(BuildContext context) async {
+    return await showDialog<bool?>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          title: Text(tr('bookmark_wo_metadata_dlg_title')),
+          content: Text(tr('bookmark_wo_metadata_dlg_content')),
+          actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+          actions: <Widget>[
+            TextButton(
+              child: Text(tr('cancel')),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            ElevatedButton(
+              child: Text(tr('yes')),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _applyAndClose(BuildContext context) {
+    Uri url = Uri.parse(_addressEditingController.text);
+    if (!url.hasScheme) {
+      url = Uri.parse('$protocolHttp://${_addressEditingController.text}');
+    }
+    final title = _titleEditingController.text;
+    final icon = _metadata?.icon?.bytes;
+    Navigator.pop(
+      context,
+      BookmarkEditorResult(_selectedGroup, url, title, icon),
+    );
+  }
+
+  void _submit(BuildContext context) {
     if (_isFormValid()) {
-      Uri url = Uri.parse(_addressEditingController.text);
-      if (!url.hasScheme) {
-        url = Uri.parse('$protocolHttp://${_addressEditingController.text}');
+      if (_metadata != null) {
+        _applyAndClose(context);
+      } else {
+        _askForUsageWithoutMetadata(context).then((accept) {
+          if (accept == true) {
+            _applyAndClose(context);
+          }
+        });
       }
-      final title = _titleEditingController.text;
-      final icon = _metadata?.icon?.bytes;
-      Navigator.pop(
-        context,
-        BookmarkEditorResult(_selectedGroup, url, title, icon),
-      );
+    }
+  }
+
+  String? _validateAddress(String? address) {
+    if (!_isAddressDirty) {
+      return null;
+    }
+    if (address == null || address.isEmpty) {
+      return tr('bookmark_address_empty_hint');
+    }
+    if (!isURL(address, requireTld: false)) {
+      return tr('bookmark_address_invalid_hint');
+    }
+    return null;
+  }
+
+  String? _validateTitle(String? title) {
+    if (!_isTitleDirty) {
+      return null;
+    }
+    if (title == null || title.isEmpty) {
+      return tr('bookmark_title_empty_hint');
+    }
+    return null;
+  }
+
+  void _onAddressChanged(String current) {
+    _isAddressDirty = true;
+    _updateMetadata(current);
+  }
+
+  void _onTitleChanged(String current) {
+    _isTitleDirty = true;
+    setState(() {});
+  }
+
+  void _onGroupChanged(String? current) {
+    if (current != null) {
+      _selectedGroup = current;
+      setState(() {});
     }
   }
 
   @override
   void initState() {
-    _addressEditingController.text = widget.initialAddress;
-    _titleEditingController.text = widget.initialTitle;
-    _selectedGroup = widget.selectedGroup;
+    _addressEditingController =
+        TextEditingController(text: widget.initialAddress);
     if (_addressEditingController.text.isNotEmpty) {
       _updateMetadata(_addressEditingController.text);
     }
+    _titleEditingController = TextEditingController(text: widget.initialTitle);
+    _selectedGroup = widget.selectedGroup;
     super.initState();
   }
 
@@ -238,9 +300,9 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
               decoration: InputDecoration(
                 labelText: tr('bookmark_address_label'),
               ),
+              onChanged: (value) => _onAddressChanged(value),
               validator: (value) => _validateAddress(value),
-              onChanged: (address) => _updateMetadata(address),
-              onFieldSubmitted: (value) => _submit(),
+              onFieldSubmitted: (value) => _submit(context),
             ),
             const SizedBox(height: 16),
             Row(
@@ -249,14 +311,13 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
                 Expanded(
                   child: TextFormField(
                     autofocus: true,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _titleEditingController,
                     decoration: InputDecoration(
                       labelText: tr('bookmark_title_label'),
                     ),
+                    onChanged: (value) => _onTitleChanged(value),
                     validator: (value) => _validateTitle(value),
-                    onChanged: (address) => setState(() {}),
-                    onFieldSubmitted: (value) => _submit(),
+                    onFieldSubmitted: (value) => _submit(context),
                   ),
                 ),
                 _getFavicon(),
@@ -275,25 +336,9 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
                   child: Text(groups),
                 );
               }).toList(),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  _selectedGroup = newValue;
-                  setState(() {});
-                }
-              },
+              onChanged: _onGroupChanged,
             ),
             const SizedBox(height: 16),
-            CheckboxListTile(
-              title: Text(tr('bookmark_allow_unavailable')),
-              value: _allowUnavailableAddresses,
-              onChanged: (bool? value) {
-                if (value != null) {
-                  setState(() {
-                    _allowUnavailableAddresses = value;
-                  });
-                }
-              },
-            ),
             Padding(
               padding: const EdgeInsets.only(top: 16),
               child: OverflowBar(
@@ -305,7 +350,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
                     child: Text(tr('cancel')),
                   ),
                   ElevatedButton(
-                    onPressed: _isFormValid() ? _submit : null,
+                    onPressed: _isFormValid() ? () => _submit(context) : null,
                     child: Text(
                       widget.mode == BookmarkEditorMode.create
                           ? tr('create')
