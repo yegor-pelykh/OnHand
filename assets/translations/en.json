@@ -29,7 +29,7 @@
     "group_editing_dlg_title": "Group editing",
     "group_deleting_dlg_title": "Deleting a group",
     "group_deleting_dlg_content": "Are you sure you want to delete this group?",
-    "hint_no_groups": "There are currently no groups",
+    "hint_no_groups": "There are currently no groups.",
     "new_group_label": "New group",
     "bookmarks_number": {
         "zero": "No bookmarks",
@@ -44,5 +44,9 @@
     "create_bookmark": "Create bookmark",
     "group_management": "Group management",
     "export_to_file": "Export to file",
-    "import_from_file": "Import from file"
+    "import_from_file": "Import from file",
+    "home_no_groups_hint": "You don't have any groups yet.",
+    "home_no_groups_hint_details": "You can create groups using the \"@:group_management\" menu item on the main menu.\nAfter creating a group, you can add bookmarks to it.",
+    "group_no_bookmarks_hint": "There are no bookmarks in this group yet.",
+    "group_no_bookmarks_hint_details": "You can add bookmarks using the \"@:create_bookmark\" menu item in the main menu."
 }

@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   AppBar _getAppBar() {
     List<Widget> appBarChildren = <Widget>[];
-    if (_tabController != null) {
+    if (_tabController != null && GlobalData.groupData.groups.isNotEmpty) {
       appBarChildren.add(
         TabBar(
           controller: _tabController,
@@ -188,15 +188,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _getBody() {
-    if (_tabController == null) {
-      return Container();
+    if (_tabController != null && GlobalData.groupData.groups.isNotEmpty) {
+      return TabBarView(
+        controller: _tabController,
+        children: GlobalData.groupData.groups
+            .map((group) => BookmarksView(group))
+            .toList(),
+      );
+    } else {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              tr('home_no_groups_hint'),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Opacity(
+              opacity: 0.5,
+              child: Text(
+                tr('home_no_groups_hint_details'),
+                textAlign: TextAlign.center,
+                style: const TextStyle(height: 1.5),
+              ),
+            ),
+          ],
+        ),
+      );
     }
-    return TabBarView(
-      controller: _tabController,
-      children: GlobalData.groupData.groups
-          .map((group) => BookmarksView(group))
-          .toList(),
-    );
   }
 
   SpeedDial _getSpeedDial(BuildContext context) {

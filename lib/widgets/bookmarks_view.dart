@@ -214,33 +214,45 @@ class _BookmarksViewState extends State<BookmarksView> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(80),
-        child: Center(
-          child: ReorderableWrap(
-            spacing: 16,
-            runSpacing: 16,
-            onReorder: (oldIndex, newIndex) {
-              widget.group.moveBookmark(oldIndex, newIndex);
-              GlobalData.groupData.saveGroups();
-              GlobalData.updateNotifier.notify();
-            },
-            children: _getBookmarks(),
+    if (widget.group.bookmarks.isNotEmpty) {
+      return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(80),
+          child: Center(
+            child: ReorderableWrap(
+              spacing: 16,
+              runSpacing: 16,
+              onReorder: (oldIndex, newIndex) {
+                widget.group.moveBookmark(oldIndex, newIndex);
+                GlobalData.groupData.saveGroups();
+                GlobalData.updateNotifier.notify();
+              },
+              children: _getBookmarks(),
+            ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              tr('group_no_bookmarks_hint'),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Opacity(
+              opacity: 0.5,
+              child: Text(
+                tr('group_no_bookmarks_hint_details'),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

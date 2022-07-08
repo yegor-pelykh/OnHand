@@ -29,7 +29,7 @@
     "group_editing_dlg_title": "Редактирование группы",
     "group_deleting_dlg_title": "Удаление группы",
     "group_deleting_dlg_content": "Вы действительно хотите удалить эту группу?",
-    "hint_no_groups": "Сейчас нет ни одной группы",
+    "hint_no_groups": "Сейчас нет ни одной группы.",
     "new_group_label": "Новая группа",
     "bookmarks_number": {
         "zero": "Нет закладок",
@@ -47,5 +47,9 @@
     "create_bookmark": "Создать закладку",
     "group_management": "Управление группами",
     "export_to_file": "Экспорт в файл",
-    "import_from_file": "Импорт из файла"
+    "import_from_file": "Импорт из файла",
+    "home_no_groups_hint": "У вас ещё нет групп.",
+    "home_no_groups_hint_details": "Вы можете создать группы, используя пункт меню \"@:group_management\" в главном меню.\nПосле создания группы вы сможете добавить в неё закладки.",
+    "group_no_bookmarks_hint": "В этой группе ещё нет закладок.",
+    "group_no_bookmarks_hint_details": "Вы можете добавить закладки с помощью пункта меню \"@:create_bookmark\" в главном меню."
 }
