@@ -1,7 +1,7 @@
 name: on_hand
 description: An open source browser extension to save your favorite bookmarks on a "new tab" page.
 publish_to: 'none'
-version: 1.0.3
+version: 1.1.0
 
 environment:
   sdk: '>=2.18.0-170.0.dev <3.0.0'
