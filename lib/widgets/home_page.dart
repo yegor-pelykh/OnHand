@@ -119,6 +119,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           scrollable: true,
           title: Text(tr('export_to_file_dlg_title')),
           content: Text(tr('export_to_file_dlg_content')),
+          actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
           actions: [
             TextButton(
               child: Text(tr('cancel')),
@@ -146,6 +147,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           scrollable: true,
           title: Text(tr('import_from_file_dlg_title')),
           content: FileUploader(context),
+          actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
           actions: [
             TextButton(
               child: Text(tr('cancel')),

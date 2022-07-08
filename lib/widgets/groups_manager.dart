@@ -76,8 +76,9 @@ class _GroupsManagerState extends State<GroupsManager> {
           scrollable: true,
           title: Text(tr('group_deleting_dlg_title')),
           content: Text(tr('group_deleting_dlg_content')),
+          actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
           actions: <Widget>[
-            ElevatedButton(
+            TextButton(
               child: Text(tr('no')),
               onPressed: () {
                 Navigator.of(context).pop(false);

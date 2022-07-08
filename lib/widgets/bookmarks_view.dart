@@ -71,8 +71,9 @@ class _BookmarksViewState extends State<BookmarksView> {
           scrollable: true,
           title: Text(tr('bookmark_deleting_dlg_title')),
           content: Text(tr('bookmark_deleting_dlg_content')),
+          actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
           actions: <Widget>[
-            ElevatedButton(
+            TextButton(
               child: Text(tr('no')),
               onPressed: () {
                 Navigator.of(context).pop(false);
