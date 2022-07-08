@@ -20,6 +20,7 @@
     "bookmark_wo_metadata_dlg_title": "Закладка без метаданих",
     "bookmark_wo_metadata_dlg_content": "Неможливо отримати метадані веб-сторінки (такі як іконка та назва сайту) за вказаною адресою.\nМожливо, це неробоча адреса або ж вона тимчасово недоступна.\nПродовжити без метаданих?",
     "dropzone_welcome_message": "Перетягніть сюди файл із даними",
+    "dropzone_welcome_message_alt": "або натисніть сюди, щоб вибрати файл",
     "dropzone_data_apply_question": "Ви хочете застосувати ці дані?",
     "group_title_label": "Назва *",
     "group_title_empty_hint": "Будь ласка, введіть назву групи.",

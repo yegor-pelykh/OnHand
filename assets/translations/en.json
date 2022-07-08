@@ -20,6 +20,7 @@
     "bookmark_wo_metadata_dlg_title": "Bookmark without metadata",
     "bookmark_wo_metadata_dlg_content": "Unable to get web page metadata (such as site icon and title) at the specified address.\nThis may not be a working address, or it may be temporarily unavailable.\nDo you want to continue without metadata?",
     "dropzone_welcome_message": "Drop the data file here",
+    "dropzone_welcome_message_alt": "or click here to pick a file",
     "dropzone_data_apply_question": "Do you want to apply this data?",
     "group_title_label": "Title *",
     "group_title_empty_hint": "Please enter a group title.",

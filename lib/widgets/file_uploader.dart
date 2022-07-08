@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:html';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:on_hand/data/global_data.dart';
@@ -21,31 +23,87 @@ class FileUploader extends StatefulWidget {
 }
 
 class _FileUploaderState extends State<FileUploader> {
-  DropzoneState state = DropzoneState.waiting;
-  File? file;
+  DropzoneState _state = DropzoneState.waiting;
+  File? _droppedFile;
+  PlatformFile? _pickedFile;
+
+  String _getFileName() {
+    return _droppedFile?.name ?? _pickedFile?.name ?? '';
+  }
+
+  void _applyDataFromFile() {
+    if (_droppedFile != null) {
+      FileReader reader = FileReader();
+      reader.onLoad.listen((event) {
+        final contents = reader.result as String?;
+        if (contents != null) {
+          GlobalData.groupData.setGroupsFromJsonString(contents);
+          GlobalData.groupData.saveGroups();
+          GlobalData.updateNotifier.notify();
+          Navigator.of(context).pop();
+        }
+      });
+      reader.readAsText(_droppedFile!);
+    } else if (_pickedFile?.bytes != null) {
+      final contents = const Utf8Decoder().convert(_pickedFile!.bytes!);
+      GlobalData.groupData.setGroupsFromJsonString(contents);
+      GlobalData.groupData.saveGroups();
+      GlobalData.updateNotifier.notify();
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: [GlobalData.dataFileExtension],
+      allowMultiple: false,
+      lockParentWindow: true,
+    );
+    if (result != null &&
+        result.files.isNotEmpty &&
+        result.files.first.bytes != null) {
+      setState(() {
+        _pickedFile = result.files.first;
+        _state = DropzoneState.dropped;
+      });
+    }
+  }
 
   Widget _getDropzoneDecoration() {
-    switch (state) {
+    switch (_state) {
       case DropzoneState.waiting:
-        return Opacity(
-          opacity: 0.5,
-          child: DottedBorder(
-            borderType: BorderType.RRect,
-            radius: const Radius.circular(4),
-            strokeWidth: 1,
-            strokeCap: StrokeCap.round,
-            dashPattern: const [4, 4],
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(tr('dropzone_welcome_message')),
-                  const SizedBox(height: 20),
-                  const Icon(
-                    Icons.upload_file,
-                    size: 72,
-                  ),
-                ],
+        return InkWell(
+          onTap: _pickFile,
+          child: Opacity(
+            opacity: 0.5,
+            child: DottedBorder(
+              color: Theme.of(context).colorScheme.primary,
+              borderType: BorderType.RRect,
+              radius: const Radius.circular(4),
+              strokeWidth: 1,
+              strokeCap: StrokeCap.round,
+              dashPattern: const [4, 4],
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      tr('dropzone_welcome_message'),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    const Icon(
+                      Icons.upload_file,
+                      size: 72,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      tr('dropzone_welcome_message_alt'),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -64,15 +122,23 @@ class _FileUploaderState extends State<FileUploader> {
               children: [
                 Text(
                   tr('dropzone_welcome_message'),
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 const SizedBox(height: 20),
-                Icon(
-                  color: Theme.of(context).colorScheme.primary,
+                const Icon(
                   Icons.upload_file,
                   size: 72,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  tr('dropzone_welcome_message_alt'),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ],
             ),
@@ -91,7 +157,7 @@ class _FileUploaderState extends State<FileUploader> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  file!.name,
+                  _getFileName(),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold,
@@ -106,23 +172,8 @@ class _FileUploaderState extends State<FileUploader> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
+                  onPressed: _applyDataFromFile,
                   child: Text(tr('apply')),
-                  onPressed: () {
-                    if (file != null) {
-                      FileReader reader = FileReader();
-                      reader.onLoad.listen((event) {
-                        final contents = reader.result as String?;
-                        if (contents != null) {
-                          GlobalData.groupData
-                              .setGroupsFromJsonString(contents);
-                          GlobalData.groupData.saveGroups();
-                          GlobalData.updateNotifier.notify();
-                          Navigator.of(context).pop();
-                        }
-                      });
-                      reader.readAsText(file!);
-                    }
-                  },
                 )
               ],
             ),
@@ -145,41 +196,50 @@ class _FileUploaderState extends State<FileUploader> {
         children: [
           DropzoneView(
             operation: DragOperation.copy,
-            cursor: CursorType.grab,
             onCreated: (DropzoneViewController ctrl) {},
             onLoaded: () => setState(() {
-              file = null;
-              state = DropzoneState.waiting;
+              _droppedFile = null;
+              _pickedFile = null;
+              _state = DropzoneState.waiting;
             }),
             onError: (String? ev) => setState(() {
-              file = null;
-              state = DropzoneState.waiting;
+              _droppedFile = null;
+              _pickedFile = null;
+              _state = DropzoneState.waiting;
             }),
             onHover: () => setState(() {
-              file = null;
-              state = DropzoneState.hovering;
+              _droppedFile = null;
+              _pickedFile = null;
+              _state = DropzoneState.hovering;
             }),
-            onDrop: (dynamic data) => setState(() {
-              file = data is File ? data : null;
-              state = DropzoneState.dropped;
-            }),
+            onDrop: (dynamic data) {},
             onDropMultiple: (List<dynamic>? ev) => setState(() {
-              // file = null;
-              // state = DropzoneState.waiting;
+              _droppedFile = null;
+              _pickedFile = null;
+              if (ev != null) {
+                for (final element in ev) {
+                  _droppedFile = element is File &&
+                          element.name.toLowerCase().endsWith(
+                              '.${GlobalData.dataFileExtension.toLowerCase()}')
+                      ? element
+                      : null;
+                  if (_droppedFile != null) {
+                    _state = DropzoneState.dropped;
+                    return;
+                  }
+                }
+              }
+              _state = DropzoneState.waiting;
             }),
             onLeave: () => setState(() {
-              file = null;
-              state = DropzoneState.waiting;
+              _droppedFile = null;
+              _pickedFile = null;
+              _state = DropzoneState.waiting;
             }),
           ),
           _getDropzoneDecoration(),
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

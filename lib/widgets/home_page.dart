@@ -105,9 +105,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Future<void> _downloadData() async {
     final jsonString = GlobalData.groupData.groupsToJsonString();
-    Uint8List bytes = Uint8List.fromList(utf8.encode(jsonString));
-    await FileSaver.instance
-        .saveFile('data', bytes, 'json', mimeType: MimeType.JSON);
+    final bytes = Uint8List.fromList(utf8.encode(jsonString));
+    final ext = GlobalData.dataFileExtension.toLowerCase();
+    await FileSaver.instance.saveFile('bookmarks.$ext', bytes, ext);
   }
 
   void _exportToFile(BuildContext context) {
