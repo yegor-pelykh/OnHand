@@ -14,15 +14,8 @@ Features:
 - grouping bookmarks using tabs
 - easy data management, loading and saving to a file, without clouds and accounts
 - supports switching between light and dark theme (it depends on the theme color of the operating system)
-- can be run in any browser that supports WebExtension API, such as:
-  * Google Chrome
-  * Opera
-  * Firefox
-  * Edge
-  * Chromium
-  * etc.
 
-Currently, it is only supported on desktop browsers.
+Supported by almost all popular desktop browsers in the world (except Opera): Google Chrome, Firefox, Edge, Chromium etc.
 
 This extension is guaranteed to always be free and open source.
 
