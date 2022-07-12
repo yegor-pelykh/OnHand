@@ -91,6 +91,7 @@ Otherwise, to build on **any desktop platform**, use this list of commands:
     flutter build web --web-renderer html --csp
     npm install
     node post-harmonization.js
+    node post-i18n.js
     node post-packaging.js
     ```
 1. The package with the necessary files should be on the `/build/package` folder.
