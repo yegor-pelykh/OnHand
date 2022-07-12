@@ -33,6 +33,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/theme_light.json
-    - assets/theme_dark.json
-    - assets/translations/
+    - themes/
+    - translations/

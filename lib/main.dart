@@ -25,11 +25,11 @@ Future<void> main() async {
       ],
       fallbackLocale: const Locale('en'),
       startLocale: await DeviceInfo.getBrowserLocale(),
-      path: 'assets/translations',
+      path: 'translations',
       assetLoader: LocalizationLoader(),
       child: OnHandApp(
-        lightTheme: await _loadJsonTheme('assets/theme_light.json'),
-        darkTheme: await _loadJsonTheme('assets/theme_dark.json'),
+        lightTheme: await _loadJsonTheme('themes/theme_light.json'),
+        darkTheme: await _loadJsonTheme('themes/theme_dark.json'),
       ),
     ),
   );
