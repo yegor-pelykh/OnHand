@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:on_hand/data/global_data.dart';
+import 'package:on_hand/data/group_data.dart';
 
 enum DropzoneState {
   waiting,
@@ -37,8 +38,8 @@ class _FileUploaderState extends State<FileUploader> {
       reader.onLoad.listen((event) {
         final contents = reader.result as String?;
         if (contents != null) {
-          GlobalData.groupData.setGroupsFromJsonString(contents);
-          GlobalData.groupData.saveGroups();
+          GlobalData.groupData = GroupData.fromJsonString(contents);
+          GlobalData.groupData.saveToStorage();
           GlobalData.updateNotifier.notify();
           Navigator.of(context).pop();
         }
@@ -46,8 +47,8 @@ class _FileUploaderState extends State<FileUploader> {
       reader.readAsText(_droppedFile!);
     } else if (_pickedFile?.bytes != null) {
       final contents = const Utf8Decoder().convert(_pickedFile!.bytes!);
-      GlobalData.groupData.setGroupsFromJsonString(contents);
-      GlobalData.groupData.saveGroups();
+      GlobalData.groupData = GroupData.fromJsonString(contents);
+      GlobalData.groupData.saveToStorage();
       GlobalData.updateNotifier.notify();
       Navigator.of(context).pop();
     }

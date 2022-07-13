@@ -56,7 +56,7 @@ class _BookmarksViewState extends State<BookmarksView> {
         if (result.groupTitle != groupTitle) {
           GlobalData.groupData.moveBookmark(bookmark, result.groupTitle);
         }
-        GlobalData.groupData.saveGroups();
+        GlobalData.groupData.saveToStorage();
         GlobalData.updateNotifier.notify();
       }
     });
@@ -92,7 +92,7 @@ class _BookmarksViewState extends State<BookmarksView> {
       if (result == true) {
         final group = bookmark.group;
         group.removeBookmark(bookmark);
-        GlobalData.groupData.saveGroups();
+        GlobalData.groupData.saveToStorage();
         GlobalData.updateNotifier.notify();
       }
     });
@@ -225,7 +225,7 @@ class _BookmarksViewState extends State<BookmarksView> {
               runSpacing: 16,
               onReorder: (oldIndex, newIndex) {
                 widget.group.moveBookmark(oldIndex, newIndex);
-                GlobalData.groupData.saveGroups();
+                GlobalData.groupData.saveToStorage();
                 GlobalData.updateNotifier.notify();
               },
               children: _getBookmarks(),

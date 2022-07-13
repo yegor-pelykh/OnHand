@@ -18,7 +18,7 @@ class GroupsManager extends StatefulWidget {
 }
 
 class _GroupsManagerState extends State<GroupsManager> {
-  GroupData groupData = GlobalData.groupData.clone();
+  GroupData groupData = GroupData.clone(GlobalData.groupData);
 
   void _createGroup() {
     showDialog<String?>(

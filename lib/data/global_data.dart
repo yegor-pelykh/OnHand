@@ -2,8 +2,14 @@ import 'package:on_hand/data/group_data.dart';
 import 'package:on_hand/data/update_notifier.dart';
 
 class GlobalData {
-  static const String dataFileExtension = 'onhand';
-
-  static GroupData groupData = GroupData();
+  static GroupData _groupData = GroupData();
+  static GroupData get groupData => _groupData;
+  static set groupData(GroupData v) {
+    _groupData = v;
+    activeGroupIndex = _groupData.groups.isNotEmpty ? 0 : -1;
+  }
+  static int activeGroupIndex = -1;
   static UpdateNotifier updateNotifier = UpdateNotifier();
+
+  static const String dataFileExtension = 'onhand';
 }
