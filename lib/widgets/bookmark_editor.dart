@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:on_hand/data/dummy_data.dart';
 import 'package:on_hand/helpers/metadata_provider.dart';
