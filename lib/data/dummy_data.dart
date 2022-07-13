@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'dart:typed_data';
 
 class DummyData {
   static final Uint8List _dummyIcon = Uint8List.fromList([

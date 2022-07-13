@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'dart:typed_data';
 import 'package:on_hand/data/bookmark_info.dart';
 import 'package:on_hand/data/group_data.dart';
 
