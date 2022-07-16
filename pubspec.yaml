@@ -24,6 +24,7 @@ dependencies:
   dotted_border: ^2.0.0+2
   device_info_plus: ^4.0.0
   file_picker: ^4.6.1
+  jovial_svg: ^1.1.5
 
 dev_dependencies:
   flutter_test:

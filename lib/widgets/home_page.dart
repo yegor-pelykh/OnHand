@@ -191,7 +191,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (_tabController != null && GlobalData.groupData.groups.isNotEmpty) {
       return TabBarView(
         controller: _tabController,
-        children: GlobalData.groupData.groups.map((group) => BookmarksView(group)).toList(),
+        children: GlobalData.groupData.groups
+            .map((group) => BookmarksView(group))
+            .toList(),
       );
     } else {
       return Center(
@@ -208,7 +210,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: Text(
                 tr('home_no_groups_hint_details'),
                 textAlign: TextAlign.center,
-                style: const TextStyle(height: 1.5),
               ),
             ),
           ],

@@ -11,18 +11,21 @@ class GroupData {
 
   GroupData({List<GroupInfo>? groups}) : groups = groups ?? [];
 
-  GroupData.clone(GroupData other) : groups = other.groups.map((g) => g.clone()).toList();
+  GroupData.clone(GroupData other)
+      : groups = other.groups.map((g) => g.clone()).toList();
 
   GroupData.fromJsonString(String? jsonString) : groups = [] {
     if (jsonString != null) {
       final json = jsonDecode(jsonString);
-      groups = List<dynamic>.from(json[keyGroups]).map((j) => GroupInfo.fromJson(this, j)).toList();
+      groups = List<dynamic>.from(json[keyGroups])
+          .map((j) => GroupInfo.fromJson(this, j))
+          .toList();
     }
   }
 
-  GroupData.fromStorage() : groups = [] {
+  factory GroupData.fromStorage() {
     final jsonString = LocalStorageManager.getString(prefKeyData);
-    GroupData.fromJsonString(jsonString);
+    return GroupData.fromJsonString(jsonString);
   }
 
   GroupInfo addGroup(
