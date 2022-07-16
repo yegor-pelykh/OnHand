@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 import 'package:on_hand/data/bookmark_info.dart';
-import 'package:on_hand/data/group_data.dart';
+import 'package:on_hand/data/app_data.dart';
 
 const keyTitle = 't';
 const keyBookmarks = 'b';
 
 class GroupInfo {
-  GroupData data;
+  AppData data;
   String title;
   List<BookmarkInfo> bookmarks;
 

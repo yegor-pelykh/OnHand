@@ -46,7 +46,7 @@ class _BookmarkTileState extends State<BookmarkTile> {
             initialAddress: widget.bookmark.url.toString(),
             initialTitle: widget.bookmark.title,
             selectedGroup: groupTitle,
-            groups: GlobalData.groupData.groups.map((g) => g.title).toList(),
+            groups: GlobalData.appData.groups.map((g) => g.title).toList(),
           ),
         );
       },
@@ -56,10 +56,10 @@ class _BookmarkTileState extends State<BookmarkTile> {
         widget.bookmark.title = result.title;
         widget.bookmark.icon = result.icon;
         if (result.groupTitle != groupTitle) {
-          GlobalData.groupData.moveBookmark(widget.bookmark, result.groupTitle);
+          GlobalData.appData.moveBookmark(widget.bookmark, result.groupTitle);
         }
-        GlobalData.groupData.saveToStorage();
-        GlobalData.groupData.notifyChanged();
+        GlobalData.appData.saveToStorage();
+        GlobalData.appData.notifyChanged();
       }
     });
   }
@@ -94,8 +94,8 @@ class _BookmarkTileState extends State<BookmarkTile> {
       if (result == true) {
         final group = widget.bookmark.group;
         group.removeBookmark(widget.bookmark);
-        GlobalData.groupData.saveToStorage();
-        GlobalData.groupData.notifyChanged();
+        GlobalData.appData.saveToStorage();
+        GlobalData.appData.notifyChanged();
       }
     });
   }

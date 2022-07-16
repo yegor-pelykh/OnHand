@@ -6,7 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:on_hand/data/global_data.dart';
-import 'package:on_hand/data/group_data.dart';
+import 'package:on_hand/data/app_data.dart';
 
 enum DropzoneState {
   waiting,
@@ -32,24 +32,28 @@ class _FileUploaderState extends State<FileUploader> {
     return _droppedFile?.name ?? _pickedFile?.name ?? '';
   }
 
+  void _applyDataFromString(String jsonString) {
+    GlobalData.appData.groups =
+        AppData.groupsFromJsonString(jsonString, GlobalData.appData);
+    GlobalData.activeGroupIndex = GlobalData.appData.groups.isNotEmpty ? 0 : -1;
+    GlobalData.appData.saveToStorage();
+    GlobalData.appData.notifyChanged();
+  }
+
   void _applyDataFromFile() {
     if (_droppedFile != null) {
       FileReader reader = FileReader();
       reader.onLoad.listen((event) {
-        final contents = reader.result as String?;
-        if (contents != null) {
-          GlobalData.groupData = GroupData.fromJsonString(contents);
-          GlobalData.groupData.saveToStorage();
-          GlobalData.groupData.notifyChanged();
+        final jsonString = reader.result as String?;
+        if (jsonString != null) {
+          _applyDataFromString(jsonString);
           Navigator.of(context).pop();
         }
       });
       reader.readAsText(_droppedFile!);
     } else if (_pickedFile?.bytes != null) {
-      final contents = const Utf8Decoder().convert(_pickedFile!.bytes!);
-      GlobalData.groupData = GroupData.fromJsonString(contents);
-      GlobalData.groupData.saveToStorage();
-      GlobalData.groupData.notifyChanged();
+      final jsonString = const Utf8Decoder().convert(_pickedFile!.bytes!);
+      _applyDataFromString(jsonString);
       Navigator.of(context).pop();
     }
   }
