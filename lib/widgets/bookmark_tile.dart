@@ -9,12 +9,12 @@ import 'package:on_hand/helpers/image_helper.dart';
 import 'package:on_hand/helpers/url_launcher.dart';
 import 'package:on_hand/widgets/bookmark_editor.dart';
 
-enum _BookmarkMenuAction {
-  edit,
-  delete,
-}
-
 const double iconSize = 24;
+const textHeightBehavior = TextHeightBehavior(
+  applyHeightToFirstAscent: false,
+  applyHeightToLastDescent: false,
+  leadingDistribution: TextLeadingDistribution.even,
+);
 
 class BookmarkTile extends StatefulWidget {
   final BookmarkInfo bookmark;
@@ -59,7 +59,7 @@ class _BookmarkTileState extends State<BookmarkTile> {
           GlobalData.groupData.moveBookmark(widget.bookmark, result.groupTitle);
         }
         GlobalData.groupData.saveToStorage();
-        GlobalData.updateNotifier.notify();
+        GlobalData.groupData.notifyChanged();
       }
     });
   }
@@ -95,7 +95,7 @@ class _BookmarkTileState extends State<BookmarkTile> {
         final group = widget.bookmark.group;
         group.removeBookmark(widget.bookmark);
         GlobalData.groupData.saveToStorage();
-        GlobalData.updateNotifier.notify();
+        GlobalData.groupData.notifyChanged();
       }
     });
   }
@@ -133,15 +133,79 @@ class _BookmarkTileState extends State<BookmarkTile> {
     );
   }
 
+  void _showBookmarkMenu(
+    BuildContext context,
+    TextHeightBehavior textHeightBehavior,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      constraints: const BoxConstraints(
+        maxWidth: 500,
+      ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(4),
+          topRight: Radius.circular(4),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (context) {
+        final errorColor = Theme.of(context).colorScheme.error;
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              color: Theme.of(context).cardColor,
+              child: ListTile(
+                dense: true,
+                minLeadingWidth: iconSize,
+                leading: _getLeadingWidget(),
+                title: Text(
+                  widget.bookmark.title,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  maxLines: 1,
+                  textHeightBehavior: textHeightBehavior,
+                ),
+                subtitle: Text(
+                  widget.bookmark.url.toString(),
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  maxLines: 1,
+                  textHeightBehavior: textHeightBehavior,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            ListTile(
+              leading: const Icon(Icons.edit),
+              title: Text(tr('edit')),
+              onTap: () {
+                Navigator.pop(context);
+                _editBookmark(context);
+              },
+            ),
+            ListTile(
+              iconColor: errorColor,
+              textColor: errorColor,
+              leading: const Icon(Icons.delete),
+              title: Text(tr('delete')),
+              onTap: () {
+                Navigator.pop(context);
+                _deleteBookmark(context);
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final url = widget.bookmark.url;
     final title = widget.bookmark.title;
-    const textHeightBehavior = TextHeightBehavior(
-      applyHeightToFirstAscent: false,
-      applyHeightToLastDescent: false,
-      leadingDistribution: TextLeadingDistribution.even,
-    );
     return SizedBox(
       width: 300,
       child: Card(
@@ -174,45 +238,10 @@ class _BookmarkTileState extends State<BookmarkTile> {
                 maxLines: 1,
                 textHeightBehavior: textHeightBehavior,
               ),
-              trailing: PopupMenuButton(
-                tooltip: '',
-                itemBuilder: (context) {
-                  return [
-                    PopupMenuItem(
-                      value: _BookmarkMenuAction.edit,
-                      child: Row(
-                        children: <Widget>[
-                          const Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Icon(Icons.edit),
-                          ),
-                          Text(tr('edit')),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: _BookmarkMenuAction.delete,
-                      child: Row(
-                        children: <Widget>[
-                          const Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Icon(Icons.delete),
-                          ),
-                          Text(tr('delete')),
-                        ],
-                      ),
-                    )
-                  ];
-                },
-                onSelected: (_BookmarkMenuAction value) {
-                  switch (value) {
-                    case _BookmarkMenuAction.edit:
-                      _editBookmark(context);
-                      break;
-                    case _BookmarkMenuAction.delete:
-                      _deleteBookmark(context);
-                      break;
-                  }
+              trailing: IconButton(
+                icon: const Icon(Icons.more_vert),
+                onPressed: () {
+                  _showBookmarkMenu(context, textHeightBehavior);
                 },
               ),
             ),

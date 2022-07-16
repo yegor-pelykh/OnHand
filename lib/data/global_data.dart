@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:on_hand/data/group_data.dart';
-import 'package:on_hand/data/update_notifier.dart';
 
 class GlobalData {
   static GroupData _groupData = GroupData();
@@ -11,7 +10,6 @@ class GlobalData {
   }
 
   static int activeGroupIndex = -1;
-  static UpdateNotifier updateNotifier = UpdateNotifier();
 
   static const String dataFileExtension = 'onhand';
   static const Color mainColor = Color.fromRGBO(255, 124, 0, 1);

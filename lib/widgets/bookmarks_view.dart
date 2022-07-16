@@ -32,7 +32,7 @@ class _BookmarksViewState extends State<BookmarksView> {
               onReorder: (oldIndex, newIndex) {
                 widget.group.moveBookmark(oldIndex, newIndex);
                 GlobalData.groupData.saveToStorage();
-                GlobalData.updateNotifier.notify();
+                GlobalData.groupData.notifyChanged();
               },
               children: _getBookmarks(),
             ),

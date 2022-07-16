@@ -282,8 +282,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    GlobalData.updateNotifier.addListener(_update);
     GlobalData.groupData = GroupData.fromStorage();
+    GlobalData.groupData.addListener(_update);
     _updateTabController();
     super.initState();
   }
@@ -299,7 +299,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    GlobalData.updateNotifier.removeListener(_update);
+    GlobalData.groupData.removeListener(_update);
     super.dispose();
   }
 }

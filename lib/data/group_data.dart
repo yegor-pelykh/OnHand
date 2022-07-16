@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:on_hand/data/bookmark_info.dart';
 import 'package:on_hand/data/group_info.dart';
 import 'package:on_hand/helpers/local_storage_manager.dart';
@@ -6,7 +7,7 @@ import 'package:on_hand/helpers/local_storage_manager.dart';
 const prefKeyData = 'data';
 const keyGroups = 'g';
 
-class GroupData {
+class GroupData extends ChangeNotifier {
   List<GroupInfo> groups;
 
   GroupData({List<GroupInfo>? groups}) : groups = groups ?? [];
@@ -67,6 +68,8 @@ class GroupData {
     final jsonString = toJsonString();
     LocalStorageManager.setString(prefKeyData, jsonString);
   }
+
+  void notifyChanged() => notifyListeners();
 
   static Map<String, dynamic> groupsToJson(List<GroupInfo> groups) {
     return {

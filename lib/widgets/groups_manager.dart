@@ -4,11 +4,7 @@ import 'package:on_hand/data/global_data.dart';
 import 'package:on_hand/data/group_data.dart';
 import 'package:on_hand/data/group_info.dart';
 import 'package:on_hand/widgets/group_editor.dart';
-
-enum _GroupMenuAction {
-  edit,
-  delete,
-}
+import 'package:on_hand/widgets/group_tile.dart';
 
 class GroupsManager extends StatefulWidget {
   const GroupsManager({super.key});
@@ -18,7 +14,17 @@ class GroupsManager extends StatefulWidget {
 }
 
 class _GroupsManagerState extends State<GroupsManager> {
-  GroupData groupData = GroupData.clone(GlobalData.groupData);
+  final GroupData groupData;
+
+  _GroupsManagerState() : groupData = GroupData.clone(GlobalData.groupData) {
+    for (final group in groupData.groups) {
+      group.data = groupData;
+    }
+  }
+
+  void _update() {
+    setState(() {});
+  }
 
   void _createGroup() {
     showDialog<String?>(
@@ -35,68 +41,6 @@ class _GroupsManagerState extends State<GroupsManager> {
       if (groupTitle != null && groupTitle.isNotEmpty) {
         setState(() {
           groupData.addGroup(groupTitle);
-        });
-      }
-    });
-  }
-
-  void _editGroup(GroupInfo group) {
-    showDialog<String?>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          scrollable: true,
-          title: Text(tr('group_editing_dlg_title')),
-          content: GroupEditor(
-            GroupEditorMode.edit,
-            initialTitle: group.title,
-            forbiddenNames: groupData.groups
-                .where((g) => g != group)
-                .map((g) => g.title)
-                .toList(),
-          ),
-        );
-      },
-    ).then((result) {
-      if (result != null && result.isNotEmpty) {
-        setState(() {
-          group.title = result;
-        });
-      }
-    });
-  }
-
-  void _deleteGroup(GroupInfo group) {
-    showDialog<bool?>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          scrollable: true,
-          title: Text(tr('group_deleting_dlg_title')),
-          content: Text(tr('group_deleting_dlg_content')),
-          actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-          actions: <Widget>[
-            TextButton(
-              child: Text(tr('no')),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-            ElevatedButton(
-              child: Text(tr('yes')),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
-      },
-    ).then((result) {
-      if (result == true) {
-        setState(() {
-          groupData.groups.remove(group);
         });
       }
     });
@@ -123,56 +67,16 @@ class _GroupsManagerState extends State<GroupsManager> {
         return ReorderableDragStartListener(
           key: ValueKey(index),
           index: index,
-          child: Card(
-            child: ListTile(
-              title: Text(groupData.groups[index].title),
-              subtitle: Text(plural('bookmarks_number',
-                  groupData.groups[index].bookmarks.length)),
-              trailing: PopupMenuButton(
-                itemBuilder: (context) {
-                  return [
-                    PopupMenuItem(
-                      value: _GroupMenuAction.edit,
-                      child: Row(
-                        children: <Widget>[
-                          const Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Icon(Icons.edit),
-                          ),
-                          Text(tr('edit')),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: _GroupMenuAction.delete,
-                      child: Row(
-                        children: <Widget>[
-                          const Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Icon(Icons.delete),
-                          ),
-                          Text(tr('delete')),
-                        ],
-                      ),
-                    )
-                  ];
-                },
-                onSelected: (_GroupMenuAction value) {
-                  switch (value) {
-                    case _GroupMenuAction.edit:
-                      _editGroup(groupData.groups[index]);
-                      break;
-                    case _GroupMenuAction.delete:
-                      _deleteGroup(groupData.groups[index]);
-                      break;
-                  }
-                },
-              ),
-            ),
-          ),
+          child: GroupTile(groupData.groups[index]),
         );
       }),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    groupData.addListener(_update);
   }
 
   @override
@@ -185,6 +89,7 @@ class _GroupsManagerState extends State<GroupsManager> {
           icon: const Icon(Icons.add_circle),
           label: Text(tr('new_group_label')),
         ),
+        const SizedBox(height: 8),
         SizedBox(
           width: 400,
           height: 365,
@@ -211,5 +116,11 @@ class _GroupsManagerState extends State<GroupsManager> {
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    groupData.removeListener(_update);
+    super.dispose();
   }
 }

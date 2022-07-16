@@ -40,7 +40,7 @@ class _FileUploaderState extends State<FileUploader> {
         if (contents != null) {
           GlobalData.groupData = GroupData.fromJsonString(contents);
           GlobalData.groupData.saveToStorage();
-          GlobalData.updateNotifier.notify();
+          GlobalData.groupData.notifyChanged();
           Navigator.of(context).pop();
         }
       });
@@ -49,7 +49,7 @@ class _FileUploaderState extends State<FileUploader> {
       final contents = const Utf8Decoder().convert(_pickedFile!.bytes!);
       GlobalData.groupData = GroupData.fromJsonString(contents);
       GlobalData.groupData.saveToStorage();
-      GlobalData.updateNotifier.notify();
+      GlobalData.groupData.notifyChanged();
       Navigator.of(context).pop();
     }
   }
