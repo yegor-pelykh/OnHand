@@ -7,27 +7,13 @@ import 'package:on_hand/helpers/local_storage_manager.dart';
 const prefKeyData = 'data';
 const keyGroups = 'g';
 
-class GroupData extends ChangeNotifier {
+class AppData extends ChangeNotifier {
   List<GroupInfo> groups;
 
-  GroupData({List<GroupInfo>? groups}) : groups = groups ?? [];
+  AppData({List<GroupInfo>? groups}) : groups = groups ?? [];
 
-  GroupData.clone(GroupData other)
+  AppData.clone(AppData other)
       : groups = other.groups.map((g) => g.clone()).toList();
-
-  GroupData.fromJsonString(String? jsonString) : groups = [] {
-    if (jsonString != null) {
-      final json = jsonDecode(jsonString);
-      groups = List<dynamic>.from(json[keyGroups])
-          .map((j) => GroupInfo.fromJson(this, j))
-          .toList();
-    }
-  }
-
-  factory GroupData.fromStorage() {
-    final jsonString = LocalStorageManager.getString(prefKeyData);
-    return GroupData.fromJsonString(jsonString);
-  }
 
   GroupInfo addGroup(
     String title, {
@@ -59,21 +45,34 @@ class GroupData extends ChangeNotifier {
     }
   }
 
-  String toJsonString() {
-    final json = groupsToJson(groups);
-    return jsonEncode(json);
+  void loadFromStorage() {
+    final jsonString = LocalStorageManager.getString(prefKeyData);
+    groups = groupsFromJsonString(jsonString, this);
   }
 
   void saveToStorage() {
-    final jsonString = toJsonString();
+    final jsonString = groupsToJsonString(groups);
     LocalStorageManager.setString(prefKeyData, jsonString);
   }
 
   void notifyChanged() => notifyListeners();
 
-  static Map<String, dynamic> groupsToJson(List<GroupInfo> groups) {
-    return {
+  static List<GroupInfo> groupsFromJsonString(
+      String? jsonString, AppData appData) {
+    if (jsonString != null) {
+      final json = jsonDecode(jsonString);
+      return List<dynamic>.from(json[keyGroups])
+          .map((j) => GroupInfo.fromJson(appData, j))
+          .toList();
+    } else {
+      return [];
+    }
+  }
+
+  static String groupsToJsonString(List<GroupInfo> groups) {
+    final json = {
       keyGroups: groups.map((b) => b.toJson()).toList(),
     };
+    return jsonEncode(json);
   }
 }
