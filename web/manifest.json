@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "OnHand",
     "short_name": "OnHand",
-    "version": "1.1.1.1",
+    "version": "1.2.0",
     "description": "__MSG_appDesc__",
     "author": "Yegor Pelykh",
     "developer": {
