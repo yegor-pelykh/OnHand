@@ -9,9 +9,8 @@ const signatureIco = [0, 0, 1, 0];
 const signaturePng = [137, 80, 78, 71, 13, 10, 26, 10];
 
 const charsetValueMark = 'charset=';
-const contentTypeIco = 'image/x-icon';
-const contentTypePng = 'image/png';
-const contentTypeSvg = 'image/svg+xml';
+const contentTypeFlagPng = 'png';
+const contentTypeFlagSvg = 'svg+xml';
 
 class Metadata {
   String? title;
@@ -39,8 +38,8 @@ class IconData implements Comparable<IconData> {
   @override
   int compareTo(IconData other) {
     // Sort vector graphics before bitmaps
-    if (contentType == contentTypeSvg) return -1;
-    if (other.contentType == contentTypeSvg) return 1;
+    if (contentType.contains(contentTypeFlagSvg)) return -1;
+    if (other.contentType.contains(contentTypeFlagSvg)) return 1;
 
     // Sort on bitmap size
     return (width * height > other.width * other.height) ? -1 : 1;
@@ -100,6 +99,7 @@ class MetadataProvider {
         uri,
         cancelToken: _cancelToken,
         options: dio.Options(
+          receiveDataWhenStatusError: true,
           responseDecoder: _decodeHtmlBytes,
         ),
       );
@@ -188,48 +188,24 @@ class MetadataProvider {
     if (contentType == null || !contentType.contains('image')) {
       return null;
     }
-    Uint8List responseBody = response.data as Uint8List;
-    Uint8List imageBytes;
-    if (contentType == contentTypeIco) {
-      if (responseBody.length < 4) {
-        return null;
-      }
-      // Check if ico file contains a valid image signature
-      if (!_verifySignature(responseBody, signatureIco) &&
-          !_verifySignature(responseBody, signaturePng)) {
-        return null;
-      }
-      final image = p_image.decodeIco(responseBody);
+    Uint8List imageBytes = response.data as Uint8List;
+    if (contentType.contains(contentTypeFlagSvg)) {
+      return IconData(contentType, imageBytes);
+    } else {
+      p_image.Image? image =
+          p_image.IcoDecoder().decodeImageLargest(imageBytes);
+      image ??= p_image.decodeImage(imageBytes);
       if (image == null) {
         return null;
       }
       imageBytes = Uint8List.fromList(p_image.encodePng(image));
-      contentType = contentTypePng;
-    } else {
-      imageBytes = responseBody;
+      contentType = 'image/$contentTypeFlagPng';
+      return IconData(
+        contentType,
+        imageBytes,
+        width: image.width,
+        height: image.height,
+      );
     }
-    if (contentType == contentTypeSvg) {
-      return IconData(contentTypeSvg, imageBytes);
-    } else {
-      final image = p_image.decodeImage(imageBytes);
-      if (image != null) {
-        return IconData(
-          contentType,
-          imageBytes,
-          width: image.width,
-          height: image.height,
-        );
-      } else {
-        return null;
-      }
-    }
-  }
-
-  static bool _verifySignature(Uint8List bodyBytes, List<int> signature) {
-    var fileSignature = bodyBytes.sublist(0, signature.length);
-    for (var i = 0; i < fileSignature.length; i++) {
-      if (fileSignature[i] != signature[i]) return false;
-    }
-    return true;
   }
 }

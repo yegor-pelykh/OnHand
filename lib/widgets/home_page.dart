@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void _onTabIndexChange() {
     if (_tabController != null) {
-      GlobalData.groupData.activeGroupIndex = _tabController!.index;
+      GlobalData.activeGroupIndex = _tabController!.index;
     }
   }
 
@@ -35,10 +35,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ? TabController(
             animationDuration: Duration.zero,
             length: GlobalData.groupData.groups.length,
+            initialIndex: GlobalData.activeGroupIndex,
             vsync: this,
           )
         : null;
-    GlobalData.groupData.activeGroupIndex = _tabController != null ? 0 : -1;
     _tabController?.addListener(_onTabIndexChange);
   }
 
@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _createBookmark(BuildContext context) async {
-    final groupIndex = GlobalData.groupData.activeGroupIndex;
+    final groupIndex = GlobalData.activeGroupIndex;
     if (groupIndex < 0) {
       return;
     }
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           final group = GlobalData.groupData.groups[groupIndex];
           setState(() {
             group.addBookmark(result.url, result.title, result.icon);
-            GlobalData.groupData.saveGroups();
+            GlobalData.groupData.saveToStorage();
           });
         }
       }
@@ -97,14 +97,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     ).then((groupData) {
       if (groupData != null) {
         GlobalData.groupData = groupData;
-        GlobalData.groupData.saveGroups();
+        GlobalData.groupData.saveToStorage();
         _update();
       }
     });
   }
 
   Future<void> _downloadData() async {
-    final jsonString = GlobalData.groupData.groupsToJsonString();
+    final jsonString = GlobalData.groupData.toJsonString();
     final bytes = Uint8List.fromList(utf8.encode(jsonString));
     final ext = GlobalData.dataFileExtension.toLowerCase();
     await FileSaver.instance.saveFile('bookmarks.$ext', bytes, ext);
@@ -210,7 +210,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: Text(
                 tr('home_no_groups_hint_details'),
                 textAlign: TextAlign.center,
-                style: const TextStyle(height: 1.5),
               ),
             ),
           ],
@@ -227,7 +226,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       color: Theme.of(context).colorScheme.onSecondary,
     );
     List<SpeedDialChild> children = [];
-    if (GlobalData.groupData.activeGroupIndex >= 0) {
+    if (GlobalData.activeGroupIndex >= 0) {
       children.add(
         SpeedDialChild(
           child: const Icon(Icons.add),
@@ -283,8 +282,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    GlobalData.updateNotifier.addListener(_update);
-    GlobalData.groupData.loadGroups();
+    GlobalData.groupData = GroupData.fromStorage();
+    GlobalData.groupData.addListener(_update);
     _updateTabController();
     super.initState();
   }
@@ -300,7 +299,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    GlobalData.updateNotifier.removeListener(_update);
+    GlobalData.groupData.removeListener(_update);
     super.dispose();
   }
 }

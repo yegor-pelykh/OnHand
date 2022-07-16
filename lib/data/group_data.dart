@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:on_hand/data/bookmark_info.dart';
 import 'package:on_hand/data/group_info.dart';
 import 'package:on_hand/helpers/local_storage_manager.dart';
@@ -6,14 +7,27 @@ import 'package:on_hand/helpers/local_storage_manager.dart';
 const prefKeyData = 'data';
 const keyGroups = 'g';
 
-class GroupData {
+class GroupData extends ChangeNotifier {
   List<GroupInfo> groups;
-  int activeGroupIndex;
 
-  GroupData({
-    List<GroupInfo>? groups,
-    this.activeGroupIndex = -1,
-  }) : groups = groups ?? [];
+  GroupData({List<GroupInfo>? groups}) : groups = groups ?? [];
+
+  GroupData.clone(GroupData other)
+      : groups = other.groups.map((g) => g.clone()).toList();
+
+  GroupData.fromJsonString(String? jsonString) : groups = [] {
+    if (jsonString != null) {
+      final json = jsonDecode(jsonString);
+      groups = List<dynamic>.from(json[keyGroups])
+          .map((j) => GroupInfo.fromJson(this, j))
+          .toList();
+    }
+  }
+
+  factory GroupData.fromStorage() {
+    final jsonString = LocalStorageManager.getString(prefKeyData);
+    return GroupData.fromJsonString(jsonString);
+  }
 
   GroupInfo addGroup(
     String title, {
@@ -45,47 +59,21 @@ class GroupData {
     }
   }
 
-  GroupData clone() {
-    return GroupData(
-      groups: groups.map((g) => g.clone()).toList(),
-      activeGroupIndex: activeGroupIndex,
-    );
+  String toJsonString() {
+    final json = groupsToJson(groups);
+    return jsonEncode(json);
   }
 
-  void loadGroups() {
-    final jsonString = LocalStorageManager.get(prefKeyData);
-    setGroupsFromJsonString(jsonString);
+  void saveToStorage() {
+    final jsonString = toJsonString();
+    LocalStorageManager.setString(prefKeyData, jsonString);
   }
 
-  void saveGroups() {
-    final jsonString = groupsToJsonString();
-    LocalStorageManager.set(prefKeyData, jsonString);
-  }
+  void notifyChanged() => notifyListeners();
 
-  List<GroupInfo> groupsFromJson(Map<String, dynamic> json) {
-    return List<dynamic>.from(json[keyGroups])
-        .map((j) => GroupInfo.fromJson(this, j))
-        .toList();
-  }
-
-  void setGroupsFromJsonString(String? jsonString) {
-    if (jsonString != null) {
-      final json = jsonDecode(jsonString);
-      groups = groupsFromJson(json);
-    } else {
-      groups = [];
-    }
-    activeGroupIndex = -1;
-  }
-
-  Map<String, dynamic> groupsToJson(List<GroupInfo> groups) {
+  static Map<String, dynamic> groupsToJson(List<GroupInfo> groups) {
     return {
       keyGroups: groups.map((b) => b.toJson()).toList(),
     };
-  }
-
-  String groupsToJsonString() {
-    final json = groupsToJson(groups);
-    return jsonEncode(json);
   }
 }

@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:on_hand/data/dummy_data.dart';
+import 'package:jovial_svg/jovial_svg.dart';
+import 'package:on_hand/data/global_data.dart';
+import 'package:on_hand/helpers/image_helper.dart';
 import 'package:on_hand/helpers/metadata_provider.dart';
 import 'package:validators/validators.dart';
 
@@ -12,6 +15,9 @@ const protocolsToTryIfNoScheme = [
   protocolHttps,
   protocolHttp,
 ];
+const titleFilterRegexString =
+    r'[^\p{Alpha}\p{M}\p{Nd}\p{P}\p{S}\p{Z}\p{Join_C}\s]+';
+const double iconSize = 24;
 
 enum BookmarkEditorMode {
   create,
@@ -83,6 +89,15 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
     return _formKey.currentState != null && _formKey.currentState!.validate();
   }
 
+  void _setTitle(String title) {
+    _titleEditingController.text = title
+        .replaceAll(
+          RegExp(titleFilterRegexString, unicode: true),
+          '',
+        )
+        .trim();
+  }
+
   Future<bool> _requestMetadata(Uri uri) async {
     setState(() {
       _metadata = null;
@@ -93,8 +108,8 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
       setState(() {
         _metadata = metadata;
         _state = BookmarkEditorState.metadataReady;
-        if (_metadata?.title != null) {
-          _titleEditingController.text = _metadata!.title!;
+        if (_metadata!.title != null) {
+          _setTitle(_metadata!.title!);
         }
       });
       return true;
@@ -133,6 +148,39 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
     }
   }
 
+  Widget _getIcon() {
+    final iconBytes = _metadata?.icon?.bytes;
+    final Widget imageWidget;
+    if (iconBytes != null) {
+      if (ImageHelper.isPng(iconBytes)) {
+        imageWidget = Image.memory(
+          iconBytes,
+          width: iconSize,
+          height: iconSize,
+          fit: BoxFit.cover,
+          isAntiAlias: true,
+          filterQuality: FilterQuality.medium,
+        );
+      } else {
+        final content = utf8.decode(iconBytes, allowMalformed: true);
+        imageWidget = ScalableImageWidget(
+          si: ScalableImage.fromSvgString(content),
+          fit: BoxFit.cover,
+        );
+      }
+    } else {
+      imageWidget = const Icon(
+        Icons.favorite,
+        color: GlobalData.mainColor,
+      );
+    }
+    return SizedBox(
+      width: iconSize,
+      height: iconSize,
+      child: imageWidget,
+    );
+  }
+
   Widget _getFavicon() {
     switch (_state) {
       case BookmarkEditorState.noMetadata:
@@ -151,29 +199,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
       case BookmarkEditorState.metadataReady:
         return Padding(
           padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
-          child: Container(
-            width: 24,
-            height: 24,
-            color: Colors.white,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(12),
-              ),
-              child: Container(
-                width: 24,
-                height: 24,
-                color: Colors.white,
-                child: Image.memory(
-                  _metadata?.icon?.bytes ?? DummyData.dummyIcon,
-                  width: 24,
-                  height: 24,
-                  fit: BoxFit.cover,
-                  isAntiAlias: true,
-                  filterQuality: FilterQuality.medium,
-                ),
-              ),
-            ),
-          ),
+          child: _getIcon(),
         );
     }
   }
