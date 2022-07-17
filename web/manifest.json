@@ -5,11 +5,11 @@
     "version": "1.2.1",
     "description": "__MSG_appDesc__",
     "author": "Yegor Pelykh",
+    "homepage_url": "https://github.com/yegor-pelykh/OnHand",
     "developer": {
         "name": "Yegor Pelykh",
-        "url": "https://github.com/yegor-pelykh"
+        "url": "https://github.com/yegor-pelykh/OnHand"
     },
-    "homepage_url": "https://github.com/yegor-pelykh/OnHand",
     "incognito": "spanning",
     "default_locale": "en",
     "icons": {
@@ -21,7 +21,7 @@
         "192": "icons/icon-192.png",
         "512": "icons/icon-512.png"
     },
-    "applications": {
+    "browser_specific_settings": {
         "gecko": {
             "id": "{1f4ee806-b18a-4c3d-824d-6a44d6911cee}"
         }
