@@ -31,14 +31,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void _updateTabController() {
     _tabController?.removeListener(_onTabIndexChange);
-    _tabController = GlobalData.appData.groups.isNotEmpty
-        ? TabController(
-            animationDuration: Duration.zero,
-            length: GlobalData.appData.groups.length,
-            initialIndex: GlobalData.activeGroupIndex,
-            vsync: this,
-          )
-        : null;
+    if (GlobalData.appData.groups.isNotEmpty) {
+      GlobalData.activeGroupIndex = 0;
+      _tabController = TabController(
+        animationDuration: Duration.zero,
+        length: GlobalData.appData.groups.length,
+        initialIndex: GlobalData.activeGroupIndex,
+        vsync: this,
+      );
+    } else {
+      GlobalData.activeGroupIndex = -1;
+      _tabController = null;
+    }
     _tabController?.addListener(_onTabIndexChange);
   }
 
@@ -283,7 +287,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     GlobalData.appData.loadFromStorage();
-    GlobalData.activeGroupIndex = GlobalData.appData.groups.isNotEmpty ? 0 : -1;
     GlobalData.appData.addListener(_update);
     _updateTabController();
     super.initState();
