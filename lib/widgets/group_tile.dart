@@ -57,7 +57,7 @@ class _GroupTileState extends State<GroupTile> {
           scrollable: true,
           title: Text(tr('group_deleting_dlg_title')),
           content: Text(tr('group_deleting_dlg_content')),
-          actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           actions: <Widget>[
             TextButton(
               child: Text(tr('no')),
@@ -91,7 +91,7 @@ class _GroupTileState extends State<GroupTile> {
     showModalBottomSheet(
       context: context,
       constraints: const BoxConstraints(
-        maxWidth: 500,
+        maxWidth: 400,
       ),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(

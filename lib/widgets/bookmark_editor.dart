@@ -208,7 +208,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
           scrollable: true,
           title: Text(tr('bookmark_wo_metadata_dlg_title')),
           content: Text(tr('bookmark_wo_metadata_dlg_content')),
-          actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           actions: <Widget>[
             TextButton(
               child: Text(tr('cancel')),
