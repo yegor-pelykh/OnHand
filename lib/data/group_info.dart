@@ -53,4 +53,19 @@ class GroupInfo {
         keyTitle: title,
         keyBookmarks: bookmarks.map((b) => b.toJson()).toList(),
       };
+
+  static bool equals(GroupInfo g1, GroupInfo g2) {
+    if (g1.title != g2.title) {
+      return false;
+    }
+    if (g1.bookmarks.length != g2.bookmarks.length) {
+      return false;
+    }
+    for (var i = 0; i < g1.bookmarks.length; i++) {
+      if (!BookmarkInfo.equals(g1.bookmarks[i], g2.bookmarks[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

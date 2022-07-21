@@ -28,26 +28,24 @@ class AppData extends ChangeNotifier {
     return groupInfo;
   }
 
-  void moveBookmark(BookmarkInfo bookmark, String groupTitle) {
-    final oldGroupIndex = groups.indexWhere(
-      (g) => g.title == bookmark.group.title,
-    );
-    if (oldGroupIndex >= 0) {
+  int? moveBookmark(BookmarkInfo bookmark, String groupTitle) {
+    final oldGroupIndex =
+        groups.indexWhere((g) => g.title == bookmark.group.title);
+    final newGroupIndex = groups.indexWhere((g) => g.title == groupTitle);
+    if (oldGroupIndex >= 0 && newGroupIndex >= 0) {
+      // remove from old group
       groups[oldGroupIndex].bookmarks.remove(bookmark);
-    }
-    final newGroupIndex = groups.indexWhere(
-      (g) => g.title == groupTitle,
-    );
-    if (newGroupIndex >= 0) {
+      // add to new group
       final newGroup = groups[newGroupIndex];
       bookmark.group = newGroup;
       newGroup.bookmarks.add(bookmark);
+      return newGroupIndex;
     }
+    return null;
   }
 
   void loadFromStorage() {
-    final jsonString = LocalStorageManager.getString(prefKeyData);
-    groups = groupsFromJsonString(jsonString, this);
+    groups = groupsFromStorage(this);
   }
 
   void saveToStorage() {
@@ -74,5 +72,22 @@ class AppData extends ChangeNotifier {
       keyGroups: groups.map((b) => b.toJson()).toList(),
     };
     return jsonEncode(json);
+  }
+
+  static List<GroupInfo> groupsFromStorage(AppData appData) {
+    final jsonString = LocalStorageManager.getString(prefKeyData);
+    return groupsFromJsonString(jsonString, appData);
+  }
+
+  static bool groupsEqual(List<GroupInfo> l1, List<GroupInfo> l2) {
+    if (l1.length != l2.length) {
+      return false;
+    }
+    for (var i = 0; i < l1.length; i++) {
+      if (!GroupInfo.equals(l1[i], l2[i])) {
+        return false;
+      }
+    }
+    return true;
   }
 }
