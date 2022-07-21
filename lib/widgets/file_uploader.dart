@@ -35,7 +35,6 @@ class _FileUploaderState extends State<FileUploader> {
   void _applyDataFromString(String jsonString) {
     GlobalData.appData.groups =
         AppData.groupsFromJsonString(jsonString, GlobalData.appData);
-    GlobalData.activeGroupIndex = GlobalData.appData.groups.isNotEmpty ? 0 : -1;
     GlobalData.appData.saveToStorage();
     GlobalData.appData.notifyChanged();
   }

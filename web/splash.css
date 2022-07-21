@@ -1,0 +1,46 @@
+html {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#oh-splash-container {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#oh-splash-shape {
+    flex: 0 0 auto;
+    filter: drop-shadow(2px 4px 4px rgb(0 0 0 / 0.75));
+    animation: 1.5s ease 0s infinite beat;
+}
+
+@keyframes beat {
+    0%,
+    50%,
+    100% {
+        transform: scale(1, 1);
+    }
+    30%,
+    80% {
+        transform: scale(0.90, 0.93);
+    }
+}

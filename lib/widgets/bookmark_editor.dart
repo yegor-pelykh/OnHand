@@ -64,8 +64,6 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
   late TextEditingController _addressEditingController;
   late TextEditingController _titleEditingController;
   late String _selectedGroup;
-  bool _isAddressDirty = false;
-  bool _isTitleDirty = false;
   BookmarkEditorState _state = BookmarkEditorState.noMetadata;
   Metadata? _metadata;
   Timer? _debounce;
@@ -91,10 +89,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
 
   void _setTitle(String title) {
     _titleEditingController.text = title
-        .replaceAll(
-          RegExp(titleFilterRegexString, unicode: true),
-          '',
-        )
+        .replaceAll(RegExp(titleFilterRegexString, unicode: true), '')
         .trim();
   }
 
@@ -213,7 +208,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
           scrollable: true,
           title: Text(tr('bookmark_wo_metadata_dlg_title')),
           content: Text(tr('bookmark_wo_metadata_dlg_content')),
-          actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           actions: <Widget>[
             TextButton(
               child: Text(tr('cancel')),
@@ -261,9 +256,6 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
   }
 
   String? _validateAddress(String? address) {
-    if (!_isAddressDirty) {
-      return null;
-    }
     if (address == null || address.isEmpty) {
       return tr('bookmark_address_empty_hint');
     }
@@ -274,9 +266,6 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
   }
 
   String? _validateTitle(String? title) {
-    if (!_isTitleDirty) {
-      return null;
-    }
     if (title == null || title.isEmpty) {
       return tr('bookmark_title_empty_hint');
     }
@@ -284,12 +273,10 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
   }
 
   void _onAddressChanged(String current) {
-    _isAddressDirty = true;
     _updateMetadata(current);
   }
 
   void _onTitleChanged(String current) {
-    _isTitleDirty = true;
     setState(() {});
   }
 
@@ -376,7 +363,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
                     child: Text(tr('cancel')),
                   ),
                   ElevatedButton(
-                    onPressed: _isFormValid() ? () => _submit(context) : null,
+                    onPressed: () => _submit(context),
                     child: Text(
                       widget.mode == BookmarkEditorMode.create
                           ? tr('create')

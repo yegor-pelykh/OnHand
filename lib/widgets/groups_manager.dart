@@ -27,6 +27,7 @@ class _GroupsManagerState extends State<GroupsManager> {
   }
 
   void _createGroup() {
+    final forbiddenNames = groupData.groups.map((g) => g.title).toList();
     showDialog<String?>(
       context: context,
       barrierDismissible: false,
@@ -34,7 +35,10 @@ class _GroupsManagerState extends State<GroupsManager> {
         return AlertDialog(
           scrollable: true,
           title: Text(tr('group_creating_dlg_title')),
-          content: GroupEditor(GroupEditorMode.create),
+          content: GroupEditor(
+            GroupEditorMode.create,
+            forbiddenNames: forbiddenNames,
+          ),
         );
       },
     ).then((groupTitle) {

@@ -51,22 +51,6 @@ scriptNodes.forEach(scriptNode => {
 });
 inlineJsContents = pretty(inlineJsContents);
 
-// We are injecting code to switch the background color for different color modes
-// to reduce page flicker when the page is opened.
-const bgColorLight = '#FCFCFD';
-const bgColorDark = '#1F1B17';
-const entryPointCode = 'window.addEventListener(\'load\', function(ev) {';
-const entryPointCodeStartIndex = inlineJsContents.indexOf(entryPointCode);
-if (entryPointCodeStartIndex >= 0) {
-    const splashBgCodeStartIndex = entryPointCodeStartIndex + entryPointCode.length;
-    const splashBgCode = ` window.document.body.style.backgroundColor = window.matchMedia && window.matchMedia(\'(prefers-color-scheme: dark)\').matches ? \'${bgColorDark}\' : \'${bgColorLight}\';`
-    inlineJsContents = insertString(inlineJsContents, splashBgCodeStartIndex, splashBgCode);
-} else {
-    console.error('Error: Can\'t find entry point to inject code for switching splash background.');
-    console.error('Harmonization failed.');
-    return;
-}
-
 // We remove the part of the script responsible for using the Flutter ServiceWorker.
 // This will allow the extension to load faster.
 const serviceWorkerCode = 'serviceWorker: { serviceWorkerVersion: serviceWorkerVersion, } ';

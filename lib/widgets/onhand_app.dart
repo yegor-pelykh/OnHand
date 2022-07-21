@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:on_hand/widgets/home_page.dart';
-import 'dart:html' as html;
+import 'dart:html' as p_html;
 
 class OnHandApp extends StatelessWidget {
   final ThemeData? lightTheme;
@@ -12,7 +12,7 @@ class OnHandApp extends StatelessWidget {
     this.lightTheme,
     this.darkTheme,
   }) {
-    html.document.body!.addEventListener('contextmenu', (event) {
+    p_html.document.body!.addEventListener('contextmenu', (event) {
       event.preventDefault();
     });
   }
