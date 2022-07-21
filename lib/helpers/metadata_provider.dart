@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as p_html;
 import 'package:image/image.dart' as p_image;
-import 'package:dio/dio.dart' as dio;
+import 'package:dio/dio.dart' as p_dio;
 import 'package:on_hand/helpers/charset_converter.dart';
 
 const signatureIco = [0, 0, 1, 0];
@@ -47,15 +47,15 @@ class IconData implements Comparable<IconData> {
 }
 
 class MetadataProvider {
-  static final dio.Dio _dio = dio.Dio();
-  static dio.CancelToken? _cancelToken;
+  static final p_dio.Dio _dio = p_dio.Dio();
+  static p_dio.CancelToken? _cancelToken;
 
   static Future<Metadata?> getMetadata(Uri uri) async {
     if (_cancelToken != null) {
       _cancelToken!.cancel();
       _cancelToken = null;
     }
-    _cancelToken = dio.CancelToken();
+    _cancelToken = p_dio.CancelToken();
     final document = await _getHtml(uri);
     if (document == null) {
       return null;
@@ -65,7 +65,7 @@ class MetadataProvider {
     return Metadata(title, icon: iconData);
   }
 
-  static String? _getCharsetFromResponseBody(dio.ResponseBody responseBody) {
+  static String? _getCharsetFromResponseBody(p_dio.ResponseBody responseBody) {
     final contentTypeValue = responseBody.headers['content-type']?.first;
     if (contentTypeValue != null) {
       final charsetMarkIndex = contentTypeValue.lastIndexOf(charsetValueMark);
@@ -85,8 +85,8 @@ class MetadataProvider {
 
   static String _decodeHtmlBytes(
     List<int> responseBytes,
-    dio.RequestOptions options,
-    dio.ResponseBody responseBody,
+    p_dio.RequestOptions options,
+    p_dio.ResponseBody responseBody,
   ) {
     final charset = _getCharsetFromResponseBody(responseBody);
     final codec = CharsetConverter.getCodecForCharset(charset);
@@ -98,7 +98,7 @@ class MetadataProvider {
       final response = await _dio.getUri(
         uri,
         cancelToken: _cancelToken,
-        options: dio.Options(
+        options: p_dio.Options(
           receiveDataWhenStatusError: true,
           responseDecoder: _decodeHtmlBytes,
         ),
@@ -171,12 +171,12 @@ class MetadataProvider {
   }
 
   static Future<IconData?> _getIconDataByUrl(Uri uri) async {
-    dio.Response response;
+    p_dio.Response response;
     try {
       response = await _dio.getUri(
         uri,
         cancelToken: _cancelToken,
-        options: dio.Options(responseType: dio.ResponseType.bytes),
+        options: p_dio.Options(responseType: p_dio.ResponseType.bytes),
       );
     } catch (ex) {
       return null;
