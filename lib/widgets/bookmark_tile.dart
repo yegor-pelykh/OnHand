@@ -7,7 +7,6 @@ import 'package:on_hand/data/bookmark_info.dart';
 import 'package:on_hand/data/global_data.dart';
 import 'package:on_hand/helpers/image_helper.dart';
 import 'package:on_hand/helpers/url_launcher.dart';
-import 'package:on_hand/widgets/bookmark_editor.dart';
 
 const double iconSize = 24;
 const textHeightBehavior = TextHeightBehavior(
@@ -18,8 +17,15 @@ const textHeightBehavior = TextHeightBehavior(
 
 class BookmarkTile extends StatefulWidget {
   final BookmarkInfo bookmark;
+  final Function(BuildContext context, BookmarkInfo bookmark) editFunc;
+  final Function(BuildContext context, BookmarkInfo bookmark) deleteFunc;
 
-  const BookmarkTile(this.bookmark, {super.key});
+  const BookmarkTile(
+    this.bookmark,
+    this.editFunc,
+    this.deleteFunc, {
+    super.key,
+  });
 
   @override
   State<BookmarkTile> createState() => _BookmarkTileState();
@@ -30,74 +36,6 @@ class _BookmarkTileState extends State<BookmarkTile> {
     final keys = RawKeyboard.instance.keysPressed;
     return keys.contains(LogicalKeyboardKey.controlLeft) ||
         keys.contains(LogicalKeyboardKey.controlRight);
-  }
-
-  void _editBookmark(BuildContext context) {
-    final groupTitle = widget.bookmark.group.title;
-    showDialog<BookmarkEditorResult?>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          scrollable: true,
-          title: Text(tr('bookmark_editing_dlg_title')),
-          content: BookmarkEditor(
-            BookmarkEditorMode.edit,
-            initialAddress: widget.bookmark.url.toString(),
-            initialTitle: widget.bookmark.title,
-            selectedGroup: groupTitle,
-            groups: GlobalData.appData.groups.map((g) => g.title).toList(),
-          ),
-        );
-      },
-    ).then((result) {
-      if (result != null) {
-        widget.bookmark.url = result.url;
-        widget.bookmark.title = result.title;
-        widget.bookmark.icon = result.icon;
-        if (result.groupTitle != groupTitle) {
-          GlobalData.appData.moveBookmark(widget.bookmark, result.groupTitle);
-        }
-        GlobalData.appData.saveToStorage();
-        GlobalData.appData.notifyChanged();
-      }
-    });
-  }
-
-  void _deleteBookmark(BuildContext context) {
-    showDialog<bool?>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          scrollable: true,
-          title: Text(tr('bookmark_deleting_dlg_title')),
-          content: Text(tr('bookmark_deleting_dlg_content')),
-          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          actions: <Widget>[
-            TextButton(
-              child: Text(tr('no')),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-            ElevatedButton(
-              child: Text(tr('yes')),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
-      },
-    ).then((result) {
-      if (result == true) {
-        final group = widget.bookmark.group;
-        group.removeBookmark(widget.bookmark);
-        GlobalData.appData.saveToStorage();
-        GlobalData.appData.notifyChanged();
-      }
-    });
   }
 
   Widget _getLeadingWidget() {
@@ -182,7 +120,7 @@ class _BookmarkTileState extends State<BookmarkTile> {
               title: Text(tr('edit')),
               onTap: () {
                 Navigator.pop(context);
-                _editBookmark(context);
+                widget.editFunc(context, widget.bookmark);
               },
             ),
             ListTile(
@@ -192,7 +130,7 @@ class _BookmarkTileState extends State<BookmarkTile> {
               title: Text(tr('delete')),
               onTap: () {
                 Navigator.pop(context);
-                _deleteBookmark(context);
+                widget.deleteFunc(context, widget.bookmark);
               },
             ),
             const SizedBox(height: 8),

@@ -85,9 +85,7 @@ class _GroupTileState extends State<GroupTile> {
     });
   }
 
-  void _showGroupMenu(
-    BuildContext context,
-  ) {
+  void _showGroupMenu(BuildContext context) {
     showModalBottomSheet(
       context: context,
       constraints: const BoxConstraints(

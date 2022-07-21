@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:html' as p_html;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:on_hand/data/bookmark_info.dart';
 import 'package:on_hand/data/global_data.dart';
 import 'package:on_hand/data/app_data.dart';
 import 'package:on_hand/widgets/bookmark_editor.dart';
@@ -12,6 +14,7 @@ import 'package:on_hand/widgets/file_uploader.dart';
 import 'package:on_hand/widgets/groups_manager.dart';
 
 const double kTabIndicatorWeight = 2.0;
+const prefKeyActiveGroupIndex = 'index';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,25 +25,34 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   TabController? _tabController;
+  int _activeGroupIndex = -1;
 
   void _onTabIndexChange() {
     if (_tabController != null) {
-      GlobalData.activeGroupIndex = _tabController!.index;
+      _activeGroupIndex = _tabController!.index;
+    }
+  }
+
+  void _onPageVisibilityChange(p_html.Event e) {
+    if (p_html.document.hidden == false) {
+      _reloadPageContent();
     }
   }
 
   void _updateTabController() {
     _tabController?.removeListener(_onTabIndexChange);
+    _activeGroupIndex = _normalizeGroupIndex(
+      _activeGroupIndex,
+      GlobalData.appData.groups.length,
+    );
     if (GlobalData.appData.groups.isNotEmpty) {
-      GlobalData.activeGroupIndex = 0;
       _tabController = TabController(
         animationDuration: Duration.zero,
         length: GlobalData.appData.groups.length,
-        initialIndex: GlobalData.activeGroupIndex,
+        initialIndex: _activeGroupIndex,
         vsync: this,
       );
     } else {
-      GlobalData.activeGroupIndex = -1;
       _tabController = null;
     }
     _tabController?.addListener(_onTabIndexChange);
@@ -53,7 +65,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _createBookmark(BuildContext context) async {
-    final groupIndex = GlobalData.activeGroupIndex;
+    final groupIndex = _activeGroupIndex;
     if (groupIndex < 0) {
       return;
     }
@@ -81,8 +93,81 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           setState(() {
             group.addBookmark(result.url, result.title, result.icon);
             GlobalData.appData.saveToStorage();
+            _tabController?.index = groupIndex;
           });
         }
+      }
+    });
+  }
+
+  void _editBookmark(BuildContext context, BookmarkInfo bookmark) {
+    final groupTitle = bookmark.group.title;
+    showDialog<BookmarkEditorResult?>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          title: Text(tr('bookmark_editing_dlg_title')),
+          content: BookmarkEditor(
+            BookmarkEditorMode.edit,
+            initialAddress: bookmark.url.toString(),
+            initialTitle: bookmark.title,
+            selectedGroup: groupTitle,
+            groups: GlobalData.appData.groups.map((g) => g.title).toList(),
+          ),
+        );
+      },
+    ).then((result) {
+      if (result != null) {
+        bookmark.url = result.url;
+        bookmark.title = result.title;
+        bookmark.icon = result.icon;
+        if (result.groupTitle != groupTitle) {
+          final newGroupIndex =
+              GlobalData.appData.moveBookmark(bookmark, result.groupTitle);
+          if (newGroupIndex != null) {
+            _tabController?.index = newGroupIndex;
+          }
+        }
+        GlobalData.appData.saveToStorage();
+        _update();
+      }
+    });
+  }
+
+  void _deleteBookmark(BuildContext context, BookmarkInfo bookmark) {
+    showDialog<bool?>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          title: Text(tr('bookmark_deleting_dlg_title')),
+          content: Text(tr('bookmark_deleting_dlg_content')),
+          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          actions: <Widget>[
+            TextButton(
+              child: Text(tr('no')),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            ElevatedButton(
+              child: Text(tr('yes')),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    ).then((result) {
+      if (result == true) {
+        final group = bookmark.group;
+        group.removeBookmark(bookmark);
+        GlobalData.appData.saveToStorage();
+        _update();
       }
     });
   }
@@ -196,7 +281,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       return TabBarView(
         controller: _tabController,
         children: GlobalData.appData.groups
-            .map((group) => BookmarksView(group))
+            .map(
+                (group) => BookmarksView(group, _editBookmark, _deleteBookmark))
             .toList(),
       );
     } else {
@@ -230,7 +316,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       color: Theme.of(context).colorScheme.onSecondary,
     );
     List<SpeedDialChild> children = [];
-    if (GlobalData.activeGroupIndex >= 0) {
+    if (_activeGroupIndex >= 0) {
       children.add(
         SpeedDialChild(
           child: const Icon(Icons.add),
@@ -284,11 +370,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
+  void _reloadPageContent() {
+    final newGroups = AppData.groupsFromStorage(GlobalData.appData);
+    final groupsUpToDate =
+        AppData.groupsEqual(GlobalData.appData.groups, newGroups);
+    if (!groupsUpToDate) {
+      GlobalData.appData.groups = newGroups;
+      _update();
+    }
+  }
+
   @override
   void initState() {
-    GlobalData.appData.loadFromStorage();
+    p_html.document
+        .addEventListener("visibilitychange", _onPageVisibilityChange);
     GlobalData.appData.addListener(_update);
-    _updateTabController();
+    _reloadPageContent();
     super.initState();
   }
 
@@ -304,6 +401,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     GlobalData.appData.removeListener(_update);
+    p_html.document
+        .removeEventListener("visibilitychange", _onPageVisibilityChange);
     super.dispose();
   }
+
+  static int _normalizeGroupIndex(int index, int groupsLength) =>
+      groupsLength > 0 ? index.clamp(0, groupsLength - 1) : -1;
 }

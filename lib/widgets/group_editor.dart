@@ -51,41 +51,44 @@ class _GroupEditorState extends State<GroupEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            autofocus: true,
-            controller: _titleEditingController,
-            decoration: InputDecoration(
-              labelText: tr('group_title_label'),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minWidth: 440),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              autofocus: true,
+              controller: _titleEditingController,
+              decoration: InputDecoration(
+                labelText: tr('group_title_label'),
+              ),
+              validator: (value) => _validateTitle(value),
+              onFieldSubmitted: (value) => _submit(),
             ),
-            validator: (value) => _validateTitle(value),
-            onFieldSubmitted: (value) => _submit(),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: OverflowBar(
-              alignment: MainAxisAlignment.end,
-              spacing: 8,
-              children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(tr('cancel')),
-                ),
-                ElevatedButton(
-                  onPressed: () => _submit(),
-                  child: Text(
-                    widget.mode == GroupEditorMode.create
-                        ? tr('create')
-                        : tr('apply'),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: OverflowBar(
+                alignment: MainAxisAlignment.end,
+                spacing: 8,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(tr('cancel')),
                   ),
-                ),
-              ],
+                  ElevatedButton(
+                    onPressed: () => _submit(),
+                    child: Text(
+                      widget.mode == GroupEditorMode.create
+                          ? tr('create')
+                          : tr('apply'),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

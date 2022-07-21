@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:on_hand/data/bookmark_info.dart';
 import 'package:on_hand/data/global_data.dart';
 import 'package:on_hand/data/group_info.dart';
 import 'package:on_hand/widgets/bookmark_tile.dart';
@@ -7,8 +8,15 @@ import 'package:reorderables/reorderables.dart';
 
 class BookmarksView extends StatefulWidget {
   final GroupInfo group;
+  final Function(BuildContext context, BookmarkInfo bookmark) editFunc;
+  final Function(BuildContext context, BookmarkInfo bookmark) deleteFunc;
 
-  const BookmarksView(this.group, {super.key});
+  const BookmarksView(
+    this.group,
+    this.editFunc,
+    this.deleteFunc, {
+    super.key,
+  });
 
   @override
   State<BookmarksView> createState() => _BookmarksViewState();
@@ -16,7 +24,9 @@ class BookmarksView extends StatefulWidget {
 
 class _BookmarksViewState extends State<BookmarksView> {
   List<BookmarkTile> _getBookmarks() {
-    return widget.group.bookmarks.map((b) => BookmarkTile(b)).toList();
+    return widget.group.bookmarks
+        .map((b) => BookmarkTile(b, widget.editFunc, widget.deleteFunc))
+        .toList();
   }
 
   @override
