@@ -72,12 +72,6 @@ To contribute:
 
 I will be very grateful for your support.
 
-## Branch Strategy
-
-I would like to give a short diagram of the existing branches and the direction of the merges between these branches.
-
-<img src="branch_strategy.svg">
-
 ## Build
 
 You can easily build the release version of this browser extension.
