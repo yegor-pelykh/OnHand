@@ -51,5 +51,6 @@
     "home_no_groups_hint": "У вас ещё нет групп.",
     "home_no_groups_hint_details": "Вы можете создать группы, используя пункт меню \"@:group_management\" в главном меню.\nПосле создания группы вы сможете добавить в неё закладки.",
     "group_no_bookmarks_hint": "В этой группе ещё нет закладок.",
-    "group_no_bookmarks_hint_details": "Вы можете добавить закладки с помощью пункта меню \"@:create_bookmark\" в главном меню."
+    "group_no_bookmarks_hint_details": "Вы можете добавить закладки с помощью пункта меню \"@:create_bookmark\" в главном меню.",
+    "default_group_title": "Новая группа"
 }

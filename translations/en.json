@@ -48,5 +48,6 @@
     "home_no_groups_hint": "You don't have any groups yet.",
     "home_no_groups_hint_details": "You can create groups using the \"@:group_management\" menu item on the main menu.\nAfter creating a group, you can add bookmarks to it.",
     "group_no_bookmarks_hint": "There are no bookmarks in this group yet.",
-    "group_no_bookmarks_hint_details": "You can add bookmarks using the \"@:create_bookmark\" menu item in the main menu."
+    "group_no_bookmarks_hint_details": "You can add bookmarks using the \"@:create_bookmark\" menu item in the main menu.",
+    "default_group_title": "New group"
 }

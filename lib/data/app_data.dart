@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:on_hand/data/bookmark_info.dart';
 import 'package:on_hand/data/group_info.dart';
@@ -55,6 +56,12 @@ class AppData extends ChangeNotifier {
 
   void notifyChanged() => notifyListeners();
 
+  static List<GroupInfo> getDefaultGroups(AppData appData) {
+    return [
+      GroupInfo(appData, tr('default_group_title')),
+    ];
+  }
+
   static List<GroupInfo> groupsFromJsonString(
       String? jsonString, AppData appData) {
     if (jsonString != null) {
@@ -76,7 +83,9 @@ class AppData extends ChangeNotifier {
 
   static List<GroupInfo> groupsFromStorage(AppData appData) {
     final jsonString = LocalStorageManager.getString(prefKeyData);
-    return groupsFromJsonString(jsonString, appData);
+    return jsonString != null
+        ? groupsFromJsonString(jsonString, appData)
+        : getDefaultGroups(appData);
   }
 
   static bool groupsEqual(List<GroupInfo> l1, List<GroupInfo> l2) {
