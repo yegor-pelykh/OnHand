@@ -17,7 +17,7 @@ function insertString(base, index, string) {
 
 console.info('Harmonization:');
 
-const buildDirectory = './build/web';
+const buildDirectory = '../build/web';
 
 if (!fs.existsSync(buildDirectory)) {
     console.error(`Error: Directory ${buildDirectory} not found.`);
