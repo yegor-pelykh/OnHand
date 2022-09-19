@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:html' as p_html;
 import 'package:easy_localization/easy_localization.dart';
-import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:on_hand/data/bookmark_info.dart';
@@ -192,11 +190,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  Future<void> _downloadData() async {
+  void _downloadFile(String content, String extension) {
+    final bytes = utf8.encode(content);
+    final uri = Uri.dataFromBytes(bytes, mimeType: 'application/json');
+    final anchor = p_html.AnchorElement();
+    anchor.href = uri.toString();
+    anchor.style.display = 'none';
+    anchor.download = 'bookmarks.$extension';
+    anchor.click();
+    anchor.remove();
+  }
+
+  void _downloadData() {
     final jsonString = AppData.groupsToJsonString(GlobalData.appData.groups);
-    final bytes = Uint8List.fromList(utf8.encode(jsonString));
     final ext = GlobalData.dataFileExtension.toLowerCase();
-    await FileSaver.instance.saveFile('bookmarks.$ext', bytes, ext);
+    _downloadFile(jsonString, ext);
   }
 
   void _exportToFile(BuildContext context) {
