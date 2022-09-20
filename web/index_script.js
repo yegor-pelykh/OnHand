@@ -7,4 +7,9 @@ function setBgColor() {
 
 window.addEventListener('load', function (ev) {
     setBgColor();
+    _flutter.loader.loadEntrypoint({}).then(function (engineInitializer) {
+        return engineInitializer.initializeEngine();
+    }).then(function (appRunner) {
+        return appRunner.runApp();
+    });
 });

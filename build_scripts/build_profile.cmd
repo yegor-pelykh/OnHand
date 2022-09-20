@@ -1,1 +1,0 @@
-flutter clean && flutter pub get && flutter build web --profile --dart-define=Dart2jsOptimization=O0 --web-renderer canvaskit --dart-define=FLUTTER_WEB_CANVASKIT_URL=/canvaskit/ --csp && npm install && node post-harmonization.js && node post-packaging.js

@@ -3,9 +3,9 @@ const path = require('path');
 const archiver = require('archiver');
 const { execSync } = require('child_process');
 
-console.info('Packaging:');
+console.info('Packaging...');
 
-const buildDirectory = path.resolve('../build/web');
+const buildDirectory = path.resolve('./build/web');
 
 // Create a folder where we will put our archive.
 const packageDirectory = path.join(buildDirectory, '../package');
@@ -30,9 +30,8 @@ const zipStream = fs.createWriteStream(zipFilePath);
 const zipArchive = archiver('zip');
 
 zipStream.on('close', function () {
-    console.info('Packaging has been finalized and the output file descriptor has closed.');
+    console.info('Packaging has been finalized.');
     console.info(`Output file path: ${zipFilePath}`);
-    console.info('Done.');
 });
 zipStream.on('warning', function (err) {
     if (err.code === 'ENOENT') {
