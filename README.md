@@ -77,29 +77,21 @@ I will be very grateful for your support.
 You can easily build the release version of this browser extension.
 1. Please make sure you have Flutter framework installed on your computer. If it is not installed yet, download it from the [Flutter official site](https://docs.flutter.dev/get-started/install), install and configure as directed in the manual.
 1. Please make sure you have Node.js installed on your computer. If it is not installed yet, download it from the [Node.js official site](https://nodejs.org) and install it.
-1. Use this set of commands depending on the platform you are building on:
+1. Run these commands, depending on the platform you are using:
     <table>
-    <tr><td> Platform </td> <td> Commands </td></tr>
+    <tr><td> Platform </td> <td> Command </td></tr>
     <tr><td> Windows </td><td>
-
-      ```properties
-      cd build_scripts
-      build_release.cmd
-      ```
-
+    
+    `build_release.cmd`
+    
     </td></tr>
-    <tr><td> Any desktop platform </td><td>
-
-      ```properties
-      cd build_scripts
-      flutter clean
-      flutter pub get
-      flutter build web --web-renderer canvaskit --dart-define=FLUTTER_WEB_CANVASKIT_URL=/canvaskit/ --csp
-      npm install
-      node post-harmonization.js
-      node post-packaging.js
-      ```
+    <tr><td> Other desktop platforms </td><td>
+ 
+    `build_release.sh`
 
     </td></tr>
     </table>
+
+    **If you are using VS Code**: you can also run the "Release build" task to make a release build.
+
 1. The package with the necessary files should be on the `/build/package` folder.
