@@ -4,8 +4,7 @@
   "description": "Post actions for the OnHand project",
   "private": true,
   "scripts": {
-    "harmonization": "node post-harmonization.js",
-    "packaging": "node post-packaging.js"
+    "packaging": "node build_post_pkg.js"
   },
   "author": {
     "name": "Yegor Pelykh",
@@ -14,9 +13,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "archiver": "^5.3.1",
-    "jsdom": "^19.0.0",
-    "pretty": "^2.0.0",
-    "strip-comments": "^2.0.1"
+    "archiver": "latest"
   }
 }
