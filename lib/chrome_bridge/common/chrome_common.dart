@@ -7,7 +7,7 @@ abstract class ChromeCommon {
   static final JsObject json = context['JSON'];
   static final JsObject chrome = context['chrome'];
   static final JsObject runtime = chrome['runtime'];
-  static final JsObject tabs = runtime['tabs'];
+  static final JsObject tabs = chrome['tabs'];
 
   static String? get lastError {
     final error = runtime['lastError'];
