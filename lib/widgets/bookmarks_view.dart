@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:on_hand/data/bookmark_info.dart';
-import 'package:on_hand/data/global_data.dart';
+import 'package:on_hand/global/global_data.dart';
 import 'package:on_hand/data/group_info.dart';
 import 'package:on_hand/widgets/bookmark_tile.dart';
 import 'package:reorderables/reorderables.dart';

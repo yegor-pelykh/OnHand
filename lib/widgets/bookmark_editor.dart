@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:jovial_svg/jovial_svg.dart';
-import 'package:on_hand/data/global_data.dart';
+import 'package:on_hand/global/global_data.dart';
 import 'package:on_hand/helpers/image_helper.dart';
 import 'package:on_hand/helpers/metadata_provider.dart';
 import 'package:validators/validators.dart';

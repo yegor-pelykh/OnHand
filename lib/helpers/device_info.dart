@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 
-class DeviceInfo {
+abstract class DeviceInfo {
   static final _deviceInfoPlugin = DeviceInfoPlugin();
 
   static Future<BrowserName> getBrowserName() async {

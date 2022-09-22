@@ -5,7 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
-import 'package:on_hand/data/global_data.dart';
+import 'package:on_hand/global/global_data.dart';
 import 'package:on_hand/data/app_data.dart';
 
 enum DropzoneState {

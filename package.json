@@ -13,6 +13,10 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@types/chrome": "latest",
     "archiver": "latest"
+  },
+  "devDependencies": {
+    "typescript": "latest"
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:enough_convert/enough_convert.dart';
 
-class CharsetConverter {
+abstract class CharsetConverter {
   static const _latin1Codec = Latin1Codec(allowInvalid: true);
   static const _latin2Codec = Latin2Codec(allowInvalid: true);
   static const _latin3Codec = Latin3Codec(allowInvalid: true);

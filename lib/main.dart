@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:html';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:json_theme/json_theme.dart';
+import 'package:on_hand/global/global_chrome.dart';
 import 'package:on_hand/widgets/onhand_app.dart';
 import 'package:on_hand/data/localization_loader.dart';
 import 'package:on_hand/helpers/device_info.dart';
@@ -13,9 +15,19 @@ Future<ThemeData?> _loadJsonTheme(String path) async {
   return ThemeDecoder.decodeThemeData(themeJson);
 }
 
-Future<void> main() async {
+Future<void> beforeRun() async {
+  window.onBeforeUnload.listen((event) => beforeUnload());
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  GlobalChrome.connect();
+}
+
+void beforeUnload() {
+  GlobalChrome.disconnect();
+}
+
+Future<void> main() async {
+  await beforeRun();
   runApp(
     EasyLocalization(
       supportedLocales: const [

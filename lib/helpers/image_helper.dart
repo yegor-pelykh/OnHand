@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-class ImageHelper {
+abstract class ImageHelper {
   static Uint8List pngSignature =
       Uint8List.fromList([137, 80, 78, 71, 13, 10, 26, 10]);
 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jovial_svg/jovial_svg.dart';
 import 'package:on_hand/data/bookmark_info.dart';
-import 'package:on_hand/data/global_data.dart';
+import 'package:on_hand/global/global_data.dart';
 import 'package:on_hand/helpers/image_helper.dart';
 import 'package:on_hand/helpers/url_launcher.dart';
 

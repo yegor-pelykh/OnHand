@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:on_hand/data/app_data.dart';
 
-class GlobalData {
+abstract class GlobalData {
   static final AppData _appData = AppData();
   static AppData get appData => _appData;
 

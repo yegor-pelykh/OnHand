@@ -1,6 +1,6 @@
 import 'dart:html';
 
-class LocalStorageManager {
+abstract class LocalStorageManager {
   static final _localStorage = window.localStorage;
 
   static String? getString(String key) {

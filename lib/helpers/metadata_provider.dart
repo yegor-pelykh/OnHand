@@ -46,7 +46,7 @@ class IconData implements Comparable<IconData> {
   }
 }
 
-class MetadataProvider {
+abstract class MetadataProvider {
   static final p_dio.Dio _dio = p_dio.Dio();
   static p_dio.CancelToken? _cancelToken;
 

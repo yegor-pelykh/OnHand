@@ -26,6 +26,9 @@
             "id": "{1f4ee806-b18a-4c3d-824d-6a44d6911cee}"
         }
     },
+    "background": {
+        "service_worker": "service_worker.js"
+    },
     "chrome_url_overrides": {
         "newtab": "index.html"
     },
@@ -33,7 +36,8 @@
         "<all_urls>"
     ],
     "permissions": [
-        "unlimitedStorage"
+        "unlimitedStorage",
+        "tabs"
     ],
     "content_security_policy": {
         "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
