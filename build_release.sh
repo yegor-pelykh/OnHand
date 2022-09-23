@@ -1,7 +1,7 @@
 #!/bin/bash
-npx tsc -p web_ts
+npm install
+npm run sw-build-release
 flutter clean
 flutter pub get
 flutter build web --web-renderer canvaskit --dart-define=FLUTTER_WEB_CANVASKIT_URL=/canvaskit/ --pwa-strategy=none --csp
-npm install
-node build_post_pkg.js
+npm run pack

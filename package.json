@@ -4,7 +4,10 @@
   "description": "Post actions for the OnHand project",
   "private": true,
   "scripts": {
-    "packaging": "node build_post_pkg.js"
+    "sw-build": "tsc -p web_ts",
+    "sw-minify": "esbuild web/service_worker.js --outfile=web/service_worker.js --bundle --minify --allow-overwrite",
+    "sw-build-release": "npm run sw-build && npm run sw-minify",
+    "pack": "node build_post_pack.js"
   },
   "author": {
     "name": "Yegor Pelykh",
@@ -14,7 +17,8 @@
   "license": "MIT",
   "dependencies": {
     "@types/chrome": "latest",
-    "archiver": "latest"
+    "archiver": "latest",
+    "esbuild": "latest"
   },
   "devDependencies": {
     "typescript": "latest"
