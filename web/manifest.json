@@ -21,6 +21,14 @@
         "192": "icons/icon-192.png",
         "512": "icons/icon-512.png"
     },
+    "action": {
+        "default_icon": {
+            "16": "icons/icon-16.png",
+            "24": "icons/icon-24.png",
+            "32": "icons/icon-32.png"
+        },
+        "default_title": "Bookmark this page"
+    },
     "browser_specific_settings": {
         "gecko": {
             "id": "{1f4ee806-b18a-4c3d-824d-6a44d6911cee}"
@@ -37,6 +45,7 @@
     ],
     "permissions": [
         "unlimitedStorage",
+        "declarativeContent",
         "tabs"
     ],
     "content_security_policy": {
