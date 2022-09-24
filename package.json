@@ -1,26 +1,44 @@
 {
-  "name": "on_hand_post_actions",
+  "name": "on-hand",
   "version": "1.0.0",
-  "description": "Post actions for the OnHand project",
   "private": true,
-  "scripts": {
-    "sw-build": "tsc -p web_ts",
-    "sw-minify": "esbuild web/service_worker.js --outfile=web/service_worker.js --bundle --minify --allow-overwrite",
-    "sw-build-release": "npm run sw-build && npm run sw-minify",
-    "pack": "node build_post_pack.js"
-  },
   "author": {
     "name": "Yegor Pelykh",
     "email": "yegor.dev@gmail.com",
     "url": "https://github.com/yegor-pelykh"
   },
   "license": "MIT",
+  "scripts": {
+    "sw-build": "tsc -p tsconfig.sw.json",
+    "sw-minify": "esbuild web/service-worker.js --outfile=web/service-worker.js --bundle --minify --allow-overwrite",
+    "sw-build-release": "npm run sw-build && npm run sw-minify",
+    "popup-build": "ng build",
+    "popup-watch": "ng build --watch --configuration development",
+    "popup-build-release": "ng build --configuration production",
+    "pack": "node build_post_pack.js"
+  },
   "dependencies": {
-    "@types/chrome": "latest",
-    "archiver": "latest",
-    "esbuild": "latest"
+    "@angular/animations": "^14.2.0",
+    "@angular/cdk": "^14.2.2",
+    "@angular/common": "^14.2.0",
+    "@angular/compiler": "^14.2.0",
+    "@angular/core": "^14.2.0",
+    "@angular/forms": "^14.2.0",
+    "@angular/material": "^14.2.2",
+    "@angular/platform-browser": "^14.2.0",
+    "@angular/platform-browser-dynamic": "^14.2.0",
+    "@angular/router": "^14.2.0",
+    "@types/chrome": "^0.0.197",
+    "archiver": "^5.3.1",
+    "esbuild": "^0.15.9",
+    "rxjs": "~7.5.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "typescript": "latest"
+    "@angular-devkit/build-angular": "^14.2.3",
+    "@angular/cli": "~14.2.3",
+    "@angular/compiler-cli": "^14.2.0",
+    "typescript": "~4.7.2"
   }
 }

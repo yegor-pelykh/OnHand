@@ -67,8 +67,8 @@ abstract class ConnectionManager {
 
     static handlePortConnection(port: chrome.runtime.Port): void {
         this.connectedPorts.add(port);
-        port.onDisconnect.addListener(this.handlePortDisconnection);
-        port.onMessage.addListener(this.messageListener);
+        port.onDisconnect.addListener((port) => this.handlePortDisconnection(port));
+        port.onMessage.addListener((message, port) => this.messageListener(message, port));
     }
 
     static async sendMessage(port: chrome.runtime.Port, type: string, data: any, error?: string): Promise<any> {
@@ -165,8 +165,8 @@ abstract class LifecycleHandler {
     }
 
     static init(): void {
-        chrome.runtime.onInstalled.addListener(this.onInstalledListener);
-        chrome.runtime.onConnect.addListener(this.onPortConnectedListener);
+        chrome.runtime.onInstalled.addListener(() => this.onInstalledListener());
+        chrome.runtime.onConnect.addListener((port) => this.onPortConnectedListener(port));
     }
 }
 
