@@ -12,7 +12,7 @@
     "sw-build": "tsc -p tsconfig.sw.json",
     "sw-minify": "esbuild web/service-worker.js --outfile=web/service-worker.js --bundle --minify --allow-overwrite",
     "sw-build-release": "npm run sw-build && npm run sw-minify",
-    "popup-build": "ng build",
+    "popup-build": "ng build --configuration development",
     "popup-watch": "ng build --watch --configuration development",
     "popup-build-release": "ng build --configuration production",
     "pack": "node build_post_pack.js"

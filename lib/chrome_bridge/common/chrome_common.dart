@@ -64,7 +64,7 @@ abstract class ChromeCommon {
       return JsObject.jsify(m);
     } else if (obj is Iterable) {
       // Do a deep convert
-      return JsArray.from(obj).map(jsify);
+      return JsArray.from(obj.map((item) => jsify(item)));
     } else {
       return obj;
     }

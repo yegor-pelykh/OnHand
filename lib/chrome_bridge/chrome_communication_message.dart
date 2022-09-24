@@ -1,12 +1,13 @@
 import 'dart:js';
 
+import 'package:on_hand/chrome_bridge/common/chrome_common.dart';
 import 'package:on_hand/chrome_bridge/common/chrome_object.dart';
 
 class ChromeCommunicationMessage extends ChromeObject {
   ChromeCommunicationMessage({
     required String uuid,
     required String type,
-    dynamic data,
+    JsObject? data,
     String? error,
   }) {
     this.uuid = uuid;
@@ -27,10 +28,12 @@ class ChromeCommunicationMessage extends ChromeObject {
   set type(String value) => jsProxy['type'] = value;
 
   /// The data sent with this message.
-  dynamic get data => jsProxy['data'];
-  set data(dynamic value) => jsProxy['data'] = value;
+  JsObject? get data => jsProxy['data'];
+  set data(JsObject? value) =>
+      ChromeCommon.setNullableProperty(jsProxy, 'data', value);
 
   /// The error message.
   String? get error => jsProxy['error'];
-  set error(String? value) => jsProxy['error'] = value;
+  set error(String? value) =>
+      ChromeCommon.setNullableProperty(jsProxy, 'error', value);
 }

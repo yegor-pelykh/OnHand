@@ -20,7 +20,17 @@ abstract class Helpers {
 abstract class ConnectionManager {
     private static connectedPorts: Set<chrome.runtime.Port> = new Set<chrome.runtime.Port>();
     private static awaitingMessages: Map<string, MessageConfirmation> = new Map<string, MessageConfirmation>();
-    private static messageHandlers: Map<string, MessageHandler> = new Map<string, MessageHandler>([]);
+    private static messageHandlers: Map<string, MessageHandler> = new Map<string, MessageHandler>([
+        [ 'get-data', this.handlerGetData ],
+    ]);
+
+    private static getPortType(portName: string) {
+        const nameLowerCase = portName.toLowerCase();
+        if (nameLowerCase.startsWith('popup')) {
+            return 'popup';
+        }
+        return 'content';
+    }
 
     private static messageListener(message: Message, port: chrome.runtime.Port): void {
         if ('uuid' in message && 'type' in message && 'data' in message) {
@@ -36,7 +46,7 @@ abstract class ConnectionManager {
             } else {
                 const handler = this.messageHandlers.get(type);
                 if (handler != null) {
-                    handler(port, data, error).then((responseData) => {
+                    handler.call(this, port, data, error).then((responseData) => {
                         port.postMessage(<Message>{
                             uuid: uuid,
                             type: type,
@@ -91,6 +101,15 @@ abstract class ConnectionManager {
     static async broadcastMessage(type: string, data: any, error?: string): Promise<PromiseSettledResult<Object>[]> {
         const promises = Array.from(this.connectedPorts.values()).map(p => this.sendMessage(p, type, data, error));
         return await Promise.allSettled(promises);
+    }
+
+    static async handlerGetData(port: chrome.runtime.Port, data: any, error?: string) {
+        const contentPort = Array.from(this.connectedPorts).find(p => this.getPortType(p.name) === "content");
+        if (contentPort != null) {
+            return await this.sendMessage(contentPort, 'get-data', null);
+        } else {
+            return null;
+        }
     }
 
 }

@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:js';
+import 'package:flutter/foundation.dart';
 import 'package:on_hand/chrome_bridge/chrome_communication_message.dart';
 import 'package:on_hand/chrome_bridge/chrome_message_event.dart';
 import 'package:on_hand/chrome_bridge/chrome_port.dart';
 import 'package:on_hand/chrome_bridge/chrome_runtime.dart';
 import 'package:on_hand/chrome_bridge/chrome_runtime_connect_info.dart';
 import 'package:on_hand/chrome_bridge/common/chrome_common.dart';
+import 'package:on_hand/global/global_data.dart';
 import 'package:on_hand/helpers/utils.dart';
 
 typedef MessageHandler = Future<dynamic> Function(dynamic data, String? error);
@@ -13,14 +16,16 @@ typedef MessageHandler = Future<dynamic> Function(dynamic data, String? error);
 abstract class GlobalChrome {
   static final Map<String, Completer<dynamic>> _awaitingMessages =
       <String, Completer<dynamic>>{};
-  static final Map<String, MessageHandler> _messageHandlers = {};
+  static final Map<String, MessageHandler> _messageHandlers = {
+    'get-data': GlobalChrome.handleGetData
+  };
   static ChromePort? _port;
   static StreamSubscription<ChromeMessageEvent>? _streamSubscription;
 
   static bool get supported => ChromeCommon.isWebExtension;
   static bool get connected => _port != null;
 
-  static String _getUniquePortName() => 'ONHAND-${Utils.generateUUID()}';
+  static String _getUniquePortName() => 'content-${Utils.generateUUID()}';
 
   static void connect() {
     if (!supported) return;
@@ -39,13 +44,15 @@ abstract class GlobalChrome {
         }
         _awaitingMessages.remove(message.uuid);
       } else {
+        debugPrint(
+            'MESSAGE IN CONTENT SCRIPT: type=\'${message.type}\', data=\'${message.data}\', error=\'${message.error}\'');
         final handler = _messageHandlers[message.type];
         if (handler != null) {
           handler(message.data, message.error).then((responseData) {
             final msg = ChromeCommunicationMessage(
               uuid: message.uuid,
               type: message.type,
-              data: responseData,
+              data: ChromeCommon.jsify(responseData),
             ).toJs();
             _port!.postMessage(msg);
           }).onError((error, stackTrace) {
@@ -108,5 +115,10 @@ abstract class GlobalChrome {
       ));
     }
     return completer.future;
+  }
+
+  static Future<dynamic> handleGetData(dynamic data, String? error) async {
+    final groupList = GlobalData.appData.groups.map((g) => g.title).toList();
+    return groupList;
   }
 }

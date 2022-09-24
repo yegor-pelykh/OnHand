@@ -3,7 +3,12 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "types": [
+      "chrome"
+    ]
   },
   "files": [
     "src-popup/main.ts",
