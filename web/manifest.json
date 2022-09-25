@@ -47,7 +47,12 @@
     "permissions": [
         "unlimitedStorage",
         "declarativeContent",
+        "storage",
+        "unlimitedStorage",
         "tabs"
+    ],
+    "optional_permissions": [
+        "unlimitedStorage"
     ],
     "content_security_policy": {
         "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
