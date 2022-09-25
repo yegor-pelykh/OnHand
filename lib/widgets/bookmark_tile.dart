@@ -3,10 +3,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jovial_svg/jovial_svg.dart';
-import 'package:on_hand/data/bookmark_info.dart';
+import 'package:on_hand/data/bookmark.dart';
+import 'package:on_hand/global/global_constants.dart';
 import 'package:on_hand/global/global_data.dart';
 import 'package:on_hand/helpers/image_helper.dart';
 import 'package:on_hand/helpers/url_launcher.dart';
+import 'package:on_hand/widgets/bookmark_editor.dart';
 
 const double iconSize = 24;
 const textHeightBehavior = TextHeightBehavior(
@@ -16,14 +18,12 @@ const textHeightBehavior = TextHeightBehavior(
 );
 
 class BookmarkTile extends StatefulWidget {
-  final BookmarkInfo bookmark;
-  final Function(BuildContext context, BookmarkInfo bookmark) editFunc;
-  final Function(BuildContext context, BookmarkInfo bookmark) deleteFunc;
+  final Bookmark bookmark;
+  final void Function(int groupIndex) funcActivateGroup;
 
   const BookmarkTile(
     this.bookmark,
-    this.editFunc,
-    this.deleteFunc, {
+    this.funcActivateGroup, {
     super.key,
   });
 
@@ -32,6 +32,83 @@ class BookmarkTile extends StatefulWidget {
 }
 
 class _BookmarkTileState extends State<BookmarkTile> {
+  void _editBookmark(BuildContext context, Bookmark bookmark) {
+    final groupTitle = bookmark.group.title;
+    showDialog<BookmarkEditorResult?>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          title: Text(tr('bookmark_editing_dlg_title')),
+          content: BookmarkEditor(
+            BookmarkEditorMode.edit,
+            initialAddress: bookmark.url.toString(),
+            initialTitle: bookmark.title,
+            selectedGroupTitle: groupTitle,
+            groupTitles: GlobalData.groupStorage.titles,
+          ),
+        );
+      },
+    ).then((result) {
+      if (result != null) {
+        bookmark.url = result.url;
+        bookmark.title = result.title;
+        bookmark.icon = result.icon;
+        if (result.groupTitle != groupTitle) {
+          final toGroupIndex = GlobalData.groupStorage.groupIndexWhere(
+            (g) => g.title == result.groupTitle,
+          );
+          if (toGroupIndex >= 0) {
+            final toGroup = GlobalData.groupStorage.groupAt(toGroupIndex);
+            if (toGroup != null) {
+              setState(() {
+                GlobalData.moveBookmarkToGroup(bookmark, toGroup);
+                widget.funcActivateGroup(toGroupIndex);
+              });
+            }
+          }
+        }
+        GlobalData.saveToStorage();
+      }
+    });
+  }
+
+  void _deleteBookmark(BuildContext context, Bookmark bookmark) {
+    showDialog<bool?>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          title: Text(tr('bookmark_deleting_dlg_title')),
+          content: Text(tr('bookmark_deleting_dlg_content')),
+          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          actions: <Widget>[
+            TextButton(
+              child: Text(tr('no')),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            ElevatedButton(
+              child: Text(tr('yes')),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    ).then((result) {
+      if (result == true) {
+        final group = bookmark.group;
+        group.removeBookmark(bookmark);
+        GlobalData.saveToStorage();
+      }
+    });
+  }
+
   bool _isCtrlKeyPressed() {
     final keys = RawKeyboard.instance.keysPressed;
     return keys.contains(LogicalKeyboardKey.controlLeft) ||
@@ -61,7 +138,7 @@ class _BookmarkTileState extends State<BookmarkTile> {
     } else {
       imageWidget = const Icon(
         Icons.favorite,
-        color: GlobalData.mainColor,
+        color: GlobalConstants.mainColor,
       );
     }
     return SizedBox(
@@ -120,7 +197,7 @@ class _BookmarkTileState extends State<BookmarkTile> {
               title: Text(tr('edit')),
               onTap: () {
                 Navigator.pop(context);
-                widget.editFunc(context, widget.bookmark);
+                _editBookmark(context, widget.bookmark);
               },
             ),
             ListTile(
@@ -130,7 +207,7 @@ class _BookmarkTileState extends State<BookmarkTile> {
               title: Text(tr('delete')),
               onTap: () {
                 Navigator.pop(context);
-                widget.deleteFunc(context, widget.bookmark);
+                _deleteBookmark(context, widget.bookmark);
               },
             ),
             const SizedBox(height: 8),

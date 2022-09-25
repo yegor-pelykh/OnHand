@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:jovial_svg/jovial_svg.dart';
-import 'package:on_hand/global/global_data.dart';
+import 'package:on_hand/global/global_constants.dart';
 import 'package:on_hand/helpers/image_helper.dart';
 import 'package:on_hand/helpers/metadata_provider.dart';
 import 'package:validators/validators.dart';
@@ -43,16 +43,16 @@ class BookmarkEditor extends StatefulWidget {
   final BookmarkEditorMode mode;
   final String initialAddress;
   final String initialTitle;
-  final String selectedGroup;
-  final List<String> groups;
+  final List<String> groupTitles;
+  final String? selectedGroupTitle;
 
   BookmarkEditor(
     this.mode, {
     super.key,
     this.initialAddress = '',
     this.initialTitle = '',
-    this.selectedGroup = '',
-    this.groups = const [],
+    this.groupTitles = const [],
+    this.selectedGroupTitle,
   });
 
   @override
@@ -63,7 +63,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late TextEditingController _addressEditingController;
   late TextEditingController _titleEditingController;
-  late String _selectedGroup;
+  String? _selectedGroupTitle;
   BookmarkEditorState _state = BookmarkEditorState.noMetadata;
   Metadata? _metadata;
   Timer? _debounce;
@@ -166,7 +166,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
     } else {
       imageWidget = const Icon(
         Icons.favorite,
-        color: GlobalData.mainColor,
+        color: GlobalConstants.mainColor,
       );
     }
     return SizedBox(
@@ -235,10 +235,18 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
     }
     final title = _titleEditingController.text;
     final icon = _metadata?.icon?.bytes;
-    Navigator.pop(
-      context,
-      BookmarkEditorResult(_selectedGroup, url, title, icon),
-    );
+    final groupTitle = _selectedGroupTitle ??
+        (widget.groupTitles.isNotEmpty ? widget.groupTitles.first : null);
+    if (groupTitle != null) {
+      Navigator.pop(
+        context,
+        BookmarkEditorResult(groupTitle, url, title, icon),
+      );
+    } else {
+      Navigator.pop(
+        context,
+      );
+    }
   }
 
   void _submit(BuildContext context) {
@@ -281,10 +289,9 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
   }
 
   void _onGroupChanged(String? current) {
-    if (current != null) {
-      _selectedGroup = current;
-      setState(() {});
-    }
+    setState(() {
+      _selectedGroupTitle = current;
+    });
   }
 
   @override
@@ -294,8 +301,8 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
     if (_addressEditingController.text.isNotEmpty) {
       _updateMetadata(_addressEditingController.text);
     }
+    _selectedGroupTitle = widget.selectedGroupTitle;
     _titleEditingController = TextEditingController(text: widget.initialTitle);
-    _selectedGroup = widget.selectedGroup;
     super.initState();
   }
 
@@ -342,8 +349,8 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
                 labelText: tr('bookmark_group_label'),
               ),
               icon: const Icon(Icons.keyboard_arrow_down),
-              value: _selectedGroup,
-              items: widget.groups.map((String groups) {
+              value: _selectedGroupTitle,
+              items: widget.groupTitles.map((String groups) {
                 return DropdownMenuItem(
                   value: groups,
                   child: Text(groups),

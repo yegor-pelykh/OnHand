@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:on_hand/data/group_info.dart';
+import 'package:on_hand/data/group.dart';
 import 'package:on_hand/widgets/group_editor.dart';
 
 const textHeightBehavior = TextHeightBehavior(
@@ -10,7 +10,7 @@ const textHeightBehavior = TextHeightBehavior(
 );
 
 class GroupTile extends StatefulWidget {
-  final GroupInfo group;
+  final Group group;
 
   const GroupTile(this.group, {super.key});
 
@@ -20,11 +20,7 @@ class GroupTile extends StatefulWidget {
 
 class _GroupTileState extends State<GroupTile> {
   void _editGroup(BuildContext context) {
-    final groupData = widget.group.data;
-    final forbiddenNames = groupData.groups
-        .where((g) => g != widget.group)
-        .map((g) => g.title)
-        .toList();
+    final forbiddenNames = widget.group.storage.titles;
     showDialog<String?>(
       context: context,
       barrierDismissible: false,
@@ -76,11 +72,7 @@ class _GroupTileState extends State<GroupTile> {
       },
     ).then((result) {
       if (result == true) {
-        setState(() {
-          final groupData = widget.group.data;
-          groupData.groups.remove(widget.group);
-          groupData.notifyChanged();
-        });
+        widget.group.storage.removeGroup(widget.group);
       }
     });
   }

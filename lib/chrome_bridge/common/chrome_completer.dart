@@ -17,13 +17,15 @@ class ChromeCompleter<T> {
     };
   }
 
-  ChromeCompleter.oneArg(Function transformer) {
+  ChromeCompleter.oneArg([Function? transformer]) {
     _callback = ([arg1]) {
       final error = ChromeCommon.lastError;
       if (error != null) {
         _completer.completeError(error);
       } else {
-        arg1 = transformer(arg1);
+        if (transformer != null) {
+          arg1 = transformer(arg1);
+        }
         _completer.complete(arg1);
       }
     };

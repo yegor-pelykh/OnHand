@@ -7,6 +7,7 @@ abstract class ChromeCommon {
   static final JsObject json = context['JSON'];
   static final JsObject chrome = context['chrome'];
   static final JsObject runtime = chrome['runtime'];
+  static final JsObject storage = chrome['storage'];
   static final JsObject tabs = chrome['tabs'];
 
   static String? get lastError {
@@ -43,9 +44,13 @@ abstract class ChromeCommon {
     }
   }
 
-  static Map? mapify(JsObject? obj) {
-    if (obj == null) return null;
+  static Map mapify(JsObject obj) {
     return jsonDecode(json.callMethod('stringify', [obj]));
+  }
+
+  static Map? mapifyN(JsObject? obj) {
+    if (obj == null) return null;
+    return mapify(obj);
   }
 
   static dynamic jsify(dynamic obj) {

@@ -5,8 +5,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
+import 'package:on_hand/global/global_constants.dart';
 import 'package:on_hand/global/global_data.dart';
-import 'package:on_hand/data/app_data.dart';
 
 enum DropzoneState {
   waiting,
@@ -32,35 +32,35 @@ class _FileUploaderState extends State<FileUploader> {
     return _droppedFile?.name ?? _pickedFile?.name ?? '';
   }
 
-  void _applyDataFromString(String jsonString) {
-    GlobalData.appData.groups =
-        AppData.groupsFromJsonString(jsonString, GlobalData.appData);
-    GlobalData.appData.saveToStorage();
-    GlobalData.appData.notifyChanged();
-  }
-
   void _applyDataFromFile() {
+    Future<void> replaceFromJson(String jsonString) async {
+      GlobalData.groupStorage.replaceFromJson(jsonString);
+      await GlobalData.saveToStorage();
+    }
+
     if (_droppedFile != null) {
       FileReader reader = FileReader();
       reader.onLoad.listen((event) {
         final jsonString = reader.result as String?;
         if (jsonString != null) {
-          _applyDataFromString(jsonString);
-          Navigator.of(context).pop();
+          replaceFromJson(jsonString).whenComplete(() {
+            Navigator.of(context).pop();
+          });
         }
       });
       reader.readAsText(_droppedFile!);
     } else if (_pickedFile?.bytes != null) {
       final jsonString = const Utf8Decoder().convert(_pickedFile!.bytes!);
-      _applyDataFromString(jsonString);
-      Navigator.of(context).pop();
+      replaceFromJson(jsonString).whenComplete(() {
+        Navigator.of(context).pop();
+      });
     }
   }
 
   Future<void> _pickFile() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: [GlobalData.dataFileExtension],
+      allowedExtensions: [GlobalConstants.dataFileExtension],
       allowMultiple: false,
       lockParentWindow: true,
     );
@@ -224,7 +224,7 @@ class _FileUploaderState extends State<FileUploader> {
                 for (final element in ev) {
                   _droppedFile = element is File &&
                           element.name.toLowerCase().endsWith(
-                              '.${GlobalData.dataFileExtension.toLowerCase()}')
+                              '.${GlobalConstants.dataFileExtension.toLowerCase()}')
                       ? element
                       : null;
                   if (_droppedFile != null) {

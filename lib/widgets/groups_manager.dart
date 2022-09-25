@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:on_hand/data/group.dart';
+import 'package:on_hand/data/group_storage.dart';
 import 'package:on_hand/global/global_data.dart';
-import 'package:on_hand/data/app_data.dart';
-import 'package:on_hand/data/group_info.dart';
 import 'package:on_hand/widgets/group_editor.dart';
 import 'package:on_hand/widgets/group_tile.dart';
 
@@ -14,20 +14,16 @@ class GroupsManager extends StatefulWidget {
 }
 
 class _GroupsManagerState extends State<GroupsManager> {
-  final AppData groupData;
+  final GroupStorage groupStorage;
 
-  _GroupsManagerState() : groupData = AppData.clone(GlobalData.appData) {
-    for (final group in groupData.groups) {
-      group.data = groupData;
-    }
-  }
+  _GroupsManagerState() : groupStorage = GlobalData.groupStorage.clone();
 
   void _update() {
     setState(() {});
   }
 
   void _createGroup() {
-    final forbiddenNames = groupData.groups.map((g) => g.title).toList();
+    final forbiddenNames = groupStorage.titles;
     showDialog<String?>(
       context: context,
       barrierDismissible: false,
@@ -43,9 +39,11 @@ class _GroupsManagerState extends State<GroupsManager> {
       },
     ).then((groupTitle) {
       if (groupTitle != null && groupTitle.isNotEmpty) {
-        setState(() {
-          groupData.addGroup(groupTitle);
-        });
+        final group = Group(
+          groupStorage,
+          groupTitle,
+        );
+        groupStorage.addGroup(group);
       }
     });
   }
@@ -63,16 +61,20 @@ class _GroupsManagerState extends State<GroupsManager> {
         if (oldIndex < newIndex) {
           newIndex--;
         }
-        final GroupInfo group = groupData.groups.removeAt(oldIndex);
-        groupData.groups.insert(newIndex, group);
+        groupStorage.moveGroup(oldIndex, newIndex);
       },
-      itemCount: groupData.groups.length,
+      itemCount: groupStorage.groupsLength,
       itemBuilder: ((context, index) {
-        return ReorderableDragStartListener(
-          key: ValueKey(index),
-          index: index,
-          child: GroupTile(groupData.groups[index]),
-        );
+        final group = groupStorage.groupAt(index);
+        if (group != null) {
+          return ReorderableDragStartListener(
+            key: ValueKey(index),
+            index: index,
+            child: GroupTile(group),
+          );
+        } else {
+          return Container();
+        }
       }),
     );
   }
@@ -80,7 +82,7 @@ class _GroupsManagerState extends State<GroupsManager> {
   @override
   void initState() {
     super.initState();
-    groupData.addListener(_update);
+    groupStorage.addListener(_update);
   }
 
   @override
@@ -97,9 +99,8 @@ class _GroupsManagerState extends State<GroupsManager> {
         SizedBox(
           width: 400,
           height: 365,
-          child: groupData.groups.isNotEmpty
-              ? _getListView()
-              : _getInformationBadge(),
+          child:
+              groupStorage.isNotEmpty ? _getListView() : _getInformationBadge(),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 16),
@@ -112,7 +113,7 @@ class _GroupsManagerState extends State<GroupsManager> {
                 child: Text(tr('cancel_changes')),
               ),
               ElevatedButton(
-                onPressed: () => Navigator.pop(context, groupData),
+                onPressed: () => Navigator.pop(context, groupStorage),
                 child: Text(tr('save')),
               ),
             ],
@@ -124,7 +125,7 @@ class _GroupsManagerState extends State<GroupsManager> {
 
   @override
   void dispose() {
-    groupData.removeListener(_update);
+    groupStorage.removeListener(_update);
     super.dispose();
   }
 }

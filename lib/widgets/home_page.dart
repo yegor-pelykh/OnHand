@@ -3,9 +3,9 @@ import 'dart:html' as p_html;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:on_hand/data/bookmark_info.dart';
+import 'package:on_hand/data/group_storage.dart';
+import 'package:on_hand/global/global_constants.dart';
 import 'package:on_hand/global/global_data.dart';
-import 'package:on_hand/data/app_data.dart';
 import 'package:on_hand/widgets/bookmark_editor.dart';
 import 'package:on_hand/widgets/bookmarks_view.dart';
 import 'package:on_hand/widgets/file_uploader.dart';
@@ -31,9 +31,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
-  void _onPageVisibilityChange(p_html.Event e) {
-    if (p_html.document.hidden == false) {
-      _reloadPageContent();
+  void _activateTab(int index) {
+    if (_tabController != null) {
+      _tabController!.index = index;
     }
   }
 
@@ -41,12 +41,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _tabController?.removeListener(_onTabIndexChange);
     _activeGroupIndex = _normalizeGroupIndex(
       _activeGroupIndex,
-      GlobalData.appData.groups.length,
+      GlobalData.groupStorage.groupsLength,
     );
-    if (GlobalData.appData.groups.isNotEmpty) {
+    if (GlobalData.groupStorage.isNotEmpty) {
       _tabController = TabController(
         animationDuration: Duration.zero,
-        length: GlobalData.appData.groups.length,
+        length: GlobalData.groupStorage.groupsLength,
         initialIndex: _activeGroupIndex,
         vsync: this,
       );
@@ -76,102 +76,33 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           title: Text(tr('bookmark_creating_dlg_title')),
           content: BookmarkEditor(
             BookmarkEditorMode.create,
-            groups: GlobalData.appData.groups.map((g) => g.title).toList(),
-            selectedGroup: GlobalData.appData.groups[groupIndex].title,
+            groupTitles: GlobalData.groupStorage.titles,
+            selectedGroupTitle:
+                GlobalData.groupStorage.groupAt(groupIndex)?.title ?? '',
           ),
         );
       },
     ).then((result) {
       if (result != null) {
-        final groupIndex = GlobalData.appData.groups.indexWhere(
+        final groupIndex = GlobalData.groupStorage.groupIndexWhere(
           (g) => g.title == result.groupTitle,
         );
         if (groupIndex >= 0) {
-          final group = GlobalData.appData.groups[groupIndex];
-          setState(() {
-            group.addBookmark(result.url, result.title, result.icon);
-            GlobalData.appData.saveToStorage();
-            _tabController?.index = groupIndex;
-          });
-        }
-      }
-    });
-  }
-
-  void _editBookmark(BuildContext context, BookmarkInfo bookmark) {
-    final groupTitle = bookmark.group.title;
-    showDialog<BookmarkEditorResult?>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          scrollable: true,
-          title: Text(tr('bookmark_editing_dlg_title')),
-          content: BookmarkEditor(
-            BookmarkEditorMode.edit,
-            initialAddress: bookmark.url.toString(),
-            initialTitle: bookmark.title,
-            selectedGroup: groupTitle,
-            groups: GlobalData.appData.groups.map((g) => g.title).toList(),
-          ),
-        );
-      },
-    ).then((result) {
-      if (result != null) {
-        bookmark.url = result.url;
-        bookmark.title = result.title;
-        bookmark.icon = result.icon;
-        if (result.groupTitle != groupTitle) {
-          final newGroupIndex =
-              GlobalData.appData.moveBookmark(bookmark, result.groupTitle);
-          if (newGroupIndex != null) {
-            _tabController?.index = newGroupIndex;
+          final group = GlobalData.groupStorage.groupAt(groupIndex);
+          if (group != null) {
+            setState(() {
+              group.addBookmark(result.url, result.title, result.icon);
+              GlobalData.saveToStorage();
+              _tabController?.index = groupIndex;
+            });
           }
         }
-        GlobalData.appData.saveToStorage();
-        _update();
-      }
-    });
-  }
-
-  void _deleteBookmark(BuildContext context, BookmarkInfo bookmark) {
-    showDialog<bool?>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          scrollable: true,
-          title: Text(tr('bookmark_deleting_dlg_title')),
-          content: Text(tr('bookmark_deleting_dlg_content')),
-          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          actions: <Widget>[
-            TextButton(
-              child: Text(tr('no')),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-            ElevatedButton(
-              child: Text(tr('yes')),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
-      },
-    ).then((result) {
-      if (result == true) {
-        final group = bookmark.group;
-        group.removeBookmark(bookmark);
-        GlobalData.appData.saveToStorage();
-        _update();
       }
     });
   }
 
   void _openGroupManagement() async {
-    showDialog<AppData?>(
+    showDialog<GroupStorage?>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
@@ -181,11 +112,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           content: const GroupsManager(),
         );
       },
-    ).then((groupData) {
-      if (groupData != null) {
-        GlobalData.appData.groups = groupData.groups;
-        GlobalData.appData.saveToStorage();
-        _update();
+    ).then((groupStorage) {
+      if (groupStorage != null) {
+        GlobalData.groupStorage.replaceFrom(groupStorage);
+        GlobalData.saveToStorage();
       }
     });
   }
@@ -202,8 +132,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _downloadData() {
-    final jsonString = AppData.groupsToJsonString(GlobalData.appData.groups);
-    final ext = GlobalData.dataFileExtension.toLowerCase();
+    final jsonString = GlobalData.groupStorage.json;
+    final ext = GlobalConstants.dataFileExtension.toLowerCase();
     _downloadFile(jsonString, ext);
   }
 
@@ -258,14 +188,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   AppBar _getAppBar() {
     List<Widget> appBarChildren = <Widget>[];
-    if (_tabController != null && GlobalData.appData.groups.isNotEmpty) {
+    if (_tabController != null && GlobalData.groupStorage.isNotEmpty) {
       appBarChildren.add(
         TabBar(
           controller: _tabController,
           indicatorWeight: kTabIndicatorWeight,
           isScrollable: true,
-          tabs: GlobalData.appData.groups
-              .map(
+          tabs: GlobalData.groupStorage
+              .groupsMap(
                 (group) => Tab(
                   height: kMinInteractiveDimension,
                   child: Text(group.title),
@@ -285,34 +215,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _getBody() {
-    if (_tabController != null && GlobalData.appData.groups.isNotEmpty) {
-      return TabBarView(
-        controller: _tabController,
-        children: GlobalData.appData.groups
-            .map(
-                (group) => BookmarksView(group, _editBookmark, _deleteBookmark))
-            .toList(),
-      );
-    } else {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              tr('home_no_groups_hint'),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Opacity(
-              opacity: 0.5,
-              child: Text(
-                tr('home_no_groups_hint_details'),
+    if (_tabController != null) {
+      if (GlobalData.groupStorage.isNotEmpty) {
+        return TabBarView(
+          controller: _tabController,
+          children: GlobalData.groupStorage
+              .groupsMap((g) => BookmarksView(g, _activateTab))
+              .toList(),
+        );
+      } else {
+        return Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                tr('home_no_groups_hint'),
                 textAlign: TextAlign.center,
               ),
-            ),
-          ],
-        ),
-      );
+              const SizedBox(height: 8),
+              Opacity(
+                opacity: 0.5,
+                child: Text(
+                  tr('home_no_groups_hint_details'),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    } else {
+      return Container();
     }
   }
 
@@ -348,7 +281,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         onTap: () => _openGroupManagement(),
       ),
     );
-    if (GlobalData.appData.groups.isNotEmpty) {
+    if (GlobalData.groupStorage.isNotEmpty) {
       children.add(
         SpeedDialChild(
           child: const Icon(Icons.download),
@@ -378,22 +311,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  void _reloadPageContent() {
-    final newGroups = AppData.groupsFromStorage(GlobalData.appData);
-    final groupsUpToDate =
-        AppData.groupsEqual(GlobalData.appData.groups, newGroups);
-    if (!groupsUpToDate) {
-      GlobalData.appData.groups = newGroups;
-      _update();
-    }
-  }
-
   @override
-  void initState() {
-    p_html.document
-        .addEventListener("visibilitychange", _onPageVisibilityChange);
-    GlobalData.appData.addListener(_update);
-    _reloadPageContent();
+  Future<void> initState() async {
+    GlobalData.groupStorage.addListener(_update);
+    GlobalData.loadFromStorage().whenComplete(() {
+      GlobalData.subscribeToStorageChange();
+    });
     super.initState();
   }
 
@@ -408,9 +331,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    GlobalData.appData.removeListener(_update);
-    p_html.document
-        .removeEventListener("visibilitychange", _onPageVisibilityChange);
+    GlobalData.unsubscribeFromStorageChange();
+    GlobalData.groupStorage.removeListener(_update);
     super.dispose();
   }
 

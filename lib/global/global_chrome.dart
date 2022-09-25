@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:js';
-import 'package:flutter/foundation.dart';
 import 'package:on_hand/chrome_bridge/chrome_communication_message.dart';
 import 'package:on_hand/chrome_bridge/chrome_message_event.dart';
 import 'package:on_hand/chrome_bridge/chrome_port.dart';
@@ -22,13 +20,11 @@ abstract class GlobalChrome {
   static ChromePort? _port;
   static StreamSubscription<ChromeMessageEvent>? _streamSubscription;
 
-  static bool get supported => ChromeCommon.isWebExtension;
   static bool get connected => _port != null;
 
   static String _getUniquePortName() => 'content-${Utils.generateUUID()}';
 
   static void connect() {
-    if (!supported) return;
     disconnect();
     _port = ChromeRuntime.connect(
       connectInfo: ChromeRuntimeConnectInfo(name: _getUniquePortName()),
@@ -44,8 +40,6 @@ abstract class GlobalChrome {
         }
         _awaitingMessages.remove(message.uuid);
       } else {
-        debugPrint(
-            'MESSAGE IN CONTENT SCRIPT: type=\'${message.type}\', data=\'${message.data}\', error=\'${message.error}\'');
         final handler = _messageHandlers[message.type];
         if (handler != null) {
           handler(message.data, message.error).then((responseData) {
@@ -77,7 +71,6 @@ abstract class GlobalChrome {
   }
 
   static void disconnect() {
-    if (!supported) return;
     if (_streamSubscription != null) {
       _streamSubscription!.cancel();
       _streamSubscription = null;
@@ -94,11 +87,6 @@ abstract class GlobalChrome {
     String? error,
   }) async {
     final completer = Completer<dynamic>();
-    if (!supported) {
-      return completer.completeError(
-        'Unable to send message because the app is not a chrome extension.',
-      );
-    }
     if (_port == null) {
       return completer.completeError(
         'There is no connection to the ServiceWorker.',
@@ -118,7 +106,6 @@ abstract class GlobalChrome {
   }
 
   static Future<dynamic> handleGetData(dynamic data, String? error) async {
-    final groupList = GlobalData.appData.groups.map((g) => g.title).toList();
-    return groupList;
+    return GlobalData.groupStorage.titles;
   }
 }

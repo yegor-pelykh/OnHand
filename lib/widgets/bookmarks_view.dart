@@ -1,20 +1,17 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:on_hand/data/bookmark_info.dart';
+import 'package:on_hand/data/group.dart';
 import 'package:on_hand/global/global_data.dart';
-import 'package:on_hand/data/group_info.dart';
 import 'package:on_hand/widgets/bookmark_tile.dart';
 import 'package:reorderables/reorderables.dart';
 
 class BookmarksView extends StatefulWidget {
-  final GroupInfo group;
-  final Function(BuildContext context, BookmarkInfo bookmark) editFunc;
-  final Function(BuildContext context, BookmarkInfo bookmark) deleteFunc;
+  final Group group;
+  final void Function(int groupIndex) funcActivateGroup;
 
   const BookmarksView(
     this.group,
-    this.editFunc,
-    this.deleteFunc, {
+    this.funcActivateGroup, {
     super.key,
   });
 
@@ -25,7 +22,7 @@ class BookmarksView extends StatefulWidget {
 class _BookmarksViewState extends State<BookmarksView> {
   List<BookmarkTile> _getBookmarks() {
     return widget.group.bookmarks
-        .map((b) => BookmarkTile(b, widget.editFunc, widget.deleteFunc))
+        .map((b) => BookmarkTile(b, widget.funcActivateGroup))
         .toList();
   }
 
@@ -39,10 +36,9 @@ class _BookmarksViewState extends State<BookmarksView> {
             child: ReorderableWrap(
               spacing: 16,
               runSpacing: 16,
-              onReorder: (oldIndex, newIndex) {
+              onReorder: (oldIndex, newIndex) async {
                 widget.group.moveBookmark(oldIndex, newIndex);
-                GlobalData.appData.saveToStorage();
-                GlobalData.appData.notifyChanged();
+                await GlobalData.saveToStorage();
               },
               children: _getBookmarks(),
             ),
