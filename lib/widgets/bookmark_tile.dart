@@ -11,20 +11,15 @@ import 'package:on_hand/helpers/url_launcher.dart';
 import 'package:on_hand/widgets/bookmark_editor.dart';
 
 const double iconSize = 24;
-const textHeightBehavior = TextHeightBehavior(
-  applyHeightToFirstAscent: false,
-  applyHeightToLastDescent: false,
-  leadingDistribution: TextLeadingDistribution.even,
-);
 
 class BookmarkTile extends StatefulWidget {
   final Bookmark bookmark;
   final void Function(int groupIndex) funcActivateGroup;
 
-  const BookmarkTile(
-    this.bookmark,
-    this.funcActivateGroup, {
+  const BookmarkTile({
     super.key,
+    required this.bookmark,
+    required this.funcActivateGroup,
   });
 
   @override
@@ -139,6 +134,7 @@ class _BookmarkTileState extends State<BookmarkTile> {
       imageWidget = const Icon(
         Icons.favorite,
         color: GlobalConstants.mainColor,
+        size: iconSize,
       );
     }
     return SizedBox(
@@ -150,7 +146,6 @@ class _BookmarkTileState extends State<BookmarkTile> {
 
   void _showBookmarkMenu(
     BuildContext context,
-    TextHeightBehavior textHeightBehavior,
   ) {
     showModalBottomSheet(
       context: context,
@@ -159,8 +154,8 @@ class _BookmarkTileState extends State<BookmarkTile> {
       ),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(4),
-          topRight: Radius.circular(4),
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
         ),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -169,28 +164,24 @@ class _BookmarkTileState extends State<BookmarkTile> {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Container(
-              color: Theme.of(context).cardColor,
-              child: ListTile(
-                dense: true,
-                minLeadingWidth: iconSize,
-                leading: _getLeadingWidget(),
-                title: Text(
-                  widget.bookmark.title,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  maxLines: 1,
-                  textHeightBehavior: textHeightBehavior,
-                ),
-                subtitle: Text(
-                  widget.bookmark.url.toString(),
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  maxLines: 1,
-                  textHeightBehavior: textHeightBehavior,
-                ),
+            ListTile(
+              dense: true,
+              minLeadingWidth: iconSize,
+              leading: _getLeadingWidget(),
+              title: Text(
+                widget.bookmark.title,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                maxLines: 1,
+              ),
+              subtitle: Text(
+                widget.bookmark.url.toString(),
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                maxLines: 1,
               ),
             ),
+            const Divider(),
             const SizedBox(height: 8),
             ListTile(
               leading: const Icon(Icons.edit),
@@ -222,11 +213,13 @@ class _BookmarkTileState extends State<BookmarkTile> {
     final url = widget.bookmark.url;
     final title = widget.bookmark.title;
     return SizedBox(
-      width: 300,
+      width: 200,
+      height: 54,
       child: Card(
         margin: EdgeInsets.zero,
+        elevation: 4,
         child: InkWell(
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
           onTap: () {
             UrlLauncher.launch(url, _isCtrlKeyPressed());
           },
@@ -244,19 +237,17 @@ class _BookmarkTileState extends State<BookmarkTile> {
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
                 maxLines: 1,
-                textHeightBehavior: textHeightBehavior,
               ),
               subtitle: Text(
                 url.toString(),
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
                 maxLines: 1,
-                textHeightBehavior: textHeightBehavior,
               ),
               trailing: IconButton(
                 icon: const Icon(Icons.more_vert),
                 onPressed: () {
-                  _showBookmarkMenu(context, textHeightBehavior);
+                  _showBookmarkMenu(context);
                 },
               ),
             ),

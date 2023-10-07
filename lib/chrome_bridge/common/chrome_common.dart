@@ -17,7 +17,8 @@ abstract class ChromeCommon {
   }
 
   static bool get isWebExtension {
-    return context['chrome'] != null;
+    final chrome = context['chrome'];
+    return chrome != null && chrome['runtime'] != null;
   }
 
   static setNullableProperty<T>(JsObject obj, String propName, T? value) {

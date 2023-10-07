@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 export type Message = {
   uuid: string,
   type: string,
-  data: any,
+  data?: string,
   error?: string,
 }
 export type MessageConfirmation = {
   resolve: ((value: any) => void),
   reject: ((reason?: any) => void),
 }
-export type MessageHandler = (port: chrome.runtime.Port, data: any, error?: string) => Promise<any>;
+export type MessageHandler = (port: chrome.runtime.Port, data: any, error: any) => Promise<any>;
 
 @Injectable({
   providedIn: 'root'
@@ -33,40 +33,44 @@ export class CommunicationService {
     return `popup-${this.genUUID()}`;
   }
 
-  private messageListener(message: any, port: chrome.runtime.Port): void {
+  private messageListener(message: Message, port: chrome.runtime.Port): void {
     if ('uuid' in message && 'type' in message && 'data' in message) {
       const { uuid, type, data, error } = message;
+      const dataObj = data != null
+        ? JSON.parse(data)
+        : undefined;
+      const errorObj = error != null
+        ? JSON.parse(error)
+        : undefined;
       const confirmation = this.awaitingMessages.get(uuid);
       if (confirmation != null) {
-        if (error != null) {
-          confirmation.reject(error);
+        if (errorObj != null) {
+          confirmation.reject(errorObj);
         } else {
-          confirmation.resolve(data);
+          confirmation.resolve(dataObj);
         }
         this.awaitingMessages.delete(uuid);
       } else {
+        const response = <Message>{
+          uuid: uuid,
+          type: type
+        };
         const handler = this.messageHandlers.get(type);
         if (handler != null) {
-          handler.call(this, port, data, error).then((responseData) => {
-            port.postMessage(<Message>{
-              uuid: uuid,
-              type: type,
-              data: responseData,
-            });
+          handler.call(this, port, dataObj, errorObj).then((responseData) => {
+            if (responseData != null) {
+              response.data = JSON.stringify(responseData);
+            }
+            port.postMessage(response);
           }).catch((reason) => {
-            const strError = typeof reason === 'string' ? reason : JSON.stringify(reason);
-            port.postMessage(<Message>{
-              uuid: uuid,
-              type: type,
-              error: strError,
-            });
+            if (reason != null) {
+              response.error = JSON.stringify(reason);
+            }
+            port.postMessage(response);
           });
         } else {
-          port.postMessage(<Message>{
-            uuid: uuid,
-            type: type,
-            error: 'There is no handler for this message',
-          });
+          response.error = JSON.stringify('There is no handler for this message');
+          port.postMessage(response);
         }
       }
     }
@@ -95,12 +99,17 @@ export class CommunicationService {
           resolve: resolve,
           reject: reject,
         });
-        this.port.postMessage(<Message>{
+        const msg = <Message>{
           uuid: uuid,
-          type: type,
-          data: data,
-          error: error,
-        });
+          type: type
+        };
+        if (data != null) {
+          msg.data = JSON.stringify(data);
+        }
+        if (error != null) {
+          msg.error = JSON.stringify(error);
+        }
+        this.port.postMessage(msg);
       } else {
         this.awaitingMessages.delete(uuid);
         reject('The port is not connected.');

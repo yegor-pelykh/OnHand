@@ -1,0 +1,86 @@
+:host {
+    margin: 0;
+    padding: 0;
+
+    &>.main-container {
+        width: 380px;
+        height: 400px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 40px;
+
+        &>.splash-shape {
+            flex: 0 0 auto;
+            filter: drop-shadow(2px 4px 4px rgb(0 0 0 / 0.75));
+            animation: 1.5s ease 0s infinite beat;
+        }
+
+        &>.bookmark-info-form {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+
+            &>*:not(:first-child) {
+                margin-top: 20px;
+            }
+
+            &>.favicon-area {
+                align-self: center;
+                width: 24px;
+                height: 24px;
+
+                &>.orig-favicon {
+                    width: 100%;
+                    height: 100%;
+                }
+
+                &>.dummy-favicon {
+                    --md-icon-font: 'Material Symbols Rounded';
+                    color: var(--md-sys-color-primary);
+                    font-variation-settings: 'FILL' 1;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+
+        &>.success-info-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+
+            &>.success-icon {
+                --md-icon-font: 'Material Symbols Rounded';
+                color: var(--md-sys-color-primary);
+                font-variation-settings: 'FILL' 1;
+                font-size: 150px;
+                width: 150px;
+                height: 150px;
+            }
+
+            &>.success-text {
+                color: var(--md-sys-color-primary);
+                font-size: 14px;
+                margin: 20px;
+            }
+        }
+    }
+}
+
+@keyframes beat {
+
+    0%,
+    50%,
+    100% {
+        transform: scale(1, 1);
+    }
+
+    30%,
+    80% {
+        transform: scale(0.90, 0.93);
+    }
+}

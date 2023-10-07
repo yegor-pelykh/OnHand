@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:on_hand/data/group.dart';
 import 'package:on_hand/global/global_data.dart';
 import 'package:on_hand/widgets/bookmark_tile.dart';
-import 'package:reorderables/reorderables.dart';
+import 'package:reorderable_grid_view/reorderable_grid_view.dart';
+
+const viewPadding = 88.0;
+const gridChildSize = Size(300, 54);
+const gridSpacing = Size(16, 16);
+const gridChildPlaceholderOpacity = 0.2;
 
 class BookmarksView extends StatefulWidget {
   final Group group;
@@ -20,28 +25,48 @@ class BookmarksView extends StatefulWidget {
 }
 
 class _BookmarksViewState extends State<BookmarksView> {
-  List<BookmarkTile> _getBookmarks() {
-    return widget.group.bookmarks
-        .map((b) => BookmarkTile(b, widget.funcActivateGroup))
-        .toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     if (widget.group.bookmarks.isNotEmpty) {
       return SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(80),
-          child: Center(
-            child: ReorderableWrap(
-              spacing: 16,
-              runSpacing: 16,
-              onReorder: (oldIndex, newIndex) async {
-                widget.group.moveBookmark(oldIndex, newIndex);
-                await GlobalData.saveToStorage();
-              },
-              children: _getBookmarks(),
-            ),
+        padding: const EdgeInsets.all(viewPadding),
+        scrollDirection: Axis.vertical,
+        child: Center(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final columnCount = (constraints.maxWidth + gridSpacing.width) ~/
+                  (gridChildSize.width + gridSpacing.width);
+              final realChildWidth =
+                  (constraints.maxWidth + gridSpacing.width) / columnCount -
+                      gridSpacing.width;
+              final childAspectRatio = realChildWidth / gridChildSize.height;
+              return ReorderableGridView.count(
+                shrinkWrap: true,
+                crossAxisCount: columnCount,
+                crossAxisSpacing: gridSpacing.width,
+                mainAxisSpacing: gridSpacing.height,
+                childAspectRatio: childAspectRatio,
+                onReorder: (oldIndex, newIndex) {
+                  setState(() {
+                    widget.group.moveBookmark(oldIndex, newIndex);
+                    GlobalData.saveToStorage();
+                  });
+                },
+                dragWidgetBuilder: (index, child) => child,
+                placeholderBuilder: (dragIndex, dropIndex, dragWidget) =>
+                    Opacity(
+                  opacity: gridChildPlaceholderOpacity,
+                  child: dragWidget,
+                ),
+                children: widget.group.bookmarks
+                    .map((bookmark) => BookmarkTile(
+                          key: ValueKey(bookmark),
+                          bookmark: bookmark,
+                          funcActivateGroup: widget.funcActivateGroup,
+                        ))
+                    .toList(),
+              );
+            },
           ),
         ),
       );

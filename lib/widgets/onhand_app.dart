@@ -1,17 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:on_hand/global/app_color_scheme.dart';
 import 'package:on_hand/widgets/home_page.dart';
 import 'dart:html' as p_html;
 
 class OnHandApp extends StatelessWidget {
-  final ThemeData? lightTheme;
-  final ThemeData? darkTheme;
-
-  OnHandApp({
-    super.key,
-    this.lightTheme,
-    this.darkTheme,
-  }) {
+  OnHandApp({super.key}) {
     p_html.document.body!.addEventListener('contextmenu', (event) {
       event.preventDefault();
     });
@@ -24,8 +18,26 @@ class OnHandApp extends StatelessWidget {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       title: 'OnHand',
-      theme: lightTheme,
-      darkTheme: darkTheme,
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: AppColorScheme.light,
+        dialogBackgroundColor: AppColorScheme.light.surface,
+        scaffoldBackgroundColor: AppColorScheme.light.background,
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: AppColorScheme.light.surface,
+          modalBackgroundColor: AppColorScheme.light.surface,
+        ),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        colorScheme: AppColorScheme.dark,
+        dialogBackgroundColor: AppColorScheme.dark.surface,
+        scaffoldBackgroundColor: AppColorScheme.dark.background,
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: AppColorScheme.dark.surface,
+          modalBackgroundColor: AppColorScheme.dark.surface,
+        ),
+      ),
       themeMode: ThemeMode.system,
       home: const HomePage(),
     );

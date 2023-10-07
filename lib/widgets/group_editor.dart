@@ -62,6 +62,7 @@ class _GroupEditorState extends State<GroupEditor> {
               controller: _titleEditingController,
               decoration: InputDecoration(
                 labelText: tr('group_title_label'),
+                border: const OutlineInputBorder(),
               ),
               validator: (value) => _validateTitle(value),
               onFieldSubmitted: (value) => _submit(),

@@ -9,16 +9,6 @@ const keyIcon = 'i';
 
 class Bookmark extends ChangeNotifier {
   Group _group;
-  Uri _url;
-  String _title;
-  Uint8List? _icon;
-
-  Map<String, dynamic> get json => {
-        keyUrl: url.toString(),
-        keyTitle: title,
-        keyIcon: icon != null ? base64.encode(icon!) : null,
-      };
-
   Group get group => _group;
   set group(Group v) {
     if (_group != v) {
@@ -27,6 +17,7 @@ class Bookmark extends ChangeNotifier {
     }
   }
 
+  Uri _url;
   Uri get url => _url;
   set url(Uri v) {
     if (_url != v) {
@@ -35,6 +26,7 @@ class Bookmark extends ChangeNotifier {
     }
   }
 
+  String _title;
   String get title => _title;
   set title(String v) {
     if (_title != v) {
@@ -43,6 +35,7 @@ class Bookmark extends ChangeNotifier {
     }
   }
 
+  Uint8List? _icon;
   Uint8List? get icon => _icon;
   set icon(Uint8List? v) {
     if (!_byteListsEqualN(_icon, v)) {
@@ -50,6 +43,12 @@ class Bookmark extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Map<String, dynamic> get json => {
+        keyUrl: url.toString(),
+        keyTitle: title,
+        keyIcon: icon != null ? base64.encode(icon!) : null,
+      };
 
   Bookmark(this._group, this._url, this._title, this._icon);
 

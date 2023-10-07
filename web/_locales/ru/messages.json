@@ -1,5 +1,20 @@
 {
     "appDesc": {
         "message": "Сохраняйте закладки ваших любимых сайтов на странице \"Новой вкладки\" удобно и безопасно."
+    },
+    "addressLabel": {
+        "message": "Адрес"
+    },
+    "titleLabel": {
+        "message": "Название"
+    },
+    "groupLabel": {
+        "message": "Группа"
+    },
+    "addBookmarkLabel": {
+        "message": "Добавить закладку"
+    },
+    "successInfoLabel": {
+        "message": "Закладка успешно добавлена!"
     }
 }

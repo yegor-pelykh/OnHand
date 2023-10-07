@@ -319,6 +319,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
               controller: _addressEditingController,
               decoration: InputDecoration(
                 labelText: tr('bookmark_address_label'),
+                border: const OutlineInputBorder(),
               ),
               onChanged: (value) => _onAddressChanged(value),
               validator: (value) => _validateAddress(value),
@@ -334,6 +335,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
                     controller: _titleEditingController,
                     decoration: InputDecoration(
                       labelText: tr('bookmark_title_label'),
+                      border: const OutlineInputBorder(),
                     ),
                     onChanged: (value) => _onTitleChanged(value),
                     validator: (value) => _validateTitle(value),
@@ -347,6 +349,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
             DropdownButtonFormField(
               decoration: InputDecoration(
                 labelText: tr('bookmark_group_label'),
+                border: const OutlineInputBorder(),
               ),
               icon: const Icon(Icons.keyboard_arrow_down),
               value: _selectedGroupTitle,

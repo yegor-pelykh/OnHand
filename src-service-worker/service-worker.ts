@@ -1,14 +1,17 @@
+import { Buffer } from "buffer";
+import { decodeImage, encodePng, IcoDecoder } from "image-in-browser";
+
 type Message = {
     uuid: string,
     type: string,
-    data: any,
+    data?: string,
     error?: string,
 }
 type MessageConfirmation = {
     resolve: ((value: any) => void),
     reject: ((reason?: any) => void),
 }
-type MessageHandler = (port: chrome.runtime.Port, data: any, error?: string) => Promise<any>;
+type MessageHandler = (port: chrome.runtime.Port, data: any, error: any) => Promise<any>;
 
 abstract class Helpers {
     static genUUID(): string {
@@ -21,7 +24,7 @@ abstract class ConnectionManager {
     private static connectedPorts: Set<chrome.runtime.Port> = new Set<chrome.runtime.Port>();
     private static awaitingMessages: Map<string, MessageConfirmation> = new Map<string, MessageConfirmation>();
     private static messageHandlers: Map<string, MessageHandler> = new Map<string, MessageHandler>([
-        [ 'get-data', this.handlerGetData ],
+        [ 'to-png', this.handlerConvertToPng ],
     ]);
 
     private static getPortType(portName: string) {
@@ -35,37 +38,41 @@ abstract class ConnectionManager {
     private static messageListener(message: Message, port: chrome.runtime.Port): void {
         if ('uuid' in message && 'type' in message && 'data' in message) {
             const { uuid, type, data, error } = message;
+            const dataObj = data != null
+                ? JSON.parse(data)
+                : undefined;
+            const errorObj = error != null
+                ? JSON.parse(error)
+                : undefined;
             const confirmation = this.awaitingMessages.get(uuid);
             if (confirmation != null) {
-                if (error != null) {
-                    confirmation.reject(error);
+                if (errorObj != null) {
+                    confirmation.reject(errorObj);
                 } else {
-                    confirmation.resolve(data);
+                    confirmation.resolve(dataObj);
                 }
                 this.awaitingMessages.delete(uuid);
             } else {
+                const response = <Message>{
+                    uuid: uuid,
+                    type: type
+                };
                 const handler = this.messageHandlers.get(type);
                 if (handler != null) {
-                    handler.call(this, port, data, error).then((responseData) => {
-                        port.postMessage(<Message>{
-                            uuid: uuid,
-                            type: type,
-                            data: responseData,
-                        });
+                    handler.call(this, port, dataObj, errorObj).then((responseData) => {
+                        if (responseData != null) {
+                            response.data = JSON.stringify(responseData);
+                        }
+                        port.postMessage(response);
                     }).catch((reason) => {
-                        const strError = typeof reason === 'string' ? reason : JSON.stringify(reason);
-                        port.postMessage(<Message>{
-                            uuid: uuid,
-                            type: type,
-                            error: strError,
-                        });
+                        if (reason != null) {
+                            response.error = JSON.stringify(reason);
+                        }
+                        port.postMessage(response);
                     });
                 } else {
-                    port.postMessage(<Message>{
-                        uuid: uuid,
-                        type: type,
-                        error: 'There is no handler for this message',
-                    });
+                    response.error = JSON.stringify('There is no handler for this message');
+                    port.postMessage(response);
                 }
             }
         }
@@ -88,12 +95,17 @@ abstract class ConnectionManager {
                 resolve: resolve,
                 reject: reject,
             });
-            port.postMessage(<Message>{
+            const msg = <Message>{
                 uuid: uuid,
-                type: type,
-                data: data,
-                error: error,
-            });
+                type: type
+            }
+            if (data != null) {
+                msg.data = JSON.stringify(data);
+            }
+            if (error != null) {
+                msg.error = JSON.stringify(error);
+            }
+            port.postMessage(msg);
         });
         return promise;
     }
@@ -103,12 +115,38 @@ abstract class ConnectionManager {
         return await Promise.allSettled(promises);
     }
 
-    static async handlerGetData(port: chrome.runtime.Port, data: any, error?: string) {
-        const contentPort = Array.from(this.connectedPorts).find(p => this.getPortType(p.name) === "content");
-        if (contentPort != null) {
-            return await this.sendMessage(contentPort, 'get-data', null);
+    static async handlerConvertToPng(port: chrome.runtime.Port, data: any, error: any) {
+        const errorMsg = 'Can\'t convert image.';
+        if (typeof data === 'string') {
+            const bytes = Buffer.from(data, 'base64');
+            try {
+                let image = new IcoDecoder().decodeImageLargest(bytes);
+                image ??= decodeImage({
+                    data: bytes,
+                });
+                if (image !== undefined) {
+                    const outputBuffer = Buffer.from(encodePng({
+                        image: image,
+                    }));
+                    return {
+                        bytes: outputBuffer.toString('base64'),
+                        width: image.width,
+                        height: image.height,
+                    };
+                } else {
+                    throw errorMsg;
+                }
+            } catch (e) {
+                if (typeof e === 'string') {
+                    throw e;
+                } else if(e instanceof Error) {
+                    throw e.message;
+                } else {
+                    throw errorMsg;
+                }
+            }
         } else {
-            return null;
+            throw errorMsg;
         }
     }
 
@@ -159,7 +197,7 @@ abstract class ActionHandler {
                     conditions: [
                         new chrome.declarativeContent.PageStateMatcher({
                             pageUrl: {
-                                schemes: this.allowedSchemes
+                                schemes: this.allowedSchemes,
                             },
                         })
                     ],

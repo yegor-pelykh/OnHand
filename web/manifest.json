@@ -36,7 +36,8 @@
         }
     },
     "background": {
-        "service_worker": "service-worker.js"
+        "service_worker": "service-worker.js",
+        "type": "module"
     },
     "chrome_url_overrides": {
         "newtab": "index.html"

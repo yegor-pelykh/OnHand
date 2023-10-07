@@ -7,7 +7,7 @@ class ChromeCommunicationMessage extends ChromeObject {
   ChromeCommunicationMessage({
     required String uuid,
     required String type,
-    JsObject? data,
+    String? data,
     String? error,
   }) {
     this.uuid = uuid;
@@ -16,8 +16,7 @@ class ChromeCommunicationMessage extends ChromeObject {
     this.error = error;
   }
 
-  ChromeCommunicationMessage.fromProxy(JsObject jsProxy)
-      : super.fromProxy(jsProxy);
+  ChromeCommunicationMessage.fromProxy(JsObject jsProxy) : super.fromProxy(jsProxy);
 
   /// Message unique ID.
   String get uuid => jsProxy['uuid'];
@@ -28,12 +27,10 @@ class ChromeCommunicationMessage extends ChromeObject {
   set type(String value) => jsProxy['type'] = value;
 
   /// The data sent with this message.
-  JsObject? get data => jsProxy['data'];
-  set data(JsObject? value) =>
-      ChromeCommon.setNullableProperty(jsProxy, 'data', value);
+  String? get data => jsProxy['data'];
+  set data(String? value) => ChromeCommon.setNullableProperty(jsProxy, 'data', value);
 
   /// The error message.
   String? get error => jsProxy['error'];
-  set error(String? value) =>
-      ChromeCommon.setNullableProperty(jsProxy, 'error', value);
+  set error(String? value) => ChromeCommon.setNullableProperty(jsProxy, 'error', value);
 }

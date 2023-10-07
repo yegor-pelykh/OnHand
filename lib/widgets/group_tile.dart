@@ -3,12 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:on_hand/data/group.dart';
 import 'package:on_hand/widgets/group_editor.dart';
 
-const textHeightBehavior = TextHeightBehavior(
-  applyHeightToFirstAscent: false,
-  applyHeightToLastDescent: false,
-  leadingDistribution: TextLeadingDistribution.even,
-);
-
 class GroupTile extends StatefulWidget {
   final Group group;
 
@@ -85,8 +79,8 @@ class _GroupTileState extends State<GroupTile> {
       ),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(4),
-          topRight: Radius.circular(4),
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
         ),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -95,14 +89,22 @@ class _GroupTileState extends State<GroupTile> {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Container(
-              color: Theme.of(context).cardColor,
-              child: ListTile(
-                title: Text(widget.group.title),
-                subtitle: Text(
-                    plural('bookmarks_number', widget.group.bookmarks.length)),
+            ListTile(
+              dense: true,
+              title: Text(
+                widget.group.title,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                maxLines: 1,
+              ),
+              subtitle: Text(
+                plural('bookmarks_number', widget.group.bookmarks.length),
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                maxLines: 1,
               ),
             ),
+            const Divider(),
             const SizedBox(height: 8),
             ListTile(
               leading: const Icon(Icons.edit),
@@ -133,6 +135,7 @@ class _GroupTileState extends State<GroupTile> {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        dense: true,
         title: Text(widget.group.title),
         subtitle:
             Text(plural('bookmarks_number', widget.group.bookmarks.length)),

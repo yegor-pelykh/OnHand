@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as p_html;
-import 'package:image/image.dart' as p_image;
 import 'package:dio/dio.dart' as p_dio;
+import 'package:on_hand/chrome_bridge/common/chrome_common.dart';
+import 'package:on_hand/global/global_chrome.dart';
 import 'package:on_hand/helpers/charset_converter.dart';
 
 const signatureIco = [0, 0, 1, 0];
@@ -71,8 +73,7 @@ abstract class MetadataProvider {
       final charsetMarkIndex = contentTypeValue.lastIndexOf(charsetValueMark);
       if (charsetMarkIndex >= 0) {
         final charsetStartIndex = charsetMarkIndex + charsetValueMark.length;
-        final charsetEndIndex =
-            contentTypeValue.indexOf(';', charsetStartIndex);
+        final charsetEndIndex = contentTypeValue.indexOf(';', charsetStartIndex);
         final charset = contentTypeValue.substring(
           charsetStartIndex,
           charsetEndIndex >= 0 ? charsetEndIndex : null,
@@ -183,27 +184,35 @@ abstract class MetadataProvider {
     if (response.statusCode != 200) {
       return null;
     }
-    String? contentType = response.headers.value('content-type');
+    String? contentType = response.headers.value('content-type')?.toLowerCase();
     if (contentType == null || !contentType.contains('image')) {
       return null;
     }
-    Uint8List imageBytes = response.data as Uint8List;
-    if (contentType.contains(contentTypeFlagSvg)) {
-      return IconData(contentType, imageBytes);
+    if (!contentType.contains('image') && !contentType.contains('application/octet-stream')) {
+      return null;
+    }
+    final origImageBytes = response.data as Uint8List;
+    if (contentType.contains(contentTypeFlagSvg) || uri.path.endsWith('.svg')) {
+      return IconData(contentType, origImageBytes);
     } else {
-      p_image.Image? image =
-          p_image.IcoDecoder().decodeImageLargest(imageBytes);
-      image ??= p_image.decodeImage(imageBytes);
-      if (image == null) {
+      if (!ChromeCommon.isWebExtension) {
         return null;
       }
-      imageBytes = Uint8List.fromList(p_image.encodePng(image));
-      contentType = 'image/$contentTypeFlagPng';
+      final result = await GlobalChrome.sendMessage(
+        type: 'to-png',
+        data: base64Encode(origImageBytes),
+      ) as Map;
+      final imageBytes = result.containsKey('bytes') ? base64Decode(result['bytes']) : null;
+      final width = result.containsKey('width') ? result['width'] as int : 0;
+      final height = result.containsKey('height') ? result['height'] as int : 0;
+      if (imageBytes == null || width == 0 || height == 0) {
+        return null;
+      }
       return IconData(
-        contentType,
+        'image/$contentTypeFlagPng',
         imageBytes,
-        width: image.width,
-        height: image.height,
+        width: width,
+        height: height,
       );
     }
   }

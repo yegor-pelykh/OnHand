@@ -76,6 +76,9 @@ class _GroupsManagerState extends State<GroupsManager> {
           return Container();
         }
       }),
+      proxyDecorator: (child, index, animation) {
+        return child;
+      },
     );
   }
 
@@ -99,8 +102,7 @@ class _GroupsManagerState extends State<GroupsManager> {
         SizedBox(
           width: 400,
           height: 365,
-          child:
-              groupStorage.isNotEmpty ? _getListView() : _getInformationBadge(),
+          child: groupStorage.isNotEmpty ? _getListView() : _getInformationBadge(),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 16),

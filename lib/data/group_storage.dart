@@ -8,14 +8,10 @@ const keyGroups = 'g';
 class GroupStorage extends ChangeNotifier {
   List<Group> _groups;
 
-  void _handleGroupChange() {
-    notifyListeners();
-  }
-
-  GroupStorage() : _groups = [];
-
   int get groupsLength => _groups.length;
+
   bool get isEmpty => groupsLength == 0;
+
   bool get isNotEmpty => groupsLength > 0;
 
   String get json {
@@ -27,6 +23,12 @@ class GroupStorage extends ChangeNotifier {
 
   List<String> get titles {
     return _groups.map((g) => g.title).toList();
+  }
+
+  GroupStorage() : _groups = [];
+
+  void _handleGroupChange() {
+    notifyListeners();
   }
 
   Group? groupAt(int index) {

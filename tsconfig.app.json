@@ -11,8 +11,7 @@
     ]
   },
   "files": [
-    "src-popup/main.ts",
-    "src-popup/polyfills.ts"
+    "src-popup/main.ts"
   ],
   "include": [
     "src-popup/**/*.d.ts"

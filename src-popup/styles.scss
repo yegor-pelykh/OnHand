@@ -1,9 +1,7 @@
-html,
-body {
-    height: 100%;
-}
+@import 'fonts.scss';
 
 body {
     margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-family: Roboto, sans-serif;
+    user-select: none;
 }

@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:html' as p_html;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:on_hand/data/group_storage.dart';
 import 'package:on_hand/global/global_constants.dart';
 import 'package:on_hand/global/global_data.dart';
 import 'package:on_hand/widgets/bookmark_editor.dart';
 import 'package:on_hand/widgets/bookmarks_view.dart';
+import 'package:on_hand/widgets/expandable_fab.dart';
 import 'package:on_hand/widgets/file_uploader.dart';
 import 'package:on_hand/widgets/groups_manager.dart';
 
@@ -22,8 +22,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  final _fabKey = GlobalKey<ExpandableFabState>();
   TabController? _tabController;
   int _activeGroupIndex = -1;
+  bool _isFabOpen = false;
 
   void _onTabIndexChange() {
     if (_tabController != null) {
@@ -193,6 +195,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         TabBar(
           controller: _tabController,
           indicatorWeight: kTabIndicatorWeight,
+          indicatorColor: Theme.of(context).colorScheme.primary,
           isScrollable: true,
           tabs: GlobalData.groupStorage
               .groupsMap(
@@ -249,70 +252,114 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
-  SpeedDial _getSpeedDial(BuildContext context) {
-    final backgroundColor = Theme.of(context).colorScheme.secondary;
-    final labelBackgroundColor = Theme.of(context).colorScheme.secondary;
-    final foregroundColor = Theme.of(context).colorScheme.onSecondary;
-    final labelStyle = TextStyle(
-      color: Theme.of(context).colorScheme.onSecondary,
+  Widget _getFabMenuItem({
+    required Widget icon,
+    required Widget label,
+    required void Function() onPressed,
+  }) {
+    final tooltipBackground = Theme.of(context).colorScheme.primaryContainer;
+    final tooltipForeground = Theme.of(context).colorScheme.onPrimaryContainer;
+    final tooltipShadowColor = Theme.of(context).colorScheme.shadow;
+    final tooltipSplashColor = tooltipForeground.withOpacity(0.12);
+    final tooltipFocusColor = tooltipForeground.withOpacity(0.12);
+    final tooltipHoverColor = tooltipForeground.withOpacity(0.08);
+    final List<Widget> children = [];
+    if (_isFabOpen) {
+      children.addAll([
+        Material(
+          color: tooltipBackground,
+          shadowColor: tooltipShadowColor,
+          elevation: 4,
+          borderRadius: BorderRadius.circular(12),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            splashColor: tooltipSplashColor,
+            focusColor: tooltipFocusColor,
+            hoverColor: tooltipHoverColor,
+            onTap: onPressed,
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: label,
+            ),
+          ),
+        ),
+        const SizedBox(width: 16),
+      ]);
+    }
+    children.add(
+      FloatingActionButton.small(
+        onPressed: onPressed,
+        elevation: 4,
+        child: icon,
+      ),
     );
-    List<SpeedDialChild> children = [];
+    return Row(children: children);
+  }
+
+  Widget _getFabMenu(BuildContext context) {
+    final List<Widget> children = [];
+
     if (_activeGroupIndex >= 0) {
       children.add(
-        SpeedDialChild(
-          child: const Icon(Icons.add),
-          label: tr('create_bookmark'),
-          backgroundColor: backgroundColor,
-          labelBackgroundColor: labelBackgroundColor,
-          foregroundColor: foregroundColor,
-          labelStyle: labelStyle,
-          onTap: () => _createBookmark(context),
+        _getFabMenuItem(
+          icon: const Icon(Icons.add),
+          label: Text(tr('create_bookmark')),
+          onPressed: () {
+            _createBookmark(context);
+            _fabKey.currentState?.toggle();
+          },
         ),
       );
     }
     children.add(
-      SpeedDialChild(
-        child: const Icon(Icons.apps),
-        label: tr('group_management'),
-        backgroundColor: backgroundColor,
-        labelBackgroundColor: labelBackgroundColor,
-        foregroundColor: foregroundColor,
-        labelStyle: labelStyle,
-        onTap: () => _openGroupManagement(),
+      _getFabMenuItem(
+        icon: const Icon(Icons.apps),
+        label: Text(tr('group_management')),
+        onPressed: () {
+          _openGroupManagement();
+          _fabKey.currentState?.toggle();
+        },
       ),
     );
     if (GlobalData.groupStorage.isNotEmpty) {
       children.add(
-        SpeedDialChild(
-          child: const Icon(Icons.download),
-          label: tr('export_to_file'),
-          backgroundColor: backgroundColor,
-          labelBackgroundColor: labelBackgroundColor,
-          foregroundColor: foregroundColor,
-          labelStyle: labelStyle,
-          onTap: () => _exportToFile(context),
+        _getFabMenuItem(
+          icon: const Icon(Icons.download),
+          label: Text(tr('export_to_file')),
+          onPressed: () {
+            _exportToFile(context);
+            _fabKey.currentState?.toggle();
+          },
         ),
       );
     }
     children.add(
-      SpeedDialChild(
-        child: const Icon(Icons.upload),
-        label: tr('import_from_file'),
-        backgroundColor: backgroundColor,
-        labelBackgroundColor: labelBackgroundColor,
-        foregroundColor: foregroundColor,
-        labelStyle: labelStyle,
-        onTap: () => _importFromFile(context),
+      _getFabMenuItem(
+        icon: const Icon(Icons.upload),
+        label: Text(tr('import_from_file')),
+        onPressed: () {
+          _importFromFile(context);
+          _fabKey.currentState?.toggle();
+        },
       ),
     );
-    return SpeedDial(
-      icon: Icons.more_vert,
+
+    return ExpandableFab(
+      key: _fabKey,
+      type: ExpandableFabType.up,
+      childrenOffset: const Offset(8, 16),
+      distance: 56,
+      overlayStyle: ExpandableFabOverlayStyle(
+        color: Colors.black.withOpacity(0.5),
+      ),
+      afterOpen: (() => setState(() => _isFabOpen = true)),
+      beforeClose: (() => setState(() => _isFabOpen = false)),
       children: children,
     );
   }
 
   @override
-  Future<void> initState() async {
+  void initState() {
     GlobalData.groupStorage.addListener(_update);
     GlobalData.loadFromStorage().whenComplete(() {
       GlobalData.subscribeToStorageChange();
@@ -325,7 +372,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       appBar: _getAppBar(),
       body: _getBody(),
-      floatingActionButton: _getSpeedDial(context),
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: _getFabMenu(context),
     );
   }
 

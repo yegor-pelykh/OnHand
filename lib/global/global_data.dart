@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:on_hand/chrome_bridge/common/chrome_common.dart';
 import 'package:on_hand/data/bookmark.dart';
 import 'package:on_hand/data/group.dart';
 import 'package:on_hand/data/group_storage.dart';
 import 'package:on_hand/chrome_bridge/chrome_storage.dart';
+import 'package:on_hand/global/native_local_storage.dart';
 
 const keyData = 'data';
 
@@ -11,16 +13,19 @@ abstract class GlobalData {
   static StreamSubscription<StorageOnChangedEvent>? _storageChangeSubscription;
 
   static void _storageChangeListener(StorageOnChangedEvent event) {
-    final changes = event.changes[keyData];
-    if (changes != null && changes.newValue is String) {
-      final jsonString = changes.newValue;
-      groupStorage.replaceFromJson(jsonString);
+    if (event.areaName == 'local') {
+      final dataChanges = event.changes[keyData];
+      if (dataChanges != null && dataChanges.newValue is String) {
+        final jsonString = dataChanges.newValue;
+        groupStorage.replaceFromJson(jsonString);
+      }
     }
   }
 
   static subscribeToStorageChange() {
-    _storageChangeSubscription =
-        ChromeStorage.onChanged.listen(_storageChangeListener);
+    if (ChromeCommon.isWebExtension) {
+      _storageChangeSubscription = ChromeStorage.onChanged.listen(_storageChangeListener);
+    }
   }
 
   static unsubscribeFromStorageChange() {
@@ -30,18 +35,31 @@ abstract class GlobalData {
   }
 
   static Future<void> loadFromStorage() async {
-    final results = await ChromeStorage.local.get(keyData);
-    if (results.containsKey(keyData)) {
-      groupStorage.replaceFromJson(results[keyData]);
+    if (ChromeCommon.isWebExtension) {
+      final results = await ChromeStorage.local.get(keyData);
+      if (results.containsKey(keyData)) {
+        groupStorage.replaceFromJson(results[keyData]);
+      } else {
+        groupStorage.replaceByDefault();
+      }
     } else {
-      groupStorage.replaceByDefault();
+      final data = NativeLocalStorage.get(keyData);
+      if (data != null) {
+        groupStorage.replaceFromJson(data);
+      } else {
+        groupStorage.replaceByDefault();
+      }
     }
   }
 
   static Future<void> saveToStorage() async {
-    await ChromeStorage.local.set({
-      keyData: groupStorage.json,
-    });
+    if (ChromeCommon.isWebExtension) {
+      await ChromeStorage.local.set({
+        keyData: groupStorage.json,
+      });
+    } else {
+      NativeLocalStorage.set(keyData, groupStorage.json);
+    }
   }
 
   static int moveBookmarkToGroup(Bookmark bookmark, Group toGroup) {

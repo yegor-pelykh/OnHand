@@ -5,15 +5,13 @@ import 'package:on_hand/chrome_bridge/chrome_message_event.dart';
 import 'package:on_hand/chrome_bridge/chrome_port.dart';
 import 'package:on_hand/chrome_bridge/chrome_runtime.dart';
 import 'package:on_hand/chrome_bridge/chrome_runtime_connect_info.dart';
-import 'package:on_hand/chrome_bridge/common/chrome_common.dart';
 import 'package:on_hand/global/global_data.dart';
 import 'package:on_hand/helpers/utils.dart';
 
-typedef MessageHandler = Future<dynamic> Function(dynamic data, String? error);
+typedef MessageHandler = Future<dynamic> Function(dynamic data, dynamic error);
 
 abstract class GlobalChrome {
-  static final Map<String, Completer<dynamic>> _awaitingMessages =
-      <String, Completer<dynamic>>{};
+  static final Map<String, Completer<dynamic>> _awaitingMessages = <String, Completer<dynamic>>{};
   static final Map<String, MessageHandler> _messageHandlers = {
     'get-data': GlobalChrome.handleGetData
   };
@@ -31,40 +29,37 @@ abstract class GlobalChrome {
     );
     _streamSubscription = _port!.onMessage.listen((event) {
       final message = ChromeCommunicationMessage.fromProxy(event.message);
+      final dataObj = message.data != null ? jsonDecode(message.data!) : null;
+      final errorObj = message.error != null ? jsonDecode(message.error!) : null;
       final completer = _awaitingMessages[message.uuid];
       if (completer != null) {
-        if (message.error != null) {
-          completer.completeError(message.error!);
+        if (errorObj != null) {
+          completer.completeError(errorObj);
         } else {
-          completer.complete(message.data);
+          completer.complete(dataObj);
         }
         _awaitingMessages.remove(message.uuid);
       } else {
+        final response = ChromeCommunicationMessage(
+          uuid: message.uuid,
+          type: message.type,
+        );
         final handler = _messageHandlers[message.type];
         if (handler != null) {
-          handler(message.data, message.error).then((responseData) {
-            final msg = ChromeCommunicationMessage(
-              uuid: message.uuid,
-              type: message.type,
-              data: ChromeCommon.jsify(responseData),
-            ).toJs();
-            _port!.postMessage(msg);
+          handler(dataObj, errorObj).then((responseData) {
+            if (responseData != null) {
+              response.data = jsonEncode(responseData);
+            }
+            _port!.postMessage(response.toJs());
           }).onError((error, stackTrace) {
-            final strError = error is String ? error : jsonEncode(error);
-            final msg = ChromeCommunicationMessage(
-              uuid: message.uuid,
-              type: message.type,
-              error: strError,
-            ).toJs();
-            _port!.postMessage(msg);
+            if (error != null) {
+              response.error = jsonEncode(error);
+            }
+            _port!.postMessage(response.toJs());
           });
         } else {
-          final msg = ChromeCommunicationMessage(
-            uuid: message.uuid,
-            type: message.type,
-            error: 'There is no handler for this message',
-          ).toJs();
-          _port!.postMessage(msg);
+          response.error = jsonEncode('There is no handler for this message');
+          _port!.postMessage(response.toJs());
         }
       }
     });
@@ -95,17 +90,22 @@ abstract class GlobalChrome {
     if (!completer.isCompleted) {
       final uuid = Utils.generateUUID();
       _awaitingMessages[uuid] = completer;
-      _port!.postMessage(ChromeCommunicationMessage(
+      final msg = ChromeCommunicationMessage(
         uuid: uuid,
         type: type,
-        data: data,
-        error: error,
-      ));
+      );
+      if (data != null) {
+        msg.data = jsonEncode(data);
+      }
+      if (error != null) {
+        msg.error = jsonEncode(error);
+      }
+      _port!.postMessage(msg);
     }
     return completer.future;
   }
 
-  static Future<dynamic> handleGetData(dynamic data, String? error) async {
+  static Future<dynamic> handleGetData(dynamic data, dynamic error) async {
     return GlobalData.groupStorage.titles;
   }
 }
