@@ -1,6 +1,6 @@
 {
   "name": "on-hand",
-  "version": "1.3.2",
+  "version": "2.0.0",
   "private": true,
   "author": {
     "name": "Yegor Pelykh",
@@ -16,7 +16,8 @@
     "build:popup:dev": "ng build --configuration development",
     "build": "npm run format && npm run build:sw && npm run build:popup",
     "build:dev": "npm run format && npm run build:sw:dev && npm run build:popup:dev",
-    "pack": "node build_post_pack.js"
+    "pack": "node build_post_pack.js",
+    "release": "release-it"
   },
   "dependencies": {
     "@angular/animations": "^17.0.0",
@@ -43,6 +44,7 @@
     "@angular/compiler-cli": "^17.0.0",
     "archiver": "^6.0.1",
     "prettier": "3.1.1",
+    "release-it": "^17.0.1",
     "ts-loader": "^9.5.1",
     "typescript": "~5.2.2",
     "webpack": "^5.89.0",
