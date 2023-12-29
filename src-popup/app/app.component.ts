@@ -8,7 +8,6 @@ import { GroupStorage } from './group-storage';
 import { IconData } from './icon-data';
 import { MetadataProviderService } from './metadata-provider.service';
 import { Translator as Translations } from './translations';
-import { MdOutlinedSelect } from '@material/web/select/outlined-select';
 
 const bgColorLight = '#fcfcfd';
 const bgColorDark = '#1f1b17';
@@ -62,7 +61,6 @@ export class AppComponent implements OnInit, OnDestroy {
   bookmarkForm?: NgForm;
   PopupState = PopupState;
   state: PopupState = PopupState.notReady;
-  isSuccessful: boolean = false;
 
   private get groupIndex(): number | null {
     const strValue = this.groupControl.value;
@@ -216,15 +214,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscribeToTabUpdates();
   }
 
-  onClickAddBookmark() {
-    this.bookmarkForm?.ngSubmit.emit();
-    if (this.isSuccessful) {
-      this.state = PopupState.completed;
-    }
-  }
-
   onSubmit() {
-    this.isSuccessful = false;
     if (this.bookmarkInfo.valid) {
       const address = this.addressControl.value;
       const title = this.titleControl.value;
@@ -238,7 +228,7 @@ export class AppComponent implements OnInit, OnDestroy {
             : undefined;
           group.addBookmark(url, title, favIconBuffer);
           this.globalData.saveToStorage();
-          this.isSuccessful = true;
+          this.state = PopupState.completed;
         }
       }
     }
