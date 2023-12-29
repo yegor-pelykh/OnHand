@@ -1,20 +1,20 @@
 {
-    "appDesc": {
-        "message": "Save bookmarks of your favorite sites on the \"New Tab\" page easy and safely."
-    },
-    "addressLabel": {
-        "message": "Address"
-    },
-    "titleLabel": {
-        "message": "Title"
-    },
-    "groupLabel": {
-        "message": "Group"
-    },
-    "addBookmarkLabel": {
-        "message": "Add bookmark"
-    },
-    "successInfoLabel": {
-        "message": "Bookmark added successfully!"
-    }
+  "appDesc": {
+    "message": "Save bookmarks of your favorite sites on the \"New Tab\" page easy and safely."
+  },
+  "addressLabel": {
+    "message": "Address"
+  },
+  "titleLabel": {
+    "message": "Title"
+  },
+  "groupLabel": {
+    "message": "Group"
+  },
+  "addBookmarkLabel": {
+    "message": "Add bookmark"
+  },
+  "successInfoLabel": {
+    "message": "Bookmark added successfully!"
+  }
 }

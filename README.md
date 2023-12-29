@@ -10,6 +10,7 @@ Neat and minimalistic.
 Uses material design.
 
 Features:
+
 - adding bookmarks in a simple way
 - grouping bookmarks using tabs
 - easy data management, loading and saving to a file, without clouds and accounts
@@ -30,11 +31,13 @@ For now, there is no way to dynamically switch the language. The extension will 
 ### How to open bookmarks
 
 To open a bookmark in the **currently open tab**:
-* just click on bookmark
+
+- just click on bookmark
 
 To open a bookmark in a **new background tab**:
-* click on bookmark while holding down the Ctrl key
-* сlick on bookmark with the middle mouse button (wheel)
+
+- click on bookmark while holding down the Ctrl key
+- сlick on bookmark with the middle mouse button (wheel)
 
 ### Moving bookmarks and groups
 
@@ -64,6 +67,7 @@ Light mode:<br>
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
 To contribute:
+
 1. Fork the project
 1. Create your feature branch (git checkout -b feature/AmazingFeature)
 1. Commit your changes (git commit -m 'Add some AmazingFeature')
@@ -75,23 +79,24 @@ I will be very grateful for your support.
 ## Build
 
 You can easily build the release version of this browser extension.
+
 1. Please make sure you have Flutter framework installed on your computer. If it is not installed yet, download it from the [Flutter official site](https://docs.flutter.dev/get-started/install), install and configure as directed in the manual.
 1. Please make sure you have Node.js installed on your computer. If it is not installed yet, download it from the [Node.js official site](https://nodejs.org) and install it.
 1. Run these commands, depending on the platform you are using:
-    <table>
-    <tr><td> Platform </td> <td> Command </td></tr>
-    <tr><td> Windows </td><td>
-    
-    `build_release.cmd`
-    
-    </td></tr>
-    <tr><td> Other desktop platforms </td><td>
- 
-    `build_release.sh`
+   <table>
+   <tr><td> Platform </td> <td> Command </td></tr>
+   <tr><td> Windows </td><td>
 
-    </td></tr>
-    </table>
+   `build_release.cmd`
 
-    **If you are using VS Code**: you can also run the "Release build" task to make a release build.
+   </td></tr>
+   <tr><td> Other desktop platforms </td><td>
+
+   `build_release.sh`
+
+   </td></tr>
+   </table>
+
+   **If you are using VS Code**: you can also run the "Release build" task to make a release build.
 
 1. The package with the necessary files should be on the `/build/package` folder.

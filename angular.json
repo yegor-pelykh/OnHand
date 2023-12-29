@@ -42,18 +42,11 @@
             "outputPath": "web/popup",
             "index": "src-popup/popup.html",
             "main": "src-popup/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "allowedCommonJsDependencies": [
-              "buffer"
-            ],
-            "assets": [
-              "src-popup/favicon.png",
-              "src-popup/assets"
-            ],
+            "allowedCommonJsDependencies": ["buffer"],
+            "assets": ["src-popup/favicon.png", "src-popup/assets"],
             "styles": [
               "src-popup/material-web-theme/theme.css",
               "src-popup/styles.scss"

@@ -1,92 +1,90 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"label": "Transpile ServiceWorker",
-			"type": "typescript",
-			"group": "build",
-			"tsconfig": "web_ts/tsconfig.json",
-			"problemMatcher": [
-				"$tsc"
-			],
-			"presentation": {
-				"reveal": "never",
-				"panel": "new",
-				"revealProblems": "onProblem",
-				"close": true
-			}
-		},
-		{
-			"label": "Build",
-			"type": "flutter",
-			"group": "build",
-			"command": "flutter",
-			"args": [
-				"build",
-				"web",
-				"--web-renderer",
-				"canvaskit",
-				"--dart-define=FLUTTER_WEB_CANVASKIT_URL=/canvaskit/",
-				"--pwa-strategy=none",
-				"--csp"
-			],
-			"problemMatcher": [],
-			"presentation": {
-				"reveal": "never",
-				"panel": "new",
-				"revealProblems": "onProblem",
-				"close": true
-			}
-		},
-		{
-			"label": "Build (no minify)",
-			"type": "flutter",
-			"group": "build",
-			"command": "flutter",
-			"args": [
-				"build",
-				"web",
-				"--web-renderer",
-				"canvaskit",
-				"--dart-define=FLUTTER_WEB_CANVASKIT_URL=/canvaskit/",
-				"--pwa-strategy=none",
-				"--csp",
-				"--profile",
-				"--dart-define=Dart2jsOptimization=O0"
-			],
-			"problemMatcher": [],
-			"presentation": {
-				"reveal": "never",
-				"panel": "new",
-				"revealProblems": "onProblem",
-				"close": true
-			}
-		},
-		{
-			"label": "Release build",
-			"type": "shell",
-			"group": "build",
-			"command": "./build_release.sh",
-			"windows": {
-				"command": "./build_release.cmd"
-			},
-			"presentation": {
-				"reveal": "always",
-				"panel": "new"
-			}
-		},
-		{
-			"label": "Profile build",
-			"type": "shell",
-			"group": "build",
-			"command": "./build_profile.sh",
-			"windows": {
-				"command": "./build_profile.cmd"
-			},
-			"presentation": {
-				"reveal": "always",
-				"panel": "new"
-			}
-		}
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Transpile ServiceWorker",
+      "type": "typescript",
+      "group": "build",
+      "tsconfig": "web_ts/tsconfig.json",
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "reveal": "never",
+        "panel": "new",
+        "revealProblems": "onProblem",
+        "close": true
+      }
+    },
+    {
+      "label": "Build",
+      "type": "flutter",
+      "group": "build",
+      "command": "flutter",
+      "args": [
+        "build",
+        "web",
+        "--web-renderer",
+        "canvaskit",
+        "--dart-define=FLUTTER_WEB_CANVASKIT_URL=/canvaskit/",
+        "--pwa-strategy=none",
+        "--csp"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "never",
+        "panel": "new",
+        "revealProblems": "onProblem",
+        "close": true
+      }
+    },
+    {
+      "label": "Build (no minify)",
+      "type": "flutter",
+      "group": "build",
+      "command": "flutter",
+      "args": [
+        "build",
+        "web",
+        "--web-renderer",
+        "canvaskit",
+        "--dart-define=FLUTTER_WEB_CANVASKIT_URL=/canvaskit/",
+        "--pwa-strategy=none",
+        "--csp",
+        "--profile",
+        "--dart-define=Dart2jsOptimization=O0"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "never",
+        "panel": "new",
+        "revealProblems": "onProblem",
+        "close": true
+      }
+    },
+    {
+      "label": "Release build",
+      "type": "shell",
+      "group": "build",
+      "command": "./build_release.sh",
+      "windows": {
+        "command": "./build_release.cmd"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Profile build",
+      "type": "shell",
+      "group": "build",
+      "command": "./build_profile.sh",
+      "windows": {
+        "command": "./build_profile.cmd"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    }
+  ]
 }

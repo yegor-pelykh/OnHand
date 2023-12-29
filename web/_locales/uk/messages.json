@@ -1,20 +1,20 @@
 {
-    "appDesc": {
-        "message": "Зберігайте закладки ваших улюблених сайтів на сторінці \"Нової вкладки\" зручно та безпечно."
-    },
-    "addressLabel": {
-        "message": "Адреса"
-    },
-    "titleLabel": {
-        "message": "Назва"
-    },
-    "groupLabel": {
-        "message": "Група"
-    },
-    "addBookmarkLabel": {
-        "message": "Додати закладку"
-    },
-    "successInfoLabel": {
-        "message": "Закладка успішно додана!"
-    }
+  "appDesc": {
+    "message": "Зберігайте закладки ваших улюблених сайтів на сторінці \"Нової вкладки\" зручно та безпечно."
+  },
+  "addressLabel": {
+    "message": "Адреса"
+  },
+  "titleLabel": {
+    "message": "Назва"
+  },
+  "groupLabel": {
+    "message": "Група"
+  },
+  "addBookmarkLabel": {
+    "message": "Додати закладку"
+  },
+  "successInfoLabel": {
+    "message": "Закладка успішно додана!"
+  }
 }

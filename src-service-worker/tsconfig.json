@@ -13,18 +13,9 @@
     "importHelpers": true,
     "target": "ES2020",
     "module": "ESNext",
-    "lib": [
-      "ES2020",
-    ],
-    "typeRoots": [
-      "../node_modules/@types"
-    ],
-    "types": [
-      "chrome"
-    ]
+    "lib": ["ES2020"],
+    "typeRoots": ["../node_modules/@types"],
+    "types": ["chrome"]
   },
-  "include": [
-    "**/*.ts",
-    "**/*.d.ts"
-  ]
+  "include": ["**/*.ts", "**/*.d.ts"]
 }
