@@ -67,7 +67,8 @@ abstract class MetadataProvider {
       final charsetMarkIndex = contentTypeValue.lastIndexOf(charsetValueMark);
       if (charsetMarkIndex >= 0) {
         final charsetStartIndex = charsetMarkIndex + charsetValueMark.length;
-        final charsetEndIndex = contentTypeValue.indexOf(';', charsetStartIndex);
+        final charsetEndIndex =
+            contentTypeValue.indexOf(';', charsetStartIndex);
         final charset = contentTypeValue.substring(
           charsetStartIndex,
           charsetEndIndex >= 0 ? charsetEndIndex : null,
@@ -180,7 +181,8 @@ abstract class MetadataProvider {
     if (contentType == null || !contentType.contains('image')) {
       return null;
     }
-    if (!contentType.contains('image') && !contentType.contains('application/octet-stream')) {
+    if (!contentType.contains('image') &&
+        !contentType.contains('application/octet-stream')) {
       return null;
     }
     final origImageBytes = response.data as Uint8List;
@@ -190,22 +192,31 @@ abstract class MetadataProvider {
       if (!ChromeCommon.isWebExtension) {
         return null;
       }
-      final result = await GlobalChrome.sendMessage(
-        type: 'to-png',
-        data: base64Encode(origImageBytes),
-      ) as Map;
-      final imageBytes = result.containsKey('bytes') ? base64Decode(result['bytes']) : null;
-      final width = result.containsKey('width') ? result['width'] as int : 0;
-      final height = result.containsKey('height') ? result['height'] as int : 0;
-      if (imageBytes == null || width == 0 || height == 0) {
+      try {
+        final result = await GlobalChrome.sendMessage(
+          type: 'to-png',
+          data: <String, dynamic>{
+            'contentType': contentType,
+            'content': base64Encode(origImageBytes),
+          },
+        ) as Map;
+        final imageBytes =
+            result.containsKey('bytes') ? base64Decode(result['bytes']) : null;
+        final width = result.containsKey('width') ? result['width'] as int : 0;
+        final height =
+            result.containsKey('height') ? result['height'] as int : 0;
+        if (imageBytes == null || width == 0 || height == 0) {
+          return null;
+        }
+        return IconData(
+          'image/$contentTypeFlagPng',
+          imageBytes,
+          width: width,
+          height: height,
+        );
+      } catch (ex) {
         return null;
       }
-      return IconData(
-        'image/$contentTypeFlagPng',
-        imageBytes,
-        width: width,
-        height: height,
-      );
     }
   }
 }

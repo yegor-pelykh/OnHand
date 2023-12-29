@@ -24,7 +24,8 @@ abstract class GlobalData {
 
   static subscribeToStorageChange() {
     if (ChromeCommon.isWebExtension) {
-      _storageChangeSubscription = ChromeStorage.onChanged.listen(_storageChangeListener);
+      _storageChangeSubscription =
+          ChromeStorage.onChanged.listen(_storageChangeListener);
     }
   }
 

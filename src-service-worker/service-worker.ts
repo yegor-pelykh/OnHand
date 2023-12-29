@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { decodeImage, encodePng, IcoDecoder } from "image-in-browser";
+import { decodeImage, decodeImageByMimeType, encodePng, IcoDecoder } from "image-in-browser";
 
 type Message = {
     uuid: string,
@@ -12,6 +12,10 @@ type MessageConfirmation = {
     reject: ((reason?: any) => void),
 }
 type MessageHandler = (port: chrome.runtime.Port, data: any, error: any) => Promise<any>;
+type ToPngMessageData = {
+    contentType: string,
+    content: string,
+}
 
 abstract class Helpers {
     static genUUID(): string {
@@ -115,15 +119,17 @@ abstract class ConnectionManager {
         return await Promise.allSettled(promises);
     }
 
-    static async handlerConvertToPng(port: chrome.runtime.Port, data: any, error: any) {
+    static async handlerConvertToPng(port: chrome.runtime.Port, data: ToPngMessageData, error: any) {
         const errorMsg = 'Can\'t convert image.';
-        if (typeof data === 'string') {
-            const bytes = Buffer.from(data, 'base64');
+        if (typeof data === 'object' && typeof data.contentType === 'string' && typeof data.content === 'string') {
+            const contentType = data.contentType;
+            const content = Buffer.from(data.content, 'base64');
             try {
-                let image = new IcoDecoder().decodeImageLargest(bytes);
-                image ??= decodeImage({
-                    data: bytes,
-                });
+                const image = decodeImageByMimeType({
+                    data: content,
+                    mimeType: contentType,
+                    largest: true,
+                })
                 if (image !== undefined) {
                     const outputBuffer = Buffer.from(encodePng({
                         image: image,

@@ -7,6 +7,7 @@ import 'package:on_hand/data/bookmark.dart';
 import 'package:on_hand/global/global_constants.dart';
 import 'package:on_hand/global/global_data.dart';
 import 'package:on_hand/helpers/image_helper.dart';
+import 'package:on_hand/helpers/metadata_provider.dart';
 import 'package:on_hand/helpers/url_launcher.dart';
 import 'package:on_hand/widgets/bookmark_editor.dart';
 
@@ -69,6 +70,17 @@ class _BookmarkTileState extends State<BookmarkTile> {
     });
   }
 
+  Future<void> _refreshBookmarkIcon(Bookmark bookmark) async {
+    bookmark.isIconRefresh = true;
+    final metadata = await MetadataProvider.getMetadata(bookmark.url);
+    final success = metadata != null && metadata.icon != null;
+    if (success) {
+      bookmark.icon = metadata.icon!.bytes;
+      await GlobalData.saveToStorage();
+    }
+    bookmark.isIconRefresh = false;
+  }
+
   void _deleteBookmark(BuildContext context, Bookmark bookmark) {
     showDialog<bool?>(
       context: context,
@@ -112,30 +124,36 @@ class _BookmarkTileState extends State<BookmarkTile> {
 
   Widget _getLeadingWidget() {
     Widget imageWidget;
-    if (widget.bookmark.icon != null) {
-      if (ImageHelper.isPng(widget.bookmark.icon!)) {
-        imageWidget = Image.memory(
-          widget.bookmark.icon!,
-          width: iconSize,
-          height: iconSize,
-          fit: BoxFit.cover,
-          isAntiAlias: true,
-          filterQuality: FilterQuality.medium,
-        );
+    if (widget.bookmark.isIconRefresh) {
+      imageWidget = const CircularProgressIndicator(
+        strokeWidth: 2,
+      );
+    } else {
+      if (widget.bookmark.icon != null) {
+        if (ImageHelper.isPng(widget.bookmark.icon!)) {
+          imageWidget = Image.memory(
+            widget.bookmark.icon!,
+            width: iconSize,
+            height: iconSize,
+            fit: BoxFit.cover,
+            isAntiAlias: true,
+            filterQuality: FilterQuality.medium,
+          );
+        } else {
+          final content =
+              utf8.decode(widget.bookmark.icon!, allowMalformed: true);
+          imageWidget = ScalableImageWidget(
+            si: ScalableImage.fromSvgString(content),
+            fit: BoxFit.cover,
+          );
+        }
       } else {
-        final content =
-            utf8.decode(widget.bookmark.icon!, allowMalformed: true);
-        imageWidget = ScalableImageWidget(
-          si: ScalableImage.fromSvgString(content),
-          fit: BoxFit.cover,
+        imageWidget = const Icon(
+          Icons.favorite,
+          color: GlobalConstants.mainColor,
+          size: iconSize,
         );
       }
-    } else {
-      imageWidget = const Icon(
-        Icons.favorite,
-        color: GlobalConstants.mainColor,
-        size: iconSize,
-      );
     }
     return SizedBox(
       width: iconSize,
@@ -189,6 +207,14 @@ class _BookmarkTileState extends State<BookmarkTile> {
               onTap: () {
                 Navigator.pop(context);
                 _editBookmark(context, widget.bookmark);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.refresh),
+              title: Text(tr('refresh_bookmark_icon')),
+              onTap: () {
+                Navigator.pop(context);
+                _refreshBookmarkIcon(widget.bookmark);
               },
             ),
             ListTile(

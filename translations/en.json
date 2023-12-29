@@ -1,4 +1,5 @@
 {
+    "ok": "OK",
     "no": "No",
     "yes": "Yes",
     "edit": "Edit",
@@ -8,6 +9,7 @@
     "apply": "Apply",
     "save": "Save",
     "cancel_changes": "Cancel changes",
+    "refresh_bookmark_icon": "Refresh icon",
     "bookmark_address_empty_hint": "Please enter a bookmark address.",
     "bookmark_address_invalid_hint": "Please enter a valid URL.",
     "bookmark_title_empty_hint": "Please enter a bookmark title.",

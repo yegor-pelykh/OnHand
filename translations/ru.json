@@ -1,4 +1,5 @@
 {
+    "ok": "OK",
     "no": "Нет",
     "yes": "Да",
     "edit": "Редактировать",
@@ -8,6 +9,7 @@
     "apply": "Применить",
     "save": "Сохранить",
     "cancel_changes": "Отменить изменения",
+    "refresh_bookmark_icon": "Обновить иконку",
     "bookmark_address_empty_hint": "Пожалуйста, введите адрес закладки.",
     "bookmark_address_invalid_hint": "Пожалуйста, введите правильный URL.",
     "bookmark_title_empty_hint": "Пожалуйста, введите название закладки.",

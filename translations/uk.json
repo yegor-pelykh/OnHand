@@ -1,4 +1,5 @@
 {
+    "ok": "OK",
     "no": "Ні",
     "yes": "Так",
     "edit": "Редагувати",
@@ -8,6 +9,7 @@
     "apply": "Застосувати",
     "save": "Зберегти",
     "cancel_changes": "Скасувати зміни",
+    "refresh_bookmark_icon": "Оновити іконку",
     "bookmark_address_empty_hint": "Будь ласка, введіть адресу закладки.",
     "bookmark_address_invalid_hint": "Будь ласка, введіть правильну URL-адресу.",
     "bookmark_title_empty_hint": "Будь ласка, введіть назву закладки.",

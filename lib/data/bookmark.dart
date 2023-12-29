@@ -44,6 +44,16 @@ class Bookmark extends ChangeNotifier {
     }
   }
 
+  // not serializable
+  bool _isIconRefresh = false;
+  bool get isIconRefresh => _isIconRefresh;
+  set isIconRefresh(bool v) {
+    if (_isIconRefresh != v) {
+      _isIconRefresh = v;
+      notifyListeners();
+    }
+  }
+
   Map<String, dynamic> get json => {
         keyUrl: url.toString(),
         keyTitle: title,

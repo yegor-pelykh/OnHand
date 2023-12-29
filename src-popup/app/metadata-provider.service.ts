@@ -41,31 +41,38 @@ export class MetadataProviderService {
     if (contentType.includes(contentTypeFlagSvg) || url.endsWith('.svg')) {
       return new IconData(contentType, origImageBytes);
     } else {
-      const convResponse = await this.communication.sendMessage(
-        'to-png',
-        origImageBytes.toString('base64'),
-      );
-      if (typeof convResponse !== 'object') {
+      try {
+        const convResponse = await this.communication.sendMessage(
+          'to-png',
+          {
+            'contentType': contentType,
+            'content': origImageBytes.toString('base64'),
+          },
+        );
+        if (typeof convResponse !== 'object') {
+          return undefined;
+        }
+        const imageBytes = 'bytes' in convResponse && typeof convResponse['bytes'] === 'string'
+          ? Buffer.from(convResponse['bytes'], 'base64')
+          : undefined;
+        const width = 'width' in convResponse && typeof convResponse['width'] === 'number'
+          ? convResponse['width']
+          : 0;
+        const height = 'height' in convResponse && typeof convResponse['height'] === 'number'
+          ? convResponse['height']
+          : 0;
+        if (imageBytes === undefined || width == 0 || height == 0) {
+          return undefined;
+        }
+        return new IconData(
+          `image/${contentTypeFlagPng}`,
+          imageBytes,
+          width,
+          height,
+        );
+      } catch {
         return undefined;
       }
-      const imageBytes = 'bytes' in convResponse && typeof convResponse['bytes'] === 'string'
-        ? Buffer.from(convResponse['bytes'], 'base64')
-        : undefined;
-      const width = 'width' in convResponse && typeof convResponse['width'] === 'number'
-        ? convResponse['width']
-        : 0;
-      const height = 'height' in convResponse && typeof convResponse['height'] === 'number'
-        ? convResponse['height']
-        : 0;
-      if (imageBytes === undefined || width == 0 || height == 0) {
-        return undefined;
-      }
-      return new IconData(
-         `image/${contentTypeFlagPng}`,
-         imageBytes,
-         width,
-         height,
-       );
     }
   }
 }

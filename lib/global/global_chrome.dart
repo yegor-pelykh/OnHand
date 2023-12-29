@@ -11,7 +11,8 @@ import 'package:on_hand/helpers/utils.dart';
 typedef MessageHandler = Future<dynamic> Function(dynamic data, dynamic error);
 
 abstract class GlobalChrome {
-  static final Map<String, Completer<dynamic>> _awaitingMessages = <String, Completer<dynamic>>{};
+  static final Map<String, Completer<dynamic>> _awaitingMessages =
+      <String, Completer<dynamic>>{};
   static final Map<String, MessageHandler> _messageHandlers = {
     'get-data': GlobalChrome.handleGetData
   };
@@ -30,7 +31,8 @@ abstract class GlobalChrome {
     _streamSubscription = _port!.onMessage.listen((event) {
       final message = ChromeCommunicationMessage.fromProxy(event.message);
       final dataObj = message.data != null ? jsonDecode(message.data!) : null;
-      final errorObj = message.error != null ? jsonDecode(message.error!) : null;
+      final errorObj =
+          message.error != null ? jsonDecode(message.error!) : null;
       final completer = _awaitingMessages[message.uuid];
       if (completer != null) {
         if (errorObj != null) {
@@ -51,7 +53,7 @@ abstract class GlobalChrome {
               response.data = jsonEncode(responseData);
             }
             _port!.postMessage(response.toJs());
-          }).onError((error, stackTrace) {
+          }).catchError((error) {
             if (error != null) {
               response.error = jsonEncode(error);
             }
