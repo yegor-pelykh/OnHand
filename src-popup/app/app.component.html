@@ -21,7 +21,7 @@
                     <div slot="headline">{{title}}</div>
                 </md-select-option>
             </md-outlined-select>
-            <md-filled-button [attr.disabled]="!bookmarkInfo.valid ? '' : null" (click)="onClickAddBookmark()">{{translations.addBookmarkLabel}}</md-filled-button>
+            <md-filled-button type="submit" [attr.disabled]="!bookmarkInfo.valid ? '' : null">{{translations.addBookmarkLabel}}</md-filled-button>
         </form>
     </ng-container>
     <ng-container *ngSwitchCase="PopupState.completed">
