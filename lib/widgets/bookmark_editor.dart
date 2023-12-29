@@ -182,7 +182,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
         return Container();
       case BookmarkEditorState.requesting:
         return const Padding(
-          padding: EdgeInsets.fromLTRB(8, 8, 0, 8),
+          padding: EdgeInsets.all(8),
           child: SizedBox(
             width: 24,
             height: 24,
@@ -193,7 +193,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
         );
       case BookmarkEditorState.metadataReady:
         return Padding(
-          padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
+          padding: const EdgeInsets.all(8),
           child: _getIcon(),
         );
     }
@@ -327,7 +327,6 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
             ),
             const SizedBox(height: 16),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
                   child: TextFormField(
