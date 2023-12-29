@@ -46,10 +46,9 @@
         "<all_urls>"
     ],
     "permissions": [
-        "unlimitedStorage",
-        "declarativeContent",
         "storage",
         "unlimitedStorage",
+        "declarativeContent",
         "tabs"
     ],
     "optional_permissions": [
