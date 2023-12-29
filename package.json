@@ -9,14 +9,13 @@
   },
   "license": "MIT",
   "scripts": {
-    "format:sw": "prettier --write \"src-popup/**/*.ts\" \"src-popup/**/*.js\" --no-error-on-unmatched-pattern",
-    "format:popup": "prettier --write \"src-service-worker/**/*.ts\" \"src-service-worker/**/*.js\" --no-error-on-unmatched-pattern",
-    "build:sw": "npm run format:sw && webpack build --config ./src-service-worker/webpack.config.js --mode production",
-    "build:sw:dev": "npm run format:sw && webpack build --config ./src-service-worker/webpack.config.js --mode development",
-    "build:popup": "npm run format:popup && ng build --configuration production",
-    "build:popup:dev": "npm run format:popup && ng build --configuration development",
-    "build": "npm run build:sw && npm run build:popup",
-    "build:dev": "npm run build:sw:dev && npm run build:popup:dev",
+    "format": "prettier --write . --no-error-on-unmatched-pattern",
+    "build:sw": "webpack build --config ./src-service-worker/webpack.config.js --mode production",
+    "build:sw:dev": "webpack build --config ./src-service-worker/webpack.config.js --mode development",
+    "build:popup": "ng build --configuration production",
+    "build:popup:dev": "ng build --configuration development",
+    "build": "npm run format && npm run build:sw && npm run build:popup",
+    "build:dev": "npm run format && npm run build:sw:dev && npm run build:popup:dev",
     "pack": "node build_post_pack.js"
   },
   "dependencies": {
