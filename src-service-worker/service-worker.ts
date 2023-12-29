@@ -256,7 +256,7 @@ abstract class ActionHandler {
 }
 
 abstract class LifecycleHandler {
-  private static onInstalledListener() {
+  private static setRules() {
     ActionHandler.setV2ActionRules();
     ActionHandler.setV3ActionRules();
   }
@@ -266,7 +266,8 @@ abstract class LifecycleHandler {
   }
 
   static init(): void {
-    chrome.runtime.onInstalled.addListener(() => this.onInstalledListener());
+    chrome.runtime.onInstalled.addListener(() => this.setRules());
+    chrome.runtime.onStartup.addListener(() => this.setRules());
     chrome.runtime.onConnect.addListener((port) =>
       this.onPortConnectedListener(port),
     );
