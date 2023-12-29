@@ -50,14 +50,8 @@ class IconData implements Comparable<IconData> {
 
 abstract class MetadataProvider {
   static final p_dio.Dio _dio = p_dio.Dio();
-  static p_dio.CancelToken? _cancelToken;
 
   static Future<Metadata?> getMetadata(Uri uri) async {
-    if (_cancelToken != null) {
-      _cancelToken!.cancel();
-      _cancelToken = null;
-    }
-    _cancelToken = p_dio.CancelToken();
     final document = await _getHtml(uri);
     if (document == null) {
       return null;
@@ -98,7 +92,6 @@ abstract class MetadataProvider {
     try {
       final response = await _dio.getUri(
         uri,
-        cancelToken: _cancelToken,
         options: p_dio.Options(
           receiveDataWhenStatusError: true,
           responseDecoder: _decodeHtmlBytes,
@@ -175,7 +168,6 @@ abstract class MetadataProvider {
     try {
       response = await _dio.getUri(
         uri,
-        cancelToken: _cancelToken,
         options: p_dio.Options(responseType: p_dio.ResponseType.bytes),
       );
     } catch (ex) {
