@@ -197,6 +197,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           indicatorWeight: kTabIndicatorWeight,
           indicatorColor: Theme.of(context).colorScheme.primary,
           isScrollable: true,
+          tabAlignment: TabAlignment.center,
           tabs: GlobalData.groupStorage
               .groupsMap(
                 (group) => Tab(
@@ -256,31 +257,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     required Widget icon,
     required Widget label,
     required void Function() onPressed,
+    Color? backgroundColor,
   }) {
-    final tooltipBackground = Theme.of(context).colorScheme.primaryContainer;
-    final tooltipForeground = Theme.of(context).colorScheme.onPrimaryContainer;
-    final tooltipShadowColor = Theme.of(context).colorScheme.shadow;
-    final tooltipSplashColor = tooltipForeground.withOpacity(0.12);
-    final tooltipFocusColor = tooltipForeground.withOpacity(0.12);
-    final tooltipHoverColor = tooltipForeground.withOpacity(0.08);
     final List<Widget> children = [];
     if (_isFabOpen) {
       children.addAll([
-        Material(
-          color: tooltipBackground,
-          shadowColor: tooltipShadowColor,
-          elevation: 4,
-          borderRadius: BorderRadius.circular(12),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            splashColor: tooltipSplashColor,
-            focusColor: tooltipFocusColor,
-            hoverColor: tooltipHoverColor,
-            onTap: onPressed,
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: label,
+        SizedBox(
+          height: 40,
+          child: FloatingActionButton.extended(
+            onPressed: onPressed,
+            elevation: 4,
+            backgroundColor: backgroundColor,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(12),
+              ),
             ),
+            label: label,
           ),
         ),
         const SizedBox(width: 16),
@@ -290,15 +283,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       FloatingActionButton.small(
         onPressed: onPressed,
         elevation: 4,
+        backgroundColor: backgroundColor,
         child: icon,
       ),
     );
     return Row(children: children);
   }
 
-  Widget _getFabMenu(BuildContext context) {
+  Widget _getFabMenu({
+    required BuildContext context,
+    Color? backgroundColor,
+  }) {
     final List<Widget> children = [];
-
     if (_activeGroupIndex >= 0) {
       children.add(
         _getFabMenuItem(
@@ -308,6 +304,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             _createBookmark(context);
             _fabKey.currentState?.toggle();
           },
+          backgroundColor: backgroundColor,
         ),
       );
     }
@@ -319,6 +316,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           _openGroupManagement();
           _fabKey.currentState?.toggle();
         },
+        backgroundColor: backgroundColor,
       ),
     );
     if (GlobalData.groupStorage.isNotEmpty) {
@@ -330,6 +328,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             _exportToFile(context);
             _fabKey.currentState?.toggle();
           },
+          backgroundColor: backgroundColor,
         ),
       );
     }
@@ -341,9 +340,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           _importFromFile(context);
           _fabKey.currentState?.toggle();
         },
+        backgroundColor: backgroundColor,
       ),
     );
-
     return ExpandableFab(
       key: _fabKey,
       type: ExpandableFabType.up,
@@ -351,6 +350,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       distance: 56,
       overlayStyle: ExpandableFabOverlayStyle(
         color: Colors.black.withOpacity(0.5),
+      ),
+      backgroundColor: backgroundColor,
+      closeButtonStyle: ExpandableFabCloseButtonStyle(
+        backgroundColor: backgroundColor,
       ),
       afterOpen: (() => setState(() => _isFabOpen = true)),
       beforeClose: (() => setState(() => _isFabOpen = false)),
@@ -373,7 +376,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       appBar: _getAppBar(),
       body: _getBody(),
       floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: _getFabMenu(context),
+      floatingActionButton: _getFabMenu(
+        context: context,
+        backgroundColor: Color.alphaBlend(
+          Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.75),
+          Theme.of(context).colorScheme.surface,
+        ),
+      ),
     );
   }
 
