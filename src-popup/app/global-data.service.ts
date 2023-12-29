@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Bookmark } from './bookmark';
 import { Group } from './group';
 import { GroupStorage } from './group-storage';
+import { StorageManagerService } from './storage-manager.service';
 
 const keyData = 'data';
 
@@ -15,9 +16,12 @@ export class GlobalDataService {
     },
     areaName: 'sync' | 'local' | 'managed' | 'session',
   ) => this.onStorageDataChange(changes, areaName);
+  private readonly storageManager: StorageManagerService;
   readonly groupStorage: GroupStorage = new GroupStorage();
 
-  constructor() { }
+  constructor(storageManager: StorageManagerService) {
+    this.storageManager = storageManager;
+  }
 
   private onStorageDataChange(
     changes: {
@@ -43,18 +47,16 @@ export class GlobalDataService {
   }
 
   public async loadFromStorage(): Promise<void> {
-    const results = await chrome.storage.local.get(keyData);
-    if (keyData in results) {
-      this.groupStorage.replaceFromJson(results[keyData]);
+    const data = await this.storageManager.get(keyData);
+    if (data !== undefined) {
+      this.groupStorage.replaceFromJson(data);
     } else {
       this.groupStorage.replaceByDefault();
     }
   }
 
   public async saveToStorage(): Promise<void> {
-    await chrome.storage.local.set({
-      [keyData]: this.groupStorage.json
-    });
+    await this.storageManager.set(keyData, this.groupStorage.json);
   }
 
   public moveBookmarkToGroup(bookmark: Bookmark, toGroup: Group): number {
