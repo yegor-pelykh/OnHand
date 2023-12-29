@@ -12,9 +12,7 @@ import '@material/web/select/outlined-select';
 import '@material/web/select/select-option.js';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     HttpClientModule,
     BrowserModule,
@@ -22,9 +20,7 @@ import '@material/web/select/select-option.js';
     ReactiveFormsModule,
   ],
   providers: [],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ],
-  bootstrap: [AppComponent]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

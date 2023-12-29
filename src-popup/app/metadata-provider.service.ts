@@ -9,21 +9,23 @@ const contentTypeFlagPng = 'png';
 const contentTypeFlagSvg = 'svg+xml';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MetadataProviderService {
   constructor(
     private http: HttpClient,
     private communication: CommunicationService,
-  ) { }
+  ) {}
 
   async getIconDataByUrl(url: string) {
     let response: HttpResponse<ArrayBuffer>;
     try {
-      response = await lastValueFrom(this.http.get(url, {
-        observe: 'response',
-        responseType: 'arraybuffer',
-      }));
+      response = await lastValueFrom(
+        this.http.get(url, {
+          observe: 'response',
+          responseType: 'arraybuffer',
+        }),
+      );
     } catch {
       return undefined;
     }
@@ -34,7 +36,10 @@ export class MetadataProviderService {
     if (contentType == null) {
       return undefined;
     }
-    if (!contentType.includes('image') && !contentType.includes('application/octet-stream')) {
+    if (
+      !contentType.includes('image') &&
+      !contentType.includes('application/octet-stream')
+    ) {
       return undefined;
     }
     const origImageBytes = Buffer.from(response.body);
@@ -42,25 +47,25 @@ export class MetadataProviderService {
       return new IconData(contentType, origImageBytes);
     } else {
       try {
-        const convResponse = await this.communication.sendMessage(
-          'to-png',
-          {
-            'contentType': contentType,
-            'content': origImageBytes.toString('base64'),
-          },
-        );
+        const convResponse = await this.communication.sendMessage('to-png', {
+          contentType: contentType,
+          content: origImageBytes.toString('base64'),
+        });
         if (typeof convResponse !== 'object') {
           return undefined;
         }
-        const imageBytes = 'bytes' in convResponse && typeof convResponse['bytes'] === 'string'
-          ? Buffer.from(convResponse['bytes'], 'base64')
-          : undefined;
-        const width = 'width' in convResponse && typeof convResponse['width'] === 'number'
-          ? convResponse['width']
-          : 0;
-        const height = 'height' in convResponse && typeof convResponse['height'] === 'number'
-          ? convResponse['height']
-          : 0;
+        const imageBytes =
+          'bytes' in convResponse && typeof convResponse['bytes'] === 'string'
+            ? Buffer.from(convResponse['bytes'], 'base64')
+            : undefined;
+        const width =
+          'width' in convResponse && typeof convResponse['width'] === 'number'
+            ? convResponse['width']
+            : 0;
+        const height =
+          'height' in convResponse && typeof convResponse['height'] === 'number'
+            ? convResponse['height']
+            : 0;
         if (imageBytes === undefined || width == 0 || height == 0) {
           return undefined;
         }

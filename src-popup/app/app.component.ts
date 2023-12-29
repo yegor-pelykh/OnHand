@@ -21,37 +21,27 @@ enum PopupState {
 @Component({
   selector: 'popup-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
   private readonly tabUpdateListener = (
     tabId: number,
     changeInfo: chrome.tabs.TabChangeInfo,
     tab: chrome.tabs.Tab,
-  ) => this.zone.run(
-    () => this.onTabUpdate(tabId, changeInfo, tab),
-  );
-  private readonly groupStorageChangeListener = () => this.zone.run(
-    () => this.onGroupStorageChange(),
-  );
-  private readonly colorSchemeChangeListener = () => this.zone.run(
-    () => this.onColorSchemeChange(),
-  );
+  ) => this.zone.run(() => this.onTabUpdate(tabId, changeInfo, tab));
+  private readonly groupStorageChangeListener = () =>
+    this.zone.run(() => this.onGroupStorageChange());
+  private readonly colorSchemeChangeListener = () =>
+    this.zone.run(() => this.onColorSchemeChange());
   private readonly colorSchemeMediaQuery;
   translations: Translations;
   groupStorage?: GroupStorage;
   tab?: chrome.tabs.Tab;
   favIcon?: IconData;
   favIconSource?: SafeUrl;
-  addressControl = new FormControl('', [
-    Validators.required,
-  ]);
-  titleControl = new FormControl('', [
-    Validators.required,
-  ]);
-  groupControl = new FormControl('', [
-    Validators.required,
-  ]);
+  addressControl = new FormControl('', [Validators.required]);
+  titleControl = new FormControl('', [Validators.required]);
+  groupControl = new FormControl('', [Validators.required]);
   bookmarkInfo = new FormGroup({
     addressControl: this.addressControl,
     titleControl: this.titleControl,
@@ -73,9 +63,7 @@ export class AppComponent implements OnInit, OnDestroy {
     return null;
   }
   private set groupIndex(value: number | null) {
-    const strValue = value != null
-      ? value.toString()
-      : null;
+    const strValue = value != null ? value.toString() : null;
     this.groupControl.setValue(strValue);
   }
 
@@ -87,20 +75,26 @@ export class AppComponent implements OnInit, OnDestroy {
     private metadataProvider: MetadataProviderService,
   ) {
     this.translations = new Translations();
-    this.colorSchemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    this.colorSchemeMediaQuery = window.matchMedia(
+      '(prefers-color-scheme: dark)',
+    );
     this.state = PopupState.notReady;
     window.addEventListener('load', () => this.onWindowLoad());
   }
 
   private onWindowLoad() {
-    this.colorSchemeMediaQuery.addEventListener('change', this.colorSchemeChangeListener);
+    this.colorSchemeMediaQuery.addEventListener(
+      'change',
+      this.colorSchemeChangeListener,
+    );
     this.onColorSchemeChange();
   }
 
   private onColorSchemeChange() {
-    window.document.body.style.backgroundColor = this.colorSchemeMediaQuery.matches
-        ? bgColorDark
-        : bgColorLight;
+    window.document.body.style.backgroundColor = this.colorSchemeMediaQuery
+      .matches
+      ? bgColorDark
+      : bgColorLight;
   }
 
   private updateAddress() {
@@ -117,12 +111,16 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private async updateFavIcon() {
     if (this.tab?.favIconUrl !== undefined) {
-      this.favIcon = await this.metadataProvider.getIconDataByUrl(this.tab.favIconUrl);
+      this.favIcon = await this.metadataProvider.getIconDataByUrl(
+        this.tab.favIconUrl,
+      );
       if (this.favIcon !== undefined) {
         const blob = new Blob([this.favIcon.bytes], {
-          type: this.favIcon.contentType
+          type: this.favIcon.contentType,
         });
-        this.favIconSource = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(blob));
+        this.favIconSource = this.sanitizer.bypassSecurityTrustUrl(
+          URL.createObjectURL(blob),
+        );
       } else {
         this.favIconSource = undefined;
       }
@@ -133,7 +131,11 @@ export class AppComponent implements OnInit, OnDestroy {
     const groupsLength = this.groupStorage?.groupsLength;
     if (groupsLength != null) {
       const currentValue = this.groupIndex;
-      if (currentValue == null || currentValue < 0 || currentValue >= groupsLength) {
+      if (
+        currentValue == null ||
+        currentValue < 0 ||
+        currentValue >= groupsLength
+      ) {
         if (groupsLength > 0) {
           this.groupIndex = 0;
         }
@@ -147,9 +149,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.titleControl.value != null &&
       this.groupControl.value != null &&
       this.groupStorage !== undefined;
-    this.state = isLoaded
-      ? PopupState.waitInput
-      : PopupState.notReady;
+    this.state = isLoaded ? PopupState.waitInput : PopupState.notReady;
   }
 
   private onGroupStorageChange(): void {
@@ -160,7 +160,11 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async onTabUpdate(_tabId: number, _changeInfo: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab) {
+  private async onTabUpdate(
+    _tabId: number,
+    _changeInfo: chrome.tabs.TabChangeInfo,
+    tab: chrome.tabs.Tab,
+  ) {
     const isUrlChanged = this.tab?.url !== tab.url;
     const isTitleChanged = this.tab?.title !== tab.title;
     const isFavIconChanged = this.tab?.favIconUrl !== tab.favIconUrl;
@@ -179,16 +183,19 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private async getActiveTab() {
     return new Promise<chrome.tabs.Tab>((resolve, reject) => {
-      chrome.tabs.query({
-        active: true,
-        currentWindow: true,
-      }, async (tabs) => {
-        if (tabs.length > 0) {
-          resolve(tabs[0]);
-        } else {
-          reject('No active tab');
-        }
-      });
+      chrome.tabs.query(
+        {
+          active: true,
+          currentWindow: true,
+        },
+        async (tabs) => {
+          if (tabs.length > 0) {
+            resolve(tabs[0]);
+          } else {
+            reject('No active tab');
+          }
+        },
+      );
     });
   }
 
@@ -223,9 +230,10 @@ export class AppComponent implements OnInit, OnDestroy {
         const group = this.globalData.groupStorage.groupAt(groupIndex);
         if (group !== undefined) {
           const url = new URL(address);
-          const favIconBuffer = this.favIcon !== undefined
-            ? Buffer.from(this.favIcon.bytes)
-            : undefined;
+          const favIconBuffer =
+            this.favIcon !== undefined
+              ? Buffer.from(this.favIcon.bytes)
+              : undefined;
           group.addBookmark(url, title, favIconBuffer);
           this.globalData.saveToStorage();
           this.state = PopupState.completed;
@@ -239,6 +247,9 @@ export class AppComponent implements OnInit, OnDestroy {
     this.globalData.unsubscribeFromStorageChange();
     this.globalData.groupStorage.removeAllListeners();
     this.communication.disconnect();
-    this.colorSchemeMediaQuery.removeEventListener('change', this.colorSchemeChangeListener);
+    this.colorSchemeMediaQuery.removeEventListener(
+      'change',
+      this.colorSchemeChangeListener,
+    );
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StorageManagerService {
   private readonly isFirefox;
@@ -18,9 +18,7 @@ export class StorageManagerService {
     });
   }
 
-  private async setObjForFirefox(obj: {
-    [key: string]: any;
-  }): Promise<void> {
+  private async setObjForFirefox(obj: { [key: string]: any }): Promise<void> {
     return new Promise((resolve, reject) => {
       chrome.storage.local.set(obj, () => {
         resolve();

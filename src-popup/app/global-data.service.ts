@@ -7,12 +7,12 @@ import { StorageManagerService } from './storage-manager.service';
 const keyData = 'data';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GlobalDataService {
   private readonly storageDataChangeListener = (
     changes: {
-      [key: string]: chrome.storage.StorageChange,
+      [key: string]: chrome.storage.StorageChange;
     },
     areaName: 'sync' | 'local' | 'managed' | 'session',
   ) => this.onStorageDataChange(changes, areaName);
@@ -25,7 +25,7 @@ export class GlobalDataService {
 
   private onStorageDataChange(
     changes: {
-      [key: string]: chrome.storage.StorageChange,
+      [key: string]: chrome.storage.StorageChange;
     },
     areaName: 'sync' | 'local' | 'managed' | 'session',
   ): void {
@@ -67,5 +67,4 @@ export class GlobalDataService {
     toGroup.addBookmark(bookmark.url, bookmark.title, bookmark.icon);
     return this.groupStorage.indexOf(toGroup);
   }
-
 }
