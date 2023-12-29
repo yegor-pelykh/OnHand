@@ -7,9 +7,6 @@ import 'package:on_hand/chrome_bridge/common/chrome_common.dart';
 import 'package:on_hand/global/global_chrome.dart';
 import 'package:on_hand/helpers/charset_converter.dart';
 
-const signatureIco = [0, 0, 1, 0];
-const signaturePng = [137, 80, 78, 71, 13, 10, 26, 10];
-
 const charsetValueMark = 'charset=';
 const contentTypeFlagPng = 'png';
 const contentTypeFlagSvg = 'svg+xml';
