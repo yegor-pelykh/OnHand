@@ -14,4 +14,13 @@ export class Translator {
   get successInfoLabel(): string {
     return chrome.i18n.getMessage('successInfoLabel');
   }
+  get selectGroup(): string {
+    return chrome.i18n.getMessage('selectGroup');
+  }
+  get close(): string {
+    return chrome.i18n.getMessage('close');
+  }
+  get select(): string {
+    return chrome.i18n.getMessage('select');
+  }
 }

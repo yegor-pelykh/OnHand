@@ -83,3 +83,17 @@
     transform: scale(0.9, 0.93);
   }
 }
+
+.list-item-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  & > md-radio {
+    flex: 0 0 auto;
+  }
+
+  & > label {
+    flex: 1 1 auto;
+  }
+}

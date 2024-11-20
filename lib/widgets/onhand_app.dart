@@ -22,7 +22,7 @@ class OnHandApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: AppColorScheme.light,
         dialogBackgroundColor: AppColorScheme.light.surface,
-        scaffoldBackgroundColor: AppColorScheme.light.background,
+        scaffoldBackgroundColor: AppColorScheme.light.surface,
         bottomSheetTheme: BottomSheetThemeData(
           backgroundColor: AppColorScheme.light.surface,
           modalBackgroundColor: AppColorScheme.light.surface,
@@ -32,7 +32,7 @@ class OnHandApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: AppColorScheme.dark,
         dialogBackgroundColor: AppColorScheme.dark.surface,
-        scaffoldBackgroundColor: AppColorScheme.dark.background,
+        scaffoldBackgroundColor: AppColorScheme.dark.surface,
         bottomSheetTheme: BottomSheetThemeData(
           backgroundColor: AppColorScheme.dark.surface,
           modalBackgroundColor: AppColorScheme.dark.surface,

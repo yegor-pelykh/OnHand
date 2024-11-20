@@ -24,43 +24,72 @@
       </div>
       <md-outlined-text-field
         type="url"
-        [label]="translations.addressLabel"
+        [label]="translator.addressLabel"
         formControlName="addressControl"
         ngDefaultControl
         required
       ></md-outlined-text-field>
       <md-outlined-text-field
         type="text"
-        [label]="translations.titleLabel"
+        [label]="translator.titleLabel"
         formControlName="titleControl"
         ngDefaultControl
         required
       ></md-outlined-text-field>
-      <md-outlined-select
-        #groupField
-        [label]="translations.groupLabel"
+      <md-outlined-text-field
+        type="text"
+        [label]="translator.groupLabel"
         formControlName="groupControl"
+        readonly="true"
         ngDefaultControl
         required
-      >
-        <md-select-option
-          *ngFor="let title of groupStorage!.titles; index as i"
-          value="{{ i.toString() }}"
-        >
-          <div slot="headline">{{ title }}</div>
-        </md-select-option>
-      </md-outlined-select>
+        (click)="openGroupSelector()"
+      ></md-outlined-text-field>
       <md-filled-button
         type="submit"
         [attr.disabled]="!bookmarkInfo.valid ? '' : null"
-        >{{ translations.addBookmarkLabel }}</md-filled-button
+        >{{ translator.addBookmarkLabel }}</md-filled-button
       >
     </form>
+    <md-dialog #dialog>
+      <div slot="headline">{{ translator.selectGroup }}</div>
+      <form slot="content" id="group-selector-form" method="dialog">
+        <md-list>
+          <md-list-item
+            *ngFor="let title of this.groupStorage?.titles; let i = index"
+            (click)="selectGroup(i)"
+          >
+            <div class="list-item-content">
+              <md-radio
+                name="group"
+                value="{{ title }}"
+                aria-label="{{ title }}"
+                touch-target="wrapper"
+                [attr.checked]="isGroupSelected(i)"
+              ></md-radio>
+              <label>
+                {{ title }}
+              </label>
+            </div>
+          </md-list-item>
+        </md-list>
+      </form>
+      <div slot="actions">
+        <md-text-button
+          form="group-selector-form"
+          (click)="closeGroupSelector()"
+          >{{ translator.close }}</md-text-button
+        >
+        <md-filled-button form="form-id" (click)="applyGroupSelection()">{{
+          translator.select
+        }}</md-filled-button>
+      </div>
+    </md-dialog>
   </ng-container>
   <ng-container *ngSwitchCase="PopupState.completed">
     <div class="success-info-container">
       <md-icon class="success-icon">heart_check</md-icon>
-      <div class="success-text">{{ translations.successInfoLabel }}</div>
+      <div class="success-text">{{ translator.successInfoLabel }}</div>
     </div>
   </ng-container>
 </div>

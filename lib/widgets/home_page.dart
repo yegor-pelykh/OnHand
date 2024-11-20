@@ -196,6 +196,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           controller: _tabController,
           indicatorWeight: kTabIndicatorWeight,
           indicatorColor: Theme.of(context).colorScheme.primary,
+          dividerColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
           isScrollable: true,
           tabAlignment: TabAlignment.center,
           tabs: GlobalData.groupStorage
@@ -379,7 +380,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       floatingActionButton: _getFabMenu(
         context: context,
         backgroundColor: Color.alphaBlend(
-          Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.75),
+          Theme.of(context)
+              .colorScheme
+              .surfaceContainerHighest
+              .withOpacity(0.75),
           Theme.of(context).colorScheme.surface,
         ),
       ),

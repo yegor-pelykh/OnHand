@@ -133,7 +133,13 @@ class _GroupTileState extends State<GroupTile> {
 
   @override
   Widget build(BuildContext context) {
+    final tileColor = Color.lerp(
+      Theme.of(context).colorScheme.primary,
+      Theme.of(context).colorScheme.surface,
+      0.9,
+    );
     return Card(
+      color: tileColor,
       child: ListTile(
         dense: true,
         title: Text(widget.group.title),

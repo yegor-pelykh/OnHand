@@ -1,4 +1,3 @@
-import 'dart:js';
 import 'package:on_hand/chrome_bridge/chrome_message_event.dart';
 import 'package:on_hand/chrome_bridge/chrome_message_sender.dart';
 import 'package:on_hand/chrome_bridge/common/chrome_common.dart';
@@ -16,7 +15,7 @@ class ChromePort extends ChromeObject {
     if (sender != null) this.sender = sender;
   }
 
-  ChromePort.fromProxy(JsObject jsProxy) : super.fromProxy(jsProxy);
+  ChromePort.fromProxy(super.jsProxy) : super.fromProxy();
 
   /// The name of the port, as specified in the call to [runtime.connect].
   String get name => jsProxy['name'];

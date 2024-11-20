@@ -2,7 +2,7 @@ import 'package:on_hand/chrome_bridge/common/chrome_enum.dart';
 
 /// An event that caused a muted state change.
 class ChromeTabMutedInfoReason extends ChromeEnum {
-  const ChromeTabMutedInfoReason(String value) : super(value);
+  const ChromeTabMutedInfoReason(super.value);
 
   /// A user input action has set/overridden the muted state.
   static const ChromeTabMutedInfoReason user = ChromeTabMutedInfoReason('user');

@@ -256,6 +256,7 @@ class _BookmarkEditorState extends State<BookmarkEditor> {
       } else {
         _askForUsageWithoutMetadata(context).then((accept) {
           if (accept == true) {
+            // ignore: use_build_context_synchronously
             _applyAndClose(context);
           }
         });

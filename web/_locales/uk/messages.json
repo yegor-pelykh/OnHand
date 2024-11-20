@@ -16,5 +16,14 @@
   },
   "successInfoLabel": {
     "message": "Закладка успішно додана!"
+  },
+  "selectGroup": {
+    "message": "Виберіть групу"
+  },
+  "close": {
+    "message": "Закрити"
+  },
+  "select": {
+    "message": "Вибрати"
   }
 }
