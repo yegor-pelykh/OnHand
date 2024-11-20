@@ -1,10 +1,5 @@
 import { Buffer } from 'buffer';
-import {
-  decodeImage,
-  decodeImageByMimeType,
-  encodePng,
-  IcoDecoder,
-} from 'image-in-browser';
+import { decodeImageByMimeType, encodePng } from 'image-in-browser';
 
 type Message = {
   uuid: string;
