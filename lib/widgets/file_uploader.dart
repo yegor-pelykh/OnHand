@@ -44,6 +44,7 @@ class _FileUploaderState extends State<FileUploader> {
         final jsonString = reader.result as String?;
         if (jsonString != null) {
           replaceFromJson(jsonString).whenComplete(() {
+            // ignore: use_build_context_synchronously
             Navigator.of(context).pop();
           });
         }
@@ -52,6 +53,7 @@ class _FileUploaderState extends State<FileUploader> {
     } else if (_pickedFile?.bytes != null) {
       final jsonString = const Utf8Decoder().convert(_pickedFile!.bytes!);
       replaceFromJson(jsonString).whenComplete(() {
+        // ignore: use_build_context_synchronously
         Navigator.of(context).pop();
       });
     }
@@ -216,8 +218,8 @@ class _FileUploaderState extends State<FileUploader> {
               _pickedFile = null;
               _state = DropzoneState.hovering;
             }),
-            onDrop: (dynamic data) {},
-            onDropMultiple: (List<dynamic>? ev) => setState(() {
+            onDropFile: (dynamic data) {},
+            onDropFiles: (List<dynamic>? ev) => setState(() {
               _droppedFile = null;
               _pickedFile = null;
               if (ev != null) {

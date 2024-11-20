@@ -10,4 +10,8 @@ abstract class Utils {
         .substring(1);
     return '${o2()}${o2()}-${o2()}-${o2()}-${o2()}-${o2()}${o2()}${o2()}';
   }
+
+  static String getUriString(Uri uri) {
+    return uri.path == '/' ? uri.origin : uri.toString();
+  }
 }

@@ -9,6 +9,7 @@ import 'package:on_hand/global/global_data.dart';
 import 'package:on_hand/helpers/image_helper.dart';
 import 'package:on_hand/helpers/metadata_provider.dart';
 import 'package:on_hand/helpers/url_launcher.dart';
+import 'package:on_hand/helpers/utils.dart';
 import 'package:on_hand/widgets/bookmark_editor.dart';
 
 const double iconSize = 24;
@@ -117,7 +118,7 @@ class _BookmarkTileState extends State<BookmarkTile> {
   }
 
   bool _isCtrlKeyPressed() {
-    final keys = RawKeyboard.instance.keysPressed;
+    final keys = HardwareKeyboard.instance.logicalKeysPressed;
     return keys.contains(LogicalKeyboardKey.controlLeft) ||
         keys.contains(LogicalKeyboardKey.controlRight);
   }
@@ -193,7 +194,7 @@ class _BookmarkTileState extends State<BookmarkTile> {
                 maxLines: 1,
               ),
               subtitle: Text(
-                widget.bookmark.url.toString(),
+                Utils.getUriString(widget.bookmark.url),
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
                 maxLines: 1,
@@ -236,6 +237,11 @@ class _BookmarkTileState extends State<BookmarkTile> {
 
   @override
   Widget build(BuildContext context) {
+    final tileColor = Color.lerp(
+      Theme.of(context).colorScheme.primary,
+      Theme.of(context).colorScheme.surface,
+      0.9,
+    );
     final url = widget.bookmark.url;
     final title = widget.bookmark.title;
     return SizedBox(
@@ -244,6 +250,7 @@ class _BookmarkTileState extends State<BookmarkTile> {
       child: Card(
         margin: EdgeInsets.zero,
         elevation: 4,
+        color: tileColor,
         child: InkWell(
           borderRadius: const BorderRadius.all(Radius.circular(12)),
           onTap: () {
@@ -265,7 +272,7 @@ class _BookmarkTileState extends State<BookmarkTile> {
                 maxLines: 1,
               ),
               subtitle: Text(
-                url.toString(),
+                Utils.getUriString(url),
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
                 maxLines: 1,

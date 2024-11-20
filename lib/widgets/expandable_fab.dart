@@ -1,5 +1,3 @@
-library flutter_expandable_fab;
-
 import 'dart:math' as math;
 import 'dart:ui';
 
@@ -74,7 +72,7 @@ class ExpandableFab extends StatefulWidget {
   static final FloatingActionButtonLocation location = _ExpandableFabLocation();
 
   const ExpandableFab({
-    Key? key,
+    super.key,
     this.distance = 100,
     this.duration = const Duration(milliseconds: 250),
     this.fanAngle = 90,
@@ -91,7 +89,7 @@ class ExpandableFab extends StatefulWidget {
     this.beforeClose,
     this.afterClose,
     this.overlayStyle,
-  }) : super(key: key);
+  });
 
   /// Distance from children.
   final double distance;
