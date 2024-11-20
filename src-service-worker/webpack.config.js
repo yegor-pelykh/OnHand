@@ -27,4 +27,8 @@ module.exports = {
     filename: 'service-worker.js',
     path: path.resolve(__dirname, '../web'),
   },
+  performance: {
+    maxAssetSize: 1000000,
+    maxEntrypointSize: 1000000,
+  },
 };
