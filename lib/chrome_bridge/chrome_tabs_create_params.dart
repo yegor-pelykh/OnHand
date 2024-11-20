@@ -1,4 +1,3 @@
-import 'dart:js';
 import 'package:on_hand/chrome_bridge/common/chrome_common.dart';
 import 'package:on_hand/chrome_bridge/common/chrome_object.dart';
 
@@ -21,7 +20,7 @@ class ChromeTabsCreateParams extends ChromeObject {
     if (windowId != null) this.windowId = windowId;
   }
 
-  ChromeTabsCreateParams.fromProxy(JsObject jsProxy) : super.fromProxy(jsProxy);
+  ChromeTabsCreateParams.fromProxy(super.jsProxy) : super.fromProxy();
 
   /// Whether the tab should become the active tab in the window. Does not affect
   /// whether the window is focused (see [windows.update]). Defaults to [true].

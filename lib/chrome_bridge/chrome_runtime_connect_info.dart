@@ -1,4 +1,3 @@
-import 'dart:js';
 import 'package:on_hand/chrome_bridge/common/chrome_common.dart';
 import 'package:on_hand/chrome_bridge/common/chrome_object.dart';
 
@@ -15,8 +14,7 @@ class ChromeRuntimeConnectInfo extends ChromeObject {
     }
   }
 
-  ChromeRuntimeConnectInfo.fromProxy(JsObject jsProxy)
-      : super.fromProxy(jsProxy);
+  ChromeRuntimeConnectInfo.fromProxy(super.jsProxy) : super.fromProxy();
 
   /// Whether the TLS channel ID will be passed into onConnectExternal for
   /// processes that are listening for the connection event.

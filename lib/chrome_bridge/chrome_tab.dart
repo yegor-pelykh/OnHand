@@ -1,5 +1,4 @@
 import 'dart:js';
-
 import 'package:on_hand/chrome_bridge/chrome_tab_muted_info.dart';
 import 'package:on_hand/chrome_bridge/common/chrome_common.dart';
 import 'package:on_hand/chrome_bridge/common/chrome_object.dart';
@@ -51,7 +50,7 @@ class ChromeTab extends ChromeObject {
     if (windowId != null) this.windowId = windowId;
   }
 
-  ChromeTab.fromProxy(JsObject jsProxy) : super.fromProxy(jsProxy);
+  ChromeTab.fromProxy(super.jsProxy) : super.fromProxy();
 
   static ChromeTab? fromProxyN(JsObject? jsProxy) =>
       jsProxy != null ? ChromeTab.fromProxy(jsProxy) : null;

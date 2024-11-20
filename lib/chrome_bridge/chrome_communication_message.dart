@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:on_hand/chrome_bridge/common/chrome_common.dart';
 import 'package:on_hand/chrome_bridge/common/chrome_object.dart';
 
@@ -16,7 +14,7 @@ class ChromeCommunicationMessage extends ChromeObject {
     this.error = error;
   }
 
-  ChromeCommunicationMessage.fromProxy(JsObject jsProxy) : super.fromProxy(jsProxy);
+  ChromeCommunicationMessage.fromProxy(super.jsProxy) : super.fromProxy();
 
   /// Message unique ID.
   String get uuid => jsProxy['uuid'];
@@ -28,9 +26,11 @@ class ChromeCommunicationMessage extends ChromeObject {
 
   /// The data sent with this message.
   String? get data => jsProxy['data'];
-  set data(String? value) => ChromeCommon.setNullableProperty(jsProxy, 'data', value);
+  set data(String? value) =>
+      ChromeCommon.setNullableProperty(jsProxy, 'data', value);
 
   /// The error message.
   String? get error => jsProxy['error'];
-  set error(String? value) => ChromeCommon.setNullableProperty(jsProxy, 'error', value);
+  set error(String? value) =>
+      ChromeCommon.setNullableProperty(jsProxy, 'error', value);
 }

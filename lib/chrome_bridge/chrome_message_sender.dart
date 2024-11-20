@@ -28,7 +28,7 @@ class ChromeMessageSender extends ChromeObject {
     if (url != null) this.url = url;
   }
 
-  ChromeMessageSender.fromProxy(JsObject jsProxy) : super.fromProxy(jsProxy);
+  ChromeMessageSender.fromProxy(super.jsProxy) : super.fromProxy();
 
   static ChromeMessageSender? fromProxyN(JsObject? jsProxy) =>
       jsProxy != null ? ChromeMessageSender.fromProxy(jsProxy) : null;

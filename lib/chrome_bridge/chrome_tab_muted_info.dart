@@ -1,4 +1,3 @@
-import 'dart:js';
 import 'package:on_hand/chrome_bridge/chrome_tab_muted_info_reason.dart';
 import 'package:on_hand/chrome_bridge/common/chrome_common.dart';
 import 'package:on_hand/chrome_bridge/common/chrome_object.dart';
@@ -15,7 +14,7 @@ class ChromeTabMutedInfo extends ChromeObject {
     if (reason != null) this.reason = reason;
   }
 
-  ChromeTabMutedInfo.fromProxy(JsObject jsProxy) : super.fromProxy(jsProxy);
+  ChromeTabMutedInfo.fromProxy(super.jsProxy) : super.fromProxy();
 
   /// The ID of the extension that changed the muted state. Not set if an
   /// extension was not the reason the muted state last changed.

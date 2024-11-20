@@ -6,7 +6,7 @@ import 'package:on_hand/chrome_bridge/common/chrome_stream_controller.dart';
 
 class StorageArea extends ChromeObject {
   StorageArea();
-  StorageArea.fromProxy(JsObject jsProxy) : super.fromProxy(jsProxy);
+  StorageArea.fromProxy(super.jsProxy) : super.fromProxy();
 
   /// Gets one or more items from storage.
   ///
@@ -75,7 +75,7 @@ class StorageArea extends ChromeObject {
 class LocalStorageArea extends StorageArea {
   LocalStorageArea();
 
-  LocalStorageArea.fromProxy(JsObject jsProxy) : super.fromProxy(jsProxy);
+  LocalStorageArea.fromProxy(super.jsProxy) : super.fromProxy();
 
   /// The maximum amount (in bytes) of data that can be stored in local storage,
   /// as measured by the JSON stringification of every value plus every key's
