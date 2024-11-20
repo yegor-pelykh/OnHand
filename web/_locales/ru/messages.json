@@ -16,5 +16,14 @@
   },
   "successInfoLabel": {
     "message": "Закладка успешно добавлена!"
+  },
+  "selectGroup": {
+    "message": "Выберите группу"
+  },
+  "close": {
+    "message": "Закрыть"
+  },
+  "select": {
+    "message": "Выбрать"
   }
 }

@@ -1,5 +1,22 @@
-import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  NgForm,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Buffer } from 'buffer';
 import { CommunicationService } from './communication.service';
@@ -7,7 +24,18 @@ import { GlobalDataService } from './global-data.service';
 import { GroupStorage } from './group-storage';
 import { IconData } from './icon-data';
 import { MetadataProviderService } from './metadata-provider.service';
-import { Translator as Translations } from './translations';
+import { Translator } from './translator';
+
+import '@material/web/button/filled-button.js';
+import '@material/web/button/text-button.js';
+import '@material/web/dialog/dialog.js';
+import '@material/web/icon/icon.js';
+import '@material/web/list/list.js';
+import '@material/web/list/list-item';
+import '@material/web/radio/radio.js';
+import '@material/web/select/outlined-select';
+import '@material/web/select/select-option.js';
+import '@material/web/textfield/outlined-text-field.js';
 
 const bgColorLight = '#fcfcfd';
 const bgColorDark = '#1f1b17';
@@ -19,6 +47,10 @@ enum PopupState {
 }
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'popup-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
@@ -28,13 +60,20 @@ export class AppComponent implements OnInit, OnDestroy {
     tabId: number,
     changeInfo: chrome.tabs.TabChangeInfo,
     tab: chrome.tabs.Tab,
-  ) => this.zone.run(() => this.onTabUpdate(tabId, changeInfo, tab));
-  private readonly groupStorageChangeListener = () =>
-    this.zone.run(() => this.onGroupStorageChange());
-  private readonly colorSchemeChangeListener = () =>
-    this.zone.run(() => this.onColorSchemeChange());
+  ) => {
+    this.onTabUpdate(tabId, changeInfo, tab);
+    this.cdr.markForCheck();
+  };
+  private readonly groupStorageChangeListener = () => {
+    this.onGroupStorageChange();
+    this.cdr.markForCheck();
+  };
+  private readonly colorSchemeChangeListener = () => {
+    this.onColorSchemeChange();
+    this.cdr.markForCheck();
+  };
   private readonly colorSchemeMediaQuery;
-  translations: Translations;
+  translator: Translator;
   groupStorage?: GroupStorage;
   tab?: chrome.tabs.Tab;
   favIcon?: IconData;
@@ -47,34 +86,31 @@ export class AppComponent implements OnInit, OnDestroy {
     titleControl: this.titleControl,
     groupControl: this.groupControl,
   });
-  @ViewChild('bookmarkForm')
-  bookmarkForm?: NgForm;
   PopupState = PopupState;
   state: PopupState = PopupState.notReady;
+  groupIndexTemp?: number;
+  @ViewChild('bookmarkForm')
+  bookmarkForm?: NgForm;
+  @ViewChild('dialog')
+  dialog?: ElementRef;
 
-  private get groupIndex(): number | null {
-    const strValue = this.groupControl.value;
-    if (strValue != null) {
-      const value = parseInt(strValue);
-      if (!isNaN(value)) {
-        return value;
-      }
-    }
-    return null;
+  private _groupIndex: number | undefined;
+  get groupIndex(): number | undefined {
+    return this._groupIndex;
   }
-  private set groupIndex(value: number | null) {
-    const strValue = value != null ? value.toString() : null;
-    this.groupControl.setValue(strValue);
+  set groupIndex(value: number | undefined) {
+    this._groupIndex = value;
+    this.updateGroupControl(this._groupIndex);
   }
 
   constructor(
-    public zone: NgZone,
+    private cdr: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
     private globalData: GlobalDataService,
     private communication: CommunicationService,
     private metadataProvider: MetadataProviderService,
   ) {
-    this.translations = new Translations();
+    this.translator = new Translator();
     this.colorSchemeMediaQuery = window.matchMedia(
       '(prefers-color-scheme: dark)',
     );
@@ -124,15 +160,16 @@ export class AppComponent implements OnInit, OnDestroy {
       } else {
         this.favIconSource = undefined;
       }
+      this.cdr.markForCheck();
     }
   }
 
   private updateCurrentGroup() {
     const groupsLength = this.groupStorage?.groupsLength;
-    if (groupsLength != null) {
+    if (groupsLength !== undefined) {
       const currentValue = this.groupIndex;
       if (
-        currentValue == null ||
+        currentValue === undefined ||
         currentValue < 0 ||
         currentValue >= groupsLength
       ) {
@@ -147,7 +184,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const isLoaded =
       this.addressControl.value != null &&
       this.titleControl.value != null &&
-      this.groupControl.value != null &&
+      this.groupIndex !== undefined &&
       this.groupStorage !== undefined;
     this.state = isLoaded ? PopupState.waitInput : PopupState.notReady;
   }
@@ -212,6 +249,20 @@ export class AppComponent implements OnInit, OnDestroy {
     chrome.tabs.onUpdated.removeListener(this.tabUpdateListener);
   }
 
+  private getGroupTitle(index: number | undefined): string | undefined {
+    return this.groupStorage !== undefined &&
+      index !== undefined &&
+      0 <= index &&
+      index < this.groupStorage.titles.length
+      ? this.groupStorage.titles[index]
+      : undefined;
+  }
+
+  private updateGroupControl(groupIndex: number | undefined) {
+    const groupTitle = this.getGroupTitle(groupIndex) ?? null;
+    this.groupControl.setValue(groupTitle, { emitEvent: false });
+  }
+
   ngOnInit(): void {
     this.communication.connect();
     this.globalData.groupStorage.addListener(this.groupStorageChangeListener);
@@ -221,12 +272,39 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscribeToTabUpdates();
   }
 
-  onSubmit() {
+  openGroupSelector(): void {
+    const titles = this.groupStorage?.titles;
+    if (titles !== undefined && titles.length > 0) {
+      this.groupIndexTemp = this.groupIndex;
+      const dialogElement = this.dialog?.nativeElement;
+      dialogElement?.show();
+    }
+  }
+
+  closeGroupSelector() {
+    const dialogElement = this.dialog?.nativeElement;
+    dialogElement?.close();
+  }
+
+  selectGroup(i: number) {
+    this.groupIndexTemp = i;
+  }
+
+  isGroupSelected(i: number): boolean | undefined {
+    return this.groupIndexTemp === i ? true : undefined;
+  }
+
+  applyGroupSelection() {
+    this.groupIndex = this.groupIndexTemp;
+    this.closeGroupSelector();
+  }
+
+  onSubmit(): void {
     if (this.bookmarkInfo.valid) {
       const address = this.addressControl.value;
       const title = this.titleControl.value;
       const groupIndex = this.groupIndex;
-      if (address != null && title != null && groupIndex != null) {
+      if (address != null && title != null && groupIndex !== undefined) {
         const group = this.globalData.groupStorage.groupAt(groupIndex);
         if (group !== undefined) {
           const url = new URL(address);
@@ -237,6 +315,9 @@ export class AppComponent implements OnInit, OnDestroy {
           group.addBookmark(url, title, favIconBuffer);
           this.globalData.saveToStorage();
           this.state = PopupState.completed;
+          setTimeout(() => {
+            window.close();
+          }, 3000);
         }
       }
     }

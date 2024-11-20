@@ -16,5 +16,14 @@
   },
   "successInfoLabel": {
     "message": "Bookmark added successfully!"
+  },
+  "selectGroup": {
+    "message": "Select group"
+  },
+  "close": {
+    "message": "Close"
+  },
+  "select": {
+    "message": "Select"
   }
 }

@@ -42,7 +42,6 @@
             "outputPath": "web/popup",
             "index": "src-popup/popup.html",
             "main": "src-popup/main.ts",
-            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "allowedCommonJsDependencies": ["buffer"],
