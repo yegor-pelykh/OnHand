@@ -43,7 +43,7 @@
     "newtab": "index.html"
   },
   "host_permissions": ["<all_urls>"],
-  "permissions": ["storage", "unlimitedStorage", "declarativeContent", "tabs"],
+  "permissions": ["storage", "unlimitedStorage", "declarativeContent"],
   "optional_permissions": ["unlimitedStorage"],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
