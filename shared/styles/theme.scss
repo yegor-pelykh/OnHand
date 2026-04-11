@@ -1,0 +1,233 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+/*
+* Note: Color palettes are generated from:
+* - primary: #FF7F50,
+* - secondary: #6495ED,
+* - tertiary: #DAA520,
+* - neutral: #F8F8FF,
+* - neutral variant: #D3D3D3,
+* - error: #D84315
+*/
+$_palettes: (
+  primary: (
+    0: #000000,
+    10: #380c00,
+    20: #5c1a00,
+    25: #6f2100,
+    30: #822800,
+    35: #943105,
+    40: #a43c12,
+    50: #c55429,
+    60: #e66d3f,
+    70: #ff8b62,
+    80: #ffb59c,
+    90: #ffdbcf,
+    95: #ffede8,
+    98: #fff8f6,
+    99: #fffbff,
+    100: #ffffff,
+  ),
+  secondary: (
+    0: #000000,
+    10: #001a40,
+    20: #002f67,
+    25: #00397c,
+    30: #004492,
+    35: #0d50a4,
+    40: #235cb1,
+    50: #4276cc,
+    60: #5f90e8,
+    70: #7eabff,
+    80: #acc7ff,
+    90: #d7e2ff,
+    95: #edf0ff,
+    98: #f9f9ff,
+    99: #fefbff,
+    100: #ffffff,
+  ),
+  tertiary: (
+    0: #000000,
+    10: #261900,
+    20: #402d00,
+    25: #4e3800,
+    30: #5c4300,
+    35: #6a4e00,
+    40: #795900,
+    50: #987100,
+    60: #b98900,
+    70: #d8a31d,
+    80: #f6be3b,
+    90: #ffdea0,
+    95: #ffefd5,
+    98: #fff8f2,
+    99: #fffbff,
+    100: #ffffff,
+  ),
+  neutral: (
+    0: #000000,
+    10: #191c20,
+    20: #2e3036,
+    25: #393b41,
+    30: #45474c,
+    35: #505258,
+    40: #5d5e64,
+    50: #75777d,
+    60: #8f9097,
+    70: #aaabb1,
+    80: #c5c6cd,
+    90: #e2e2e9,
+    95: #f0f0f7,
+    98: #f9f9ff,
+    99: #fdfbff,
+    100: #ffffff,
+    4: #0c0e13,
+    6: #111318,
+    12: #1d2025,
+    17: #282a2f,
+    22: #33353a,
+    24: #37393e,
+    87: #d9d9e0,
+    92: #e7e8ee,
+    94: #ededf4,
+    96: #f3f3fa,
+  ),
+  neutral-variant: (
+    0: #000000,
+    10: #1a1c1c,
+    20: #2f3131,
+    25: #3a3c3c,
+    30: #454747,
+    35: #515353,
+    40: #5d5e5f,
+    50: #767777,
+    60: #909191,
+    70: #ababab,
+    80: #c6c6c6,
+    90: #e2e2e2,
+    95: #f1f1f0,
+    98: #faf9f9,
+    99: #fcfcfc,
+    100: #ffffff,
+  ),
+  error: (
+    0: #000000,
+    10: #3b0900,
+    20: #601400,
+    25: #731a00,
+    30: #872000,
+    35: #9c2700,
+    40: #b12d00,
+    50: #d74214,
+    60: #fb5b2d,
+    70: #ff8b6a,
+    80: #ffb5a0,
+    90: #ffdbd1,
+    95: #ffede8,
+    98: #fff8f6,
+    99: #fffbff,
+    100: #ffffff,
+  ),
+);
+
+$_rest: (
+  secondary: map.get($_palettes, secondary),
+  neutral: map.get($_palettes, neutral),
+  neutral-variant: map.get($_palettes, neutral-variant),
+  error: map.get($_palettes, error),
+);
+
+$primary-palette: map.merge(map.get($_palettes, primary), $_rest);
+$tertiary-palette: map.merge(map.get($_palettes, tertiary), $_rest);
+
+@function _high-contrast-value($light, $dark, $theme-type) {
+  @if ($theme-type == light) {
+    @return $light;
+  }
+  @if ($theme-type == dark) {
+    @return $dark;
+  }
+  @if ($theme-type == color-scheme) {
+    @return light-dark(#{$light}, #{$dark});
+  }
+
+  @error 'Unknown theme-type #{$theme-type}. Expected light, dark, or color-scheme';
+}
+
+@mixin high-contrast-overrides($theme-type) {
+  @include mat.theme-overrides(
+    (
+      primary: _high-contrast-value(#551700, #ffece6, $theme-type),
+      on-primary: _high-contrast-value(#ffffff, #000000, $theme-type),
+      primary-container: _high-contrast-value(#862900, #ffaf94, $theme-type),
+      on-primary-container: _high-contrast-value(#ffffff, #1d0400, $theme-type),
+      inverse-primary: _high-contrast-value(#ffb59c, #842800, $theme-type),
+      primary-fixed: _high-contrast-value(#862900, #ffdbcf, $theme-type),
+      primary-fixed-dim: _high-contrast-value(#601b00, #ffb59c, $theme-type),
+      on-primary-fixed: _high-contrast-value(#ffffff, #000000, $theme-type),
+      on-primary-fixed-variant: _high-contrast-value(#ffffff, #270600, $theme-type),
+      secondary: _high-contrast-value(#002a5f, #ebf0ff, $theme-type),
+      on-secondary: _high-contrast-value(#ffffff, #000000, $theme-type),
+      secondary-container: _high-contrast-value(#004796, #a6c3ff, $theme-type),
+      on-secondary-container: _high-contrast-value(#ffffff, #000a21, $theme-type),
+      secondary-fixed: _high-contrast-value(#004796, #d7e2ff, $theme-type),
+      secondary-fixed-dim: _high-contrast-value(#00316c, #acc7ff, $theme-type),
+      on-secondary-fixed: _high-contrast-value(#ffffff, #000000, $theme-type),
+      on-secondary-fixed-variant: _high-contrast-value(#ffffff, #00102c, $theme-type),
+      tertiary: _high-contrast-value(#3b2900, #ffeed2, $theme-type),
+      on-tertiary: _high-contrast-value(#ffffff, #000000, $theme-type),
+      tertiary-container: _high-contrast-value(#5f4500, #f2ba37, $theme-type),
+      on-tertiary-container: _high-contrast-value(#ffffff, #110a00, $theme-type),
+      tertiary-fixed: _high-contrast-value(#5f4500, #ffdea0, $theme-type),
+      tertiary-fixed-dim: _high-contrast-value(#432f00, #f6be3b, $theme-type),
+      on-tertiary-fixed: _high-contrast-value(#ffffff, #000000, $theme-type),
+      on-tertiary-fixed-variant: _high-contrast-value(#ffffff, #191000, $theme-type),
+      background: _high-contrast-value(#f9f9ff, #111318, $theme-type),
+      on-background: _high-contrast-value(#191c20, #e2e2e9, $theme-type),
+      surface: _high-contrast-value(#f9f9ff, #111318, $theme-type),
+      surface-dim: _high-contrast-value(#b8b8bf, #111318, $theme-type),
+      surface-bright: _high-contrast-value(#f9f9ff, #4e5056, $theme-type),
+      surface-container-low: _high-contrast-value(#f0f0f7, #1d2025, $theme-type),
+      surface-container-lowest: _high-contrast-value(#ffffff, #000000, $theme-type),
+      surface-container: _high-contrast-value(#e2e2e9, #2e3036, $theme-type),
+      surface-container-high: _high-contrast-value(#d3d4db, #393b41, $theme-type),
+      surface-container-highest: _high-contrast-value(#c5c6cd, #45474c, $theme-type),
+      on-surface: _high-contrast-value(#000000, #ffffff, $theme-type),
+      shadow: _high-contrast-value(#000000, #000000, $theme-type),
+      scrim: _high-contrast-value(#000000, #000000, $theme-type),
+      surface-tint: _high-contrast-value(#a43c12, #ffb59c, $theme-type),
+      inverse-surface: _high-contrast-value(#2e3036, #e2e2e9, $theme-type),
+      inverse-on-surface: _high-contrast-value(#ffffff, #000000, $theme-type),
+      outline: _high-contrast-value(#2b2c2d, #f0f0f0, $theme-type),
+      outline-variant: _high-contrast-value(#48494a, #c2c2c3, $theme-type),
+      error: _high-contrast-value(#581200, #ffece7, $theme-type),
+      on-error: _high-contrast-value(#ffffff, #000000, $theme-type),
+      error-container: _high-contrast-value(#8c2200, #ffaf99, $theme-type),
+      on-error-container: _high-contrast-value(#ffffff, #1e0300, $theme-type),
+      surface-variant: _high-contrast-value(#e2e2e2, #454747, $theme-type),
+      on-surface-variant: _high-contrast-value(#000000, #ffffff, $theme-type),
+    )
+  );
+}
+
+html {
+  --app-font-family: Roboto;
+
+  color-scheme: light dark;
+  @include mat.theme(
+    (
+      color: (
+        primary: $primary-palette,
+        tertiary: $tertiary-palette,
+      ),
+      typography: (
+        plain-family: var(--app-font-family),
+        brand-family: var(--app-font-family),
+        bold-weight: 700,
+        medium-weight: 500,
+        regular-weight: 400,
+      ),
+    )
+  );
+}

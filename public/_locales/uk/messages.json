@@ -1,0 +1,242 @@
+{
+  "app_description": {
+    "message": "Легко та безпечно зберігайте закладки ваших улюблених сайтів прямо на сторінці 'Нової вкладки'."
+  },
+  "app_author_name": {
+    "message": "Єгор Пелих"
+  },
+  "page_action_title": {
+    "message": "Додати поточну сторінку до закладок"
+  },
+  "home_no_groups_hint": {
+    "message": "Групи ще не створені. Розпочніть зі створення нової групи."
+  },
+  "create_bookmark": {
+    "message": "Додати закладку"
+  },
+  "group_management": {
+    "message": "Управління групами"
+  },
+  "export_to_file": {
+    "message": "Експорт даних"
+  },
+  "import_from_file": {
+    "message": "Імпорт даних"
+  },
+  "no_groups_for_bookmark": {
+    "message": "Немає доступних груп. Будь ласка, спочатку створіть групу для закладок."
+  },
+  "ok": {
+    "message": "ОК"
+  },
+  "bookmark_created": {
+    "message": "Закладку успішно додано"
+  },
+  "groups_saved": {
+    "message": "Групи успішно збережено"
+  },
+  "export_to_file_dlg_title": {
+    "message": "Експорт ваших закладок"
+  },
+  "export_to_file_dlg_content": {
+    "message": "Ви впевнені, що бажаєте експортувати всі ваші закладки до файлу?"
+  },
+  "save": {
+    "message": "Зберегти"
+  },
+  "cancel": {
+    "message": "Скасувати"
+  },
+  "confirm": {
+    "message": "Підтвердити"
+  },
+  "data_exported": {
+    "message": "Дані успішно експортовано"
+  },
+  "import_from_file_dlg_title": {
+    "message": "Імпорт даних з файлу"
+  },
+  "data_imported": {
+    "message": "Дані успішно імпортовано"
+  },
+  "import_error": {
+    "message": "Не вдалося імпортувати дані. Невірний формат файлу або пошкоджені дані."
+  },
+  "bookmark_creating_dlg_title": {
+    "message": "Створити нову закладку"
+  },
+  "bookmark_editing_dlg_title": {
+    "message": "Змінити дані закладки"
+  },
+  "bookmark_address_label": {
+    "message": "URL-адреса"
+  },
+  "bookmark_address_empty_hint": {
+    "message": "Поле 'URL-адреса' не може бути пустим."
+  },
+  "bookmark_title_label": {
+    "message": "Назва"
+  },
+  "bookmark_title_empty_hint": {
+    "message": "Поле 'Назва' не може бути пустим."
+  },
+  "bookmark_group_label": {
+    "message": "Вибрати групу"
+  },
+  "bookmark_group_empty_hint": {
+    "message": "Будь ласка, виберіть групу."
+  },
+  "create": {
+    "message": "Створити"
+  },
+  "apply": {
+    "message": "Зберегти зміни"
+  },
+  "edit": {
+    "message": "Редагувати"
+  },
+  "refresh_bookmark_icon": {
+    "message": "Оновити іконку"
+  },
+  "delete": {
+    "message": "Видалити"
+  },
+  "group_no_bookmarks_hint": {
+    "message": "У цій групі ще немає закладок."
+  },
+  "group_no_bookmarks_hint_details": {
+    "message": "Додавайте нові закладки за допомогою меню в правому нижньому куті."
+  },
+  "group_creating_dlg_title": {
+    "message": "Створити нову групу"
+  },
+  "group_editing_dlg_title": {
+    "message": "Змінити назву групи"
+  },
+  "group_title_label": {
+    "message": "Назва групи"
+  },
+  "group_title_empty_hint": {
+    "message": "Назва групи не може бути пустою."
+  },
+  "group_title_already_used_hint": {
+    "message": "Ця назва групи вже використовується."
+  },
+  "new_group_label": {
+    "message": "Нова група"
+  },
+  "hint_no_groups_title": {
+    "message": "Груп поки немає"
+  },
+  "hint_no_groups_subtitle": {
+    "message": "Натисніть 'Нова група', щоб створити першу."
+  },
+  "cancel_changes": {
+    "message": "Відхилити зміни"
+  },
+  "group_deleting_dlg_title": {
+    "message": "Підтвердження видалення групи"
+  },
+  "group_deleting_dlg_content_empty_group": {
+    "message": "Ви впевнені, що хочете видалити групу «#groupTitle#»? Ця дія є незворотною."
+  },
+  "group_deleting_dlg_content_with_bookmarks_one": {
+    "message": "Ви впевнені, що хочете видалити групу «#groupTitle#»? Вона містить #count# закладку, яка також буде видалена безповоротно."
+  },
+  "group_deleting_dlg_content_with_bookmarks_few": {
+    "message": "Ви впевнені, що хочете видалити групу «#groupTitle#»? Вона містить #count# закладки, які також будуть видалені безповоротно."
+  },
+  "group_deleting_dlg_content_with_bookmarks_many": {
+    "message": "Ви впевнені, що хочете видалити групу «#groupTitle#»? Вона містить #count# закладок, які також будуть видалені безповоротно."
+  },
+  "yes": {
+    "message": "Так"
+  },
+  "no": {
+    "message": "Ні"
+  },
+  "dropzone_welcome_message": {
+    "message": "Перетягніть ваш файл .onhand сюди"
+  },
+  "dropzone_welcome_message_alt": {
+    "message": "або"
+  },
+  "select_file": {
+    "message": "Обрати файл"
+  },
+  "dropzone_data_apply_question": {
+    "message": "Ви бажаєте застосувати дані з цього файлу?"
+  },
+  "default_group_title": {
+    "message": "Загальні"
+  },
+  "aria_label_actions_menu": {
+    "message": "Головне меню дій"
+  },
+  "aria_label_group_actions_menu": {
+    "message": "Меню опцій групи"
+  },
+  "bookmark_count_zero": {
+    "message": "Закладок поки немає"
+  },
+  "bookmark_count_one": {
+    "message": "#count# закладка"
+  },
+  "bookmark_count_few": {
+    "message": "#count# закладки"
+  },
+  "bookmark_count_many": {
+    "message": "#count# закладок"
+  },
+  "bookmark_address_invalid_hint": {
+    "message": "Введена URL-адреса недійсна."
+  },
+  "bookmark_wo_metadata_dlg_title": {
+    "message": "Метадані не знайдено"
+  },
+  "bookmark_wo_metadata_dlg_content": {
+    "message": "Вказана URL-адреса не містить метаданих (заголовок, іконка), які можна отримати. Ви все одно бажаєте створити закладку?"
+  },
+  "aria_label_bookmark_actions_menu": {
+    "message": "Меню опцій закладки"
+  },
+  "bookmark_deleting_dlg_title": {
+    "message": "Підтвердження видалення закладки"
+  },
+  "bookmark_deleting_dlg_content": {
+    "message": "Ви впевнені, що бажаєте видалити цю закладку? Ця дія є незворотною."
+  },
+  "loading_metadata_hint": {
+    "message": "Завантаження метаданих..."
+  },
+  "add_bookmark": {
+    "message": "Додати закладку"
+  },
+  "bookmark_created_hint": {
+    "message": "Закладку успішно додано"
+  },
+  "popup_error_hint": {
+    "message": "Сталася неочікувана помилка. Будь ласка, спробуйте ще раз."
+  },
+  "bookmark_metadata_not_found_hint": {
+    "message": "Не вдалося отримати заголовок або іконку для цієї URL-адреси. Ви все одно можете створити закладку."
+  },
+  "no_groups_title": {
+    "message": "Груп поки немає"
+  },
+  "no_groups_subtitle": {
+    "message": "Розпочніть зі створення першої групи, щоб упорядкувати ваші закладки."
+  },
+  "group_no_bookmarks_title": {
+    "message": "У цій групі поки немає закладок"
+  },
+  "group_no_bookmarks_subtitle": {
+    "message": "Додайте свої улюблені веб-сайти, статті або інструменти, щоб їх упорядкувати."
+  },
+  "file_uploader_invalid_file_type": {
+    "message": "Невірний тип файлу. Підтримуються лише файли .onhand."
+  },
+  "data_load_error_general": {
+    "message": "Не вдалося завантажити ваші дані. Завантажено дані за замовчуванням. Спробуйте імпортувати з файлу."
+  }
+}

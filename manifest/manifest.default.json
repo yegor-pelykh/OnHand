@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "OnHand",
+  "short_name": "OnHand",
+  "version": "2.1.0",
+  "description": "__MSG_app_description__",
+  "author": "__MSG_app_author_name__",
+  "homepage_url": "https://github.com/yegor-pelykh/OnHand",
+  "developer": {
+    "name": "__MSG_app_author_name__",
+    "url": "https://github.com/yegor-pelykh/OnHand"
+  },
+  "incognito": "spanning",
+  "default_locale": "en",
+  "icons": {
+    "16": "./icons/icon-16.png",
+    "24": "./icons/icon-24.png",
+    "32": "./icons/icon-32.png",
+    "48": "./icons/icon-48.png",
+    "128": "./icons/icon-128.png",
+    "192": "./icons/icon-192.png",
+    "512": "./icons/icon-512.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "./icons/icon-16.png",
+      "24": "./icons/icon-24.png",
+      "32": "./icons/icon-32.png"
+    },
+    "default_title": "__MSG_page_action_title__",
+    "default_popup": "./popup/index.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{1f4ee806-b18a-4c3d-824d-6a44d6911cee}"
+    }
+  },
+  "background": {
+    "service_worker": "./sw/sw.js",
+    "type": "module"
+  },
+  "chrome_url_overrides": {
+    "newtab": "./content/index.html"
+  },
+  "host_permissions": ["<all_urls>"],
+  "permissions": ["storage", "unlimitedStorage", "declarativeContent"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
+}

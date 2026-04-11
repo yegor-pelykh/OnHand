@@ -1,0 +1,242 @@
+{
+  "app_description": {
+    "message": "Effortlessly and securely save bookmarks of your favorite websites directly on your 'New Tab' page."
+  },
+  "app_author_name": {
+    "message": "Yegor Pelykh"
+  },
+  "page_action_title": {
+    "message": "Add this page to bookmarks"
+  },
+  "home_no_groups_hint": {
+    "message": "No groups have been created yet. Start by creating a new group."
+  },
+  "create_bookmark": {
+    "message": "Add Bookmark"
+  },
+  "group_management": {
+    "message": "Manage Groups"
+  },
+  "export_to_file": {
+    "message": "Export Data"
+  },
+  "import_from_file": {
+    "message": "Import Data"
+  },
+  "no_groups_for_bookmark": {
+    "message": "No groups are available. Please create a group before adding a bookmark."
+  },
+  "ok": {
+    "message": "OK"
+  },
+  "bookmark_created": {
+    "message": "Bookmark successfully added"
+  },
+  "groups_saved": {
+    "message": "Groups successfully saved"
+  },
+  "export_to_file_dlg_title": {
+    "message": "Export Your Bookmarks"
+  },
+  "export_to_file_dlg_content": {
+    "message": "Are you sure you want to export all your bookmarks to a file?"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "confirm": {
+    "message": "Confirm"
+  },
+  "data_exported": {
+    "message": "Data successfully exported"
+  },
+  "import_from_file_dlg_title": {
+    "message": "Import Data from File"
+  },
+  "data_imported": {
+    "message": "Data successfully imported"
+  },
+  "import_error": {
+    "message": "Failed to import data. The file format is invalid or the data is corrupted."
+  },
+  "bookmark_creating_dlg_title": {
+    "message": "Create New Bookmark"
+  },
+  "bookmark_editing_dlg_title": {
+    "message": "Edit Bookmark Details"
+  },
+  "bookmark_address_label": {
+    "message": "URL Address"
+  },
+  "bookmark_address_empty_hint": {
+    "message": "URL Address cannot be empty."
+  },
+  "bookmark_title_label": {
+    "message": "Title"
+  },
+  "bookmark_title_empty_hint": {
+    "message": "Title cannot be empty."
+  },
+  "bookmark_group_label": {
+    "message": "Select Group"
+  },
+  "bookmark_group_empty_hint": {
+    "message": "Please select a group."
+  },
+  "create": {
+    "message": "Create"
+  },
+  "apply": {
+    "message": "Save Changes"
+  },
+  "edit": {
+    "message": "Edit"
+  },
+  "refresh_bookmark_icon": {
+    "message": "Refresh Icon"
+  },
+  "delete": {
+    "message": "Delete"
+  },
+  "group_no_bookmarks_hint": {
+    "message": "No bookmarks here yet."
+  },
+  "group_no_bookmarks_hint_details": {
+    "message": "Add new bookmarks using the menu in the bottom right corner."
+  },
+  "group_creating_dlg_title": {
+    "message": "Create New Group"
+  },
+  "group_editing_dlg_title": {
+    "message": "Edit Group Name"
+  },
+  "group_title_label": {
+    "message": "Group Name"
+  },
+  "group_title_empty_hint": {
+    "message": "Group name cannot be empty."
+  },
+  "group_title_already_used_hint": {
+    "message": "This group name is already in use."
+  },
+  "new_group_label": {
+    "message": "New Group"
+  },
+  "hint_no_groups_title": {
+    "message": "No Groups Yet"
+  },
+  "hint_no_groups_subtitle": {
+    "message": "Click 'New Group' to create your first group."
+  },
+  "cancel_changes": {
+    "message": "Discard Changes"
+  },
+  "group_deleting_dlg_title": {
+    "message": "Confirm Group Deletion"
+  },
+  "group_deleting_dlg_content_empty_group": {
+    "message": "Are you sure you want to delete the group '#groupTitle#'? This action cannot be undone."
+  },
+  "group_deleting_dlg_content_with_bookmarks_one": {
+    "message": "Are you sure you want to delete the group '#groupTitle#'? It contains #count# bookmark, which will also be permanently deleted."
+  },
+  "group_deleting_dlg_content_with_bookmarks_few": {
+    "message": "Are you sure you want to delete the group '#groupTitle#'? It contains #count# bookmarks, which will also be permanently deleted."
+  },
+  "group_deleting_dlg_content_with_bookmarks_many": {
+    "message": "Are you sure you want to delete the group '#groupTitle#'? It contains #count# bookmarks, which will also be permanently deleted."
+  },
+  "yes": {
+    "message": "Yes"
+  },
+  "no": {
+    "message": "No"
+  },
+  "dropzone_welcome_message": {
+    "message": "Drag and drop your .onhand file here"
+  },
+  "dropzone_welcome_message_alt": {
+    "message": "or"
+  },
+  "select_file": {
+    "message": "Browse Files"
+  },
+  "dropzone_data_apply_question": {
+    "message": "Do you want to apply the data from this file?"
+  },
+  "default_group_title": {
+    "message": "General"
+  },
+  "aria_label_actions_menu": {
+    "message": "Main actions menu"
+  },
+  "aria_label_group_actions_menu": {
+    "message": "Group options menu"
+  },
+  "bookmark_count_zero": {
+    "message": "No bookmarks yet"
+  },
+  "bookmark_count_one": {
+    "message": "#count# bookmark"
+  },
+  "bookmark_count_few": {
+    "message": "#count# bookmarks"
+  },
+  "bookmark_count_many": {
+    "message": "#count# bookmarks"
+  },
+  "bookmark_address_invalid_hint": {
+    "message": "The entered URL address is not valid."
+  },
+  "bookmark_wo_metadata_dlg_title": {
+    "message": "Metadata Not Found"
+  },
+  "bookmark_wo_metadata_dlg_content": {
+    "message": "The provided URL address does not have retrievable metadata (title, icon). Do you wish to create the bookmark anyway?"
+  },
+  "aria_label_bookmark_actions_menu": {
+    "message": "Bookmark options menu"
+  },
+  "bookmark_deleting_dlg_title": {
+    "message": "Confirm Bookmark Deletion"
+  },
+  "bookmark_deleting_dlg_content": {
+    "message": "Are you sure you want to delete this bookmark? This action cannot be undone."
+  },
+  "loading_metadata_hint": {
+    "message": "Loading metadata..."
+  },
+  "add_bookmark": {
+    "message": "Add Bookmark"
+  },
+  "bookmark_created_hint": {
+    "message": "Bookmark successfully added"
+  },
+  "popup_error_hint": {
+    "message": "An unexpected error occurred. Please try again."
+  },
+  "bookmark_metadata_not_found_hint": {
+    "message": "Unable to retrieve a title or icon for this URL address. You can still proceed with creating the bookmark."
+  },
+  "no_groups_title": {
+    "message": "No Groups Yet"
+  },
+  "no_groups_subtitle": {
+    "message": "Start by creating your first group to organize your bookmarks."
+  },
+  "group_no_bookmarks_title": {
+    "message": "No Bookmarks in This Group"
+  },
+  "group_no_bookmarks_subtitle": {
+    "message": "Add your favorite websites, articles, or tools to keep them organized."
+  },
+  "file_uploader_invalid_file_type": {
+    "message": "Invalid file type. Only .onhand files are supported."
+  },
+  "data_load_error_general": {
+    "message": "Failed to load your data. Default data loaded. Try importing from a file."
+  }
+}

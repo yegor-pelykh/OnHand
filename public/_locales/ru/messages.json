@@ -1,0 +1,242 @@
+{
+  "app_description": {
+    "message": "Легко и безопасно сохраняйте закладки ваших любимых сайтов прямо на странице 'Новой вкладки'."
+  },
+  "app_author_name": {
+    "message": "Егор Пелых"
+  },
+  "page_action_title": {
+    "message": "Добавить текущую страницу в закладки"
+  },
+  "home_no_groups_hint": {
+    "message": "Группы еще не созданы. Начните с создания новой группы."
+  },
+  "create_bookmark": {
+    "message": "Добавить закладку"
+  },
+  "group_management": {
+    "message": "Управление группами"
+  },
+  "export_to_file": {
+    "message": "Экспорт данных"
+  },
+  "import_from_file": {
+    "message": "Импорт данных"
+  },
+  "no_groups_for_bookmark": {
+    "message": "Нет доступных групп. Пожалуйста, сначала создайте группу для закладок."
+  },
+  "ok": {
+    "message": "ОК"
+  },
+  "bookmark_created": {
+    "message": "Закладка успешно добавлена"
+  },
+  "groups_saved": {
+    "message": "Группы успешно сохранены"
+  },
+  "export_to_file_dlg_title": {
+    "message": "Экспорт ваших закладок"
+  },
+  "export_to_file_dlg_content": {
+    "message": "Вы уверены, что хотите экспортировать все ваши закладки в файл?"
+  },
+  "save": {
+    "message": "Сохранить"
+  },
+  "cancel": {
+    "message": "Отмена"
+  },
+  "confirm": {
+    "message": "Подтвердить"
+  },
+  "data_exported": {
+    "message": "Данные успешно экспортированы"
+  },
+  "import_from_file_dlg_title": {
+    "message": "Импорт данных из файла"
+  },
+  "data_imported": {
+    "message": "Данные успешно импортированы"
+  },
+  "import_error": {
+    "message": "Не удалось импортировать данные. Неверный формат файла или поврежденные данные."
+  },
+  "bookmark_creating_dlg_title": {
+    "message": "Создать новую закладку"
+  },
+  "bookmark_editing_dlg_title": {
+    "message": "Изменить данные закладки"
+  },
+  "bookmark_address_label": {
+    "message": "URL-адрес"
+  },
+  "bookmark_address_empty_hint": {
+    "message": "Поле 'URL-адрес' не может быть пустым."
+  },
+  "bookmark_title_label": {
+    "message": "Название"
+  },
+  "bookmark_title_empty_hint": {
+    "message": "Поле 'Название' не может быть пустым."
+  },
+  "bookmark_group_label": {
+    "message": "Выбрать группу"
+  },
+  "bookmark_group_empty_hint": {
+    "message": "Пожалуйста, выберите группу."
+  },
+  "create": {
+    "message": "Создать"
+  },
+  "apply": {
+    "message": "Сохранить изменения"
+  },
+  "edit": {
+    "message": "Редактировать"
+  },
+  "refresh_bookmark_icon": {
+    "message": "Обновить иконку"
+  },
+  "delete": {
+    "message": "Удалить"
+  },
+  "group_no_bookmarks_hint": {
+    "message": "В этой группе пока нет закладок."
+  },
+  "group_no_bookmarks_hint_details": {
+    "message": "Добавляйте новые закладки с помощью меню в правом нижнем углу."
+  },
+  "group_creating_dlg_title": {
+    "message": "Создать новую группу"
+  },
+  "group_editing_dlg_title": {
+    "message": "Изменить название группы"
+  },
+  "group_title_label": {
+    "message": "Название группы"
+  },
+  "group_title_empty_hint": {
+    "message": "Название группы не может быть пустым."
+  },
+  "group_title_already_used_hint": {
+    "message": "Это название группы уже используется."
+  },
+  "new_group_label": {
+    "message": "Новая группа"
+  },
+  "hint_no_groups_title": {
+    "message": "Групп пока нет"
+  },
+  "hint_no_groups_subtitle": {
+    "message": "Нажмите 'Новая группа', чтобы создать первую."
+  },
+  "cancel_changes": {
+    "message": "Отменить изменения"
+  },
+  "group_deleting_dlg_title": {
+    "message": "Подтверждение удаления группы"
+  },
+  "group_deleting_dlg_content_empty_group": {
+    "message": "Вы уверены, что хотите удалить группу «#groupTitle#»? Это действие необратимо."
+  },
+  "group_deleting_dlg_content_with_bookmarks_one": {
+    "message": "Вы уверены, что хотите удалить группу «#groupTitle#»? Она содержит #count# закладку, которая будет удалена безвозвратно."
+  },
+  "group_deleting_dlg_content_with_bookmarks_few": {
+    "message": "Вы уверены, что хотите удалить группу «#groupTitle#»? Она содержит #count# закладки, которые будут удалены безвозвратно."
+  },
+  "group_deleting_dlg_content_with_bookmarks_many": {
+    "message": "Вы уверены, что хотите удалить группу «#groupTitle#»? Она содержит #count# закладок, которые будут удалены безвозвратно."
+  },
+  "yes": {
+    "message": "Да"
+  },
+  "no": {
+    "message": "Нет"
+  },
+  "dropzone_welcome_message": {
+    "message": "Перетащите ваш файл .onhand сюда"
+  },
+  "dropzone_welcome_message_alt": {
+    "message": "или"
+  },
+  "select_file": {
+    "message": "Выбрать файл"
+  },
+  "dropzone_data_apply_question": {
+    "message": "Вы хотите применить данные из этого файла?"
+  },
+  "default_group_title": {
+    "message": "Общие"
+  },
+  "aria_label_actions_menu": {
+    "message": "Главное меню действий"
+  },
+  "aria_label_group_actions_menu": {
+    "message": "Меню опций группы"
+  },
+  "bookmark_count_zero": {
+    "message": "Закладок пока нет"
+  },
+  "bookmark_count_one": {
+    "message": "#count# закладка"
+  },
+  "bookmark_count_few": {
+    "message": "#count# закладки"
+  },
+  "bookmark_count_many": {
+    "message": "#count# закладок"
+  },
+  "bookmark_address_invalid_hint": {
+    "message": "Введенный URL-адрес недействителен."
+  },
+  "bookmark_wo_metadata_dlg_title": {
+    "message": "Метаданные не найдены"
+  },
+  "bookmark_wo_metadata_dlg_content": {
+    "message": "Указанный URL-адрес не содержит извлекаемых метаданных (заголовок, иконка). Вы все равно хотите создать закладку?"
+  },
+  "aria_label_bookmark_actions_menu": {
+    "message": "Меню опций закладки"
+  },
+  "bookmark_deleting_dlg_title": {
+    "message": "Подтверждение удаления закладки"
+  },
+  "bookmark_deleting_dlg_content": {
+    "message": "Вы уверены, что хотите удалить эту закладку? Это действие необратимо."
+  },
+  "loading_metadata_hint": {
+    "message": "Загрузка метаданных..."
+  },
+  "add_bookmark": {
+    "message": "Добавить закладку"
+  },
+  "bookmark_created_hint": {
+    "message": "Закладка успешно добавлена"
+  },
+  "popup_error_hint": {
+    "message": "Произошла непредвиденная ошибка. Пожалуйста, попробуйте еще раз."
+  },
+  "bookmark_metadata_not_found_hint": {
+    "message": "Не удалось получить заголовок или иконку для этого URL-адреса. Вы все равно можете создать закладку."
+  },
+  "no_groups_title": {
+    "message": "Групп пока нет"
+  },
+  "no_groups_subtitle": {
+    "message": "Начните с создания первой группы, чтобы упорядочить ваши закладки."
+  },
+  "group_no_bookmarks_title": {
+    "message": "В этой группе пока нет закладок"
+  },
+  "group_no_bookmarks_subtitle": {
+    "message": "Добавьте свои любимые веб-сайты, статьи или инструменты, чтобы их упорядочить."
+  },
+  "file_uploader_invalid_file_type": {
+    "message": "Неверный тип файла. Поддерживаются только .onhand файлы."
+  },
+  "data_load_error_general": {
+    "message": "Не удалось загрузить ваши данные. Загружены данные по умолчанию. Попробуйте импортировать из файла."
+  }
+}

@@ -1,102 +1,146 @@
 <p align="center">
-  <img src="web/icons/icon-128.png" width="128" />
+  <img src="public/icons/icon-128.png" width="128" alt="OnHand Logo" />
 </p>
 
-# OnHand
+# OnHand: Your Personalized New Tab for Effortless Bookmark Management
 
-Сreated for easy and convenient management of your favorite sites, which can be opened directly from a browser "new tab" page.
+OnHand is a lightweight and elegant browser extension designed to transform your new tab page into a central hub for your favorite websites. Say goodbye to scattered bookmarks and embrace a clean, intuitive way to access your digital world directly from where you start browsing.
 
-Neat and minimalistic.
-Uses material design.
+Crafted with a minimalist aesthetic and leveraging Material Design principles, OnHand offers a seamless and visually pleasing experience. It's built for those who value simplicity, efficiency, and privacy.
 
-Features:
+## ✨ Features That Make Browsing Smoother
 
-- adding bookmarks in a simple way
-- grouping bookmarks using tabs
-- easy data management, loading and saving to a file, without clouds and accounts
-- supports switching between light and dark theme (it depends on the theme color of the operating system)
+- **Effortless Bookmark Management:** Add and organize your favorite sites with unparalleled ease.
+- **Tab-Based Grouping:** Keep your bookmarks neatly categorized using intuitive groups organized as tabs, decluttering your digital space.
+- **Private Data Control:** Your data stays yours. Easily load and save your bookmarks to a local file, ensuring full control without relying on clouds or accounts.
+- **System Theme Sync:** Enjoy a comfortable viewing experience with automatic light and dark theme switching that respects your operating system's preferences.
 
-Supported by almost all popular desktop browsers in the world (except Opera): Google Chrome, Firefox, Edge, Chromium etc.
+OnHand is a free and open-source project, committed to empowering users without hidden costs or data compromises.
 
-This extension is guaranteed to always be free and open source.
+## 🚀 Get OnHand Today!
 
-## Localization and internationalization
+OnHand is widely supported across popular desktop browsers, bringing streamlined bookmark management to your fingertips. (Note: Currently not oficially supported on Opera.)
 
-The extension is multilingual. At the moment, only three languages are implemented and supported: English, Russian and Ukrainian. Other languages can easily be added if you ask me to do so. I would be grateful for your cooperation.
+Find OnHand in your preferred browser's official store:
 
-For now, there is no way to dynamically switch the language. The extension will automatically launch in the language of your browser. If the browser uses a language that is not currently supported, the extension will be in English.
+- [Chrome Web Store](https://chrome.google.com/webstore/detail/onhand/ndghfaalceocliigojpcoohpaagomkcf)
+- [Mozilla Add-ons](https://addons.mozilla.org/ru/firefox/addon/onhand)
+- [Microsoft Edge Addons](https://microsoftedge.microsoft.com/addons/detail/onhand/kcicjmoijnmhooklndppjknpocdafoep)
 
-## Usage Notes
+## 🌐 Multilingual Support
 
-### How to open bookmarks
+OnHand speaks your language! The extension is fully multilingual, currently supporting English, Russian, and Ukrainian. We're always open to expanding our linguistic reach – if you'd like to contribute another language, please reach out!
 
-To open a bookmark in the **currently open tab**:
+**Important Note on Language:** OnHand automatically detects and uses your browser's language. If your browser's language isn't yet supported, it will default to English. There's currently no in-app option for dynamic language switching.
 
-- just click on bookmark
+## 📖 How to Use OnHand
 
-To open a bookmark in a **new background tab**:
+Mastering OnHand is simple. Here are the key interactions:
 
-- click on bookmark while holding down the Ctrl key
-- сlick on bookmark with the middle mouse button (wheel)
+### Opening Bookmarks
 
-### Moving bookmarks and groups
+- **In the Current Tab:** Just a single click on any bookmark.
+- **In a New Background Tab:**
+  - Hold down the `Ctrl` key while clicking the bookmark.
+  - Click the bookmark with your middle mouse button (scroll wheel).
 
-It is possible to move bookmarks using only the mouse within the same group. To do this, simply hold down the left mouse button on the bookmark, and then drag the bookmark to the desired location inside the group.
+### Organizing Bookmarks and Groups
 
-The same approach is used to move groups. To do this, you need to open the dialog box from the menu item "Group management", in which groups will be able to move in the same way.
+- **Moving Bookmarks within a Group:** Click and drag a bookmark with your left mouse button to rearrange it within its current group.
+- **Moving Groups:** Access the "Group management" dialog from the menu. Within this dialog, you can click and drag groups to reorder them in the same intuitive way.
+- **Moving a Bookmark to a Different Group:**
+  1.  Enter the bookmark's edit mode.
+  2.  Select the desired new group from the dropdown list.
+  3.  Apply the changes. The bookmark will then appear at the end of the selected group.
 
-To move an existing bookmark to another group, enter the bookmark edit mode, select another group from the list of groups, and then apply the changes. The bookmark will be added to the end of the selected group.
+## 📸 See OnHand in Action
 
-## Publication in web stores
+Visual learner? Check out OnHand's sleek interface in both light and dark modes:
 
-[Chrome Web Store](https://chrome.google.com/webstore/detail/onhand/ndghfaalceocliigojpcoohpaagomkcf)
+<p align="center">
+  <h3>Light Mode</h3>
+  <img src="app-info/screenshot_light.png" width="600" alt="OnHand Light Mode Screenshot" />
+  <h3>Dark Mode</h3>
+  <img src="app-info/screenshot_dark.png" width="600" alt="OnHand Dark Mode Screenshot" />
+</p>
 
-[Mozilla Add-ons](https://addons.mozilla.org/ru/firefox/addon/onhand)
+## 🤝 Contribute to OnHand
 
-[Microsoft Edge Addons](https://microsoftedge.microsoft.com/addons/detail/onhand/kcicjmoijnmhooklndppjknpocdafoep)
+Your contributions are what make open-source projects thrive! Whether it's adding a feature, fixing a bug, or improving documentation, every bit of help is truly appreciated.
 
-## Screenshots
+To get involved:
 
-Light mode:<br>
-<img src="app_info/screenshot_light.png" width="600" />
-<br>Dark mode:<br>
-<img src="app_info/screenshot_dark.png" width="600" />
+1.  **Fork** this repository.
+2.  Create your feature branch: `git checkout -b feature/your-awesome-feature`.
+3.  **Commit** your changes: `git commit -m 'feat: Add a brilliant new feature'`. (Consider conventional commits for better history!)
+4.  **Push** to the branch: `git push origin feature/your-awesome-feature`.
+5.  Open a **Pull Request** and describe your changes.
 
-## Contributing
+Thank you for considering contributing!
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
+## 🛠️ Build OnHand from Source
 
-To contribute:
+Want to dive deeper, create your own customized version, or simply understand how OnHand works under the hood? Building the extension from its source code is a straightforward process. Here’s how to compile your own ready-to-use extension package.
 
-1. Fork the project
-1. Create your feature branch (git checkout -b feature/AmazingFeature)
-1. Commit your changes (git commit -m 'Add some AmazingFeature')
-1. Push to the branch (git push origin feature/AmazingFeature)
-1. Open a Pull Request
+### What You'll Need
 
-I will be very grateful for your support.
+Before you begin, make sure you have these essentials:
 
-## Build
+- **Git:** You'll need Git to clone the project's source code. If you don't have it installed, you can download it from [git-scm.com](https://git-scm.com/downloads).
+- **Node.js:** OnHand uses Node.js and its package manager, `npm`, for managing dependencies and running build scripts. Install the recommended LTS version from the [Node.js official site](https://nodejs.org). Installing Node.js will automatically set up `npm` for you.
 
-You can easily build the release version of this browser extension.
+### Step-by-Step Build Guide
 
-1. Please make sure you have Flutter framework installed on your computer. If it is not installed yet, download it from the [Flutter official site](https://docs.flutter.dev/get-started/install), install and configure as directed in the manual.
-1. Please make sure you have Node.js installed on your computer. If it is not installed yet, download it from the [Node.js official site](https://nodejs.org) and install it.
-1. Run these commands, depending on the platform you are using:
-   <table>
-   <tr><td> Platform </td> <td> Command </td></tr>
-   <tr><td> Windows </td><td>
+Follow these steps to compile your own OnHand release package:
 
-   `build_release.cmd`
+1.  **Get the Source Code:**
+    First, clone the OnHand repository to your local machine. Open your terminal or command prompt and execute:
 
-   </td></tr>
-   <tr><td> Other desktop platforms </td><td>
+    ```bash
+    git clone https://github.com/yegor-pelykh/OnHand.git
+    cd OnHand
+    ```
 
-   `build_release.sh`
+2.  **Install Project Dependencies:**
+    Navigate into the `OnHand` project directory (if you're not already there) and install all the required libraries and tools:
 
-   </td></tr>
-   </table>
+    ```bash
+    npm install
+    ```
 
-   **If you are using VS Code**: you can also run the "Release build" task to make a release build.
+    This command fetches all the necessary components OnHand needs to build and run correctly.
 
-1. The package with the necessary files should be on the `/build/package` folder.
+3.  **Create Your Release Package:**
+    Now, let's build the ready-to-distribute `.zip` file. Run the packaging script:
+
+    ```bash
+    npm run pack
+    ```
+
+    During this process, the script will ask you to select the target browser. Choose `Firefox` if you're building for Firefox, or `Other Browsers` (which typically covers Chromium-based browsers like Chrome, Edge, Brave, Vivaldi, etc.) for other platforms. This selection ensures the package is optimized for its intended browser environment. This single command handles both compiling the project and compressing it into a `.zip` archive.
+
+4.  **Locate Your Compiled Extension:**
+    After the build process finishes, your newly created OnHand extension package will be available. You'll find the `.zip` file inside the `/package` folder at the root of your project directory.
+
+### Testing Your Build (Optional)
+
+Once you've built your package, you can easily load it into your browser for testing or personal use without going through an app store.
+
+- **For Chromium-based Browsers (Chrome, Edge, Brave, Vivaldi, etc.):**
+  1.  Open your browser and navigate to `chrome://extensions` (or `edge://extensions`, etc.) in the address bar.
+  2.  Toggle on "Developer mode," usually located in the top right corner.
+  3.  You'll need an _unpacked_ version to load. First, locate the `.zip` file generated in your `/package` folder and manually unzip it to a new directory.
+  4.  Click the "Load unpacked" button, then select the directory you just unzipped (this directory should contain `manifest.json` and other extension files).
+
+- **For Mozilla Firefox:**
+  1.  Open Firefox and type `about:debugging#/runtime/this-firefox` into the address bar.
+  2.  You'll need an _unpacked_ version to load. First, locate the `.zip` file generated in your `/package` folder and manually unzip it to a new directory.
+  3.  Click the "Load Temporary Add-on..." button, then select `manifest.json` from the directory you just unzipped. Firefox will load it for the current session.
+
+## 📜 License
+
+OnHand is distributed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+
+## ❓ Questions or Feedback?
+
+Have a question, suggestion, or encountered an issue? Feel free to open an issue on GitHub or reach out to the maintainer. We'd love to hear from you!

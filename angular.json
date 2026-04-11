@@ -1,9 +1,12 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
+  "cli": {
+    "packageManager": "npm"
+  },
   "newProjectRoot": "projects",
   "projects": {
-    "on_hand": {
+    "content": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -32,40 +35,51 @@
           "skipTests": true
         }
       },
-      "root": "",
-      "sourceRoot": "src-popup",
-      "prefix": "popup",
+      "root": "./projects/content",
+      "sourceRoot": "./projects/content/src",
+      "prefix": "app-content",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular/build:application",
           "options": {
-            "outputPath": "web/popup",
-            "index": "src-popup/popup.html",
-            "main": "src-popup/main.ts",
-            "tsConfig": "tsconfig.app.json",
+            "outputPath": {
+              "base": "./dist/content",
+              "browser": ""
+            },
+            "browser": "./projects/content/src/main.ts",
+            "tsConfig": "./projects/content/tsconfig.content.json",
             "inlineStyleLanguage": "scss",
-            "allowedCommonJsDependencies": ["buffer"],
-            "assets": ["src-popup/favicon.png", "src-popup/assets"],
-            "styles": [
-              "src-popup/material-web-theme/theme.css",
-              "src-popup/styles.scss"
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "./projects/content/public"
+              }
             ],
-            "scripts": []
+            "stylePreprocessorOptions": {
+              "includePaths": ["public"]
+            },
+            "styles": [
+              "./shared/styles/fonts.scss",
+              "./shared/styles/theme.scss",
+              "./projects/content/src/styles.scss"
+            ],
+            "index": "./projects/content/src/index.html"
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "2MB",
+                  "maximumError": "2.5MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
                 }
               ],
+              "outputHashing": "all",
               "optimization": {
                 "scripts": true,
                 "styles": {
@@ -73,42 +87,158 @@
                   "inlineCritical": false
                 },
                 "fonts": true
-              },
-              "outputHashing": "all"
+              }
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "on_hand:build:production"
+              "buildTarget": "content:build:production"
             },
             "development": {
-              "browserTarget": "on_hand:build:development"
+              "buildTarget": "content:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "browserTarget": "on_hand:build"
+            "lintFilePatterns": ["./projects/content/src/**/*.ts", "./projects/content/src/**/*.html"]
+          }
+        }
+      }
+    },
+    "popup": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "skipTests": true
+        },
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:resolver": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        }
+      },
+      "root": "./projects/popup",
+      "sourceRoot": "./projects/popup/src",
+      "prefix": "app-popup",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "outputPath": {
+              "base": "./dist/popup",
+              "browser": ""
+            },
+            "browser": "./projects/popup/src/main.ts",
+            "tsConfig": "./projects/popup/tsconfig.popup.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "./projects/popup/public"
+              }
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["public"]
+            },
+            "styles": ["./shared/styles/fonts.scss", "./shared/styles/theme.scss", "./projects/popup/src/styles.scss"],
+            "index": "./projects/popup/src/index.html"
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2MB",
+                  "maximumError": "2.5MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all",
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              }
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "options": {
+            "buildTarget": "popup:build:development"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "popup:build:production"
+            },
+            "development": {
+              "buildTarget": "popup:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["./projects/popup/src/**/*.ts", "./projects/popup/src/**/*.html"]
+          }
+        }
+      }
+    },
+    "sw": {
+      "projectType": "application",
+      "root": "./projects/sw",
+      "sourceRoot": "./projects/sw/src",
+      "architect": {
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["./projects/sw/src/**/*.ts"]
           }
         }
       }
     }
-  },
-  "cli": {
-    "analytics": false
   }
 }
